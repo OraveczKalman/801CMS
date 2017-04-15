@@ -1,0 +1,11 @@
+{
+    "labels":{
+        "contactForm":"Kontakt form beállításai",
+        "siteSetup":"Oldal beállításai",
+        "newUser":"Új felhasznló",
+        "userHandling":"Felhasználók kezelése",
+        "editSite":"Oldal szerkesztése",
+        "profile":"Profil",
+        "quit":"Kilépés"
+    }
+}

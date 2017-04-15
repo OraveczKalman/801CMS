@@ -1,0 +1,37 @@
+{
+    "labels":{
+        "caption":"Felirat",
+        "title":"Cím",
+        "heading":"Címsor",
+        "keywords":"Kulcsszavak",
+        "genre":"Műfaj",
+        "artist":"Előadó",
+        "link":"Link",
+        "target":"Cél",
+        "classname":"Osztálynév",
+        "mainpage":"Főoldal",
+        "language":"Nyelv",
+        "loggedin":"Belépve",
+        "role":"Szerep",
+        "filetoupload":"Feltöltendő file",
+        "upload":"Feltöltés",
+        "update":"Frissítés",
+        "commentable":"Kommentelhető",
+        "releaseDate":"Megjelenés dátuma",
+        "modul":"Modul",
+        "gallerytype":"Galéria típus",
+        "facebookShare":"Megosztás a Facebookon"
+    },
+    "targets":{
+        "choose": { "label":"Válassz", "value":"" },
+        "blank": { "label":"blank", "value":"_blank" }, 
+        "self": { "label":"self", "value":"_self" },
+        "parent": { "label":"parent", "value":"_parent" },
+        "top": { "label":"top", "value":"_top"  }
+    },
+    "gallerytypes":{
+        "gallery": { "label":"Galéria" },
+        "coverslider": { "label":"Címlap slider" }, 
+        "slider": { "label":"Slider" }
+    }
+}

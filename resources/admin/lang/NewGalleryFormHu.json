@@ -1,0 +1,14 @@
+{
+    "labels":{
+        "header":"Galéria",
+        "pictures":"Képek",
+        "music":"Zenék",
+        "videos":"Videók",
+        "upload":"Feltöltés",
+        "youtubeVideos":"Youtube videók",
+        "add":"Hozzáadás",
+        "editSite":"Oldal szerkesztése",
+        "refresh":"Frissítés",
+        "videoLink":"Video Link"
+    }
+}

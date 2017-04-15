@@ -1,0 +1,13 @@
+{
+    "labels":{
+        "header":"Felhasználó",
+        "name":"Név",
+        "username":"Felhasznlónév",
+        "password":"Jelszó",
+        "passwordRemember":"Jelszó emlékezető",
+        "email":"E-mail",
+        "rights":"Jogosultságok",
+        "send":"Regisztrálok",
+        "success":"A mentés sikeres volt!"
+    }
+}
