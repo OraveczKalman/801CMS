@@ -32,7 +32,6 @@ function showErrors(data) {
 }
 
 function sendOneField(functionName, url, data, controllId) {
-    alert('xxx');
     $('#' + controllId).parent().removeClass('has-error');
     $('#' + controllId).tooltip('destroy');
     $('.alert').html('');
