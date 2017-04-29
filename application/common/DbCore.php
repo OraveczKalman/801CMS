@@ -4,7 +4,14 @@ class DbCore extends AncestorClass {
     private $databaseConfig;
     private $dbLink;
 
-    public function __construct($databaseConfig) { //Konstruktor: felépíti a kapcsolatot az adatbázissal
+    /**
+     * 
+     * @param type $databaseConfig
+     * @return type
+     * @author Oravecz Kálmán
+     * Constructor for DbCore class
+     */
+    public function __construct($databaseConfig) {
         $this -> databaseConfig = $databaseConfig;
         try {
             $this->dbLink = new PDO("mysql" .
@@ -20,6 +27,13 @@ class DbCore extends AncestorClass {
         }
     }
 
+    /**
+     * 
+     * @param type $dataArray
+     * @return type
+     * @authr Oravecz Kálmán
+     * This function builds select queries from $dataArray parameter.
+     */
     public function selectBuilder($dataArray) {
         $selectQueryString = 'SELECT ' . $dataArray['fields'] . ' FROM ' . $dataArray['table'] . ' ';
 
@@ -53,20 +67,34 @@ class DbCore extends AncestorClass {
         $selectQuery = $this->selectQuery($selectQueryString);
         return $selectQuery;
     }
-	
+    
+    /**
+     * 
+     * @param type $sql
+     * @return type
+     * @author Oravecz Kálmán
+     * Function for execute select queries
+     */
     public function selectQuery($sql) { //SELECT típusú lekérdezések függvénye
         try {
             $stmt = $this->dbLink->prepare($sql);
             $stmt = $this->dbLink->query($sql);
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $result;
         } catch (PDOException $e) {
             $result['error'] = $e -> errorInfo;
             $this->logWriter($e->getMessage() . ': ' . $sql);
-            return $result;
         }
+        return $result;
     }
 
+    /**
+     * 
+     * @param type $dataArray
+     * @return type
+     * @author Oravecz Kálmán
+     * This function builds insert type queries and from $dataArray parameter and
+     * executes them.
+     */    
     public function insertQueryBuilder($dataArray) {
         $insertQueryString = "INSERT INTO " . $dataArray['table'] . " SET ";
         foreach ($dataArray['fields'] as $key => $fields) {
@@ -77,6 +105,14 @@ class DbCore extends AncestorClass {
         return $insertQuery;
     }
     
+    /**
+     * 
+     * @param type $dataArray
+     * @return type
+     * @author Oravecz Kálmán
+     * This function builds insert type queries and from $dataArray parameter and
+     * executes them.
+     */
     public function insertQueryBuilder2($dataArray) {
         $insertQueryString = "INSERT INTO " . $dataArray['table'] . " SET ";
         foreach ($dataArray['fields'] as $key=>$fields) {
@@ -89,7 +125,14 @@ class DbCore extends AncestorClass {
         return $insertQuery;
     }
 
-    public function insertQuery($sql) { //INSERT típusú lekérdezések függvénye
+    /**
+     * 
+     * @param type $sql
+     * @return type
+     * @author Oravecz Kálmán
+     * This function executes insert queries
+     */
+    public function insertQuery($sql) {
         $result = array();
         $stmt = $this->dbLink->prepare($sql);
         try {
@@ -103,6 +146,14 @@ class DbCore extends AncestorClass {
         }
     }
 
+    /**
+     * 
+     * @param type $dataArray
+     * @return type
+     * @author Oravecz Kálmán
+     * This function bulds update type queries from the $dataArray parameter and
+     * executes them.
+     */
     public function updateQueryBuilder($dataArray) {
         $updateQueryString = "UPDATE " . $dataArray['table'] . " SET ";
         foreach ($dataArray['fields'] as $key => $fields) {
@@ -115,6 +166,13 @@ class DbCore extends AncestorClass {
         return $updateQuery;
     }
 
+    /**
+     * 
+     * @param type $sql
+     * @return type
+     * @author Oravecz Kálmán
+     * Function for execute update type queries
+     */
     public function updateQuery($sql) { //UPDATE típusú lekérdezések függvénye
         try {
             $stmt = $this->dbLink->prepare($sql);
@@ -126,18 +184,13 @@ class DbCore extends AncestorClass {
             return $result;
         }
     }
-	
-    public function otherQuery($sql) {
-        try {
-            $this->dbLink->exec($sql);
-        } catch (PDOException $e) {
-            $result = array();
-            $result['error'] = $e->getMessage();
-            $this->logWriter($e->getMessage() . ': ' . $sql);
-            return $result;
-        }
-    }
     
+    /**
+     * 
+     * @param string $message
+     * @author Oravecz Kálmán
+     * Logwriter function
+     */
     public function logWriter($message) {
         $message = "[" . date("Y-m-d H:i:s") . "]" . $message;
         file_put_contents(CORE_PATH . "logs/log" . date("Ymd") . ".txt", $message);
