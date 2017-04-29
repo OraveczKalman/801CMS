@@ -10,7 +10,7 @@
     }
 
     function editUser(userId) {
-        $('#tartalom').load('admin/User', { event:'EditUserForm', userId: userId }, function (data) {
+        $('#page-wrapper').load('admin/User', { event:'EditUserForm', userId: userId }, function (data) {
 
         });
     }
