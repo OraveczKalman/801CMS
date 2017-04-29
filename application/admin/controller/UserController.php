@@ -33,8 +33,9 @@ class UserController {
     }
 
     private function EditUserForm() {
+        $labelObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/NewUserFormHu.json'));
         $this->dataArray[0]['where'] = 'UserId = ' . $_POST['userId'];
-        $user = new UserModel($this->dataArray, $this->db);
+        $user = new UserModel($this->db, $this->dataArray);
         $userData = $user->getUser();
         include_once(ADMIN_VIEW_PATH . 'UserFormView.php');
     }
@@ -59,7 +60,7 @@ class UserController {
         $errors = $this->ValidateUserFormFull();
         if ($errors == '') {
             $_POST['News'] = 1;
-            $user = new UserModel($_POST, $this->db);
+            $user = new UserModel($this->db, $_POST);
             $userData = $user->updateUser();
             if (!isset($userData['error'])) {
                 print json_encode($goodArray = array('good'=>1));
@@ -71,17 +72,32 @@ class UserController {
         }
     }
 
+    /**
+     * @author Oravecz Kálmán
+     * UserList function
+     */
     private function UserList() {
-        $user = new UserModel($this->dataArray, $this->db);
+        $user = new UserModel($this->db, $this->dataArray);
         $users = $user -> getAllUser();
         include_once(ADMIN_VIEW_PATH . 'UserListView.php');
     }
 
+    /**
+     * 
+     * @author Oravecz Kálmán
+     * Delete user controller function
+     */
     private function deleteUser() {
         $user = new UserModel($this->dataArray, $this->db);
         $users = $user -> deleteUser();
     }
-
+    
+    /**
+     * 
+     * @return string
+     * @author Oravecz Kálmán
+     * Validates all fields on UserForm it's used before submit the form
+     */
     private function ValidateUserFormFull() {
         include_once(CORE_PATH . 'Validator.php');
         $validateInfo = array();
@@ -99,7 +115,11 @@ class UserController {
             return json_encode($errorArray);
         }
     }
-
+    
+    /**
+     * @author Oravecz Kálmán
+     * Validates one field form userform 
+     */
     private function ValidateField() {
         include_once(CORE_PATH . 'Validator.php');
         $validateInfo = array();
