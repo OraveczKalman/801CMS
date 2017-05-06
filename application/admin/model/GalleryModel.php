@@ -18,6 +18,12 @@ class GalleryModel {
         $this->dataArray = $dataArray;
     }
 
+    /**
+     * 
+     * @return type
+     * @author Oravecz Kálmán
+     * Generate form elements to manipulate gallery elements
+     */
     public function getGalleryData() {
         $galleryPictures = $this -> getGalleryObjects($this->dataArray[0]['MainHeaderId']);
         for ($i=0; $i<=count($galleryPictures)-1; $i++) {
@@ -63,6 +69,13 @@ class GalleryModel {
         return $getMenuQuery;
     }
     
+    /**
+     * 
+     * @param type $menuId
+     * @return type
+     * @author Oravecz Kálmán
+     * Get all elements to gallery
+     */
     public function getGalleryObjects($menuId) {
         $getGalleryObjectQueryString = 'SELECT picture.PictureId, picture.Name AS kep_nev_big, ' .
             'picture.ThumbName AS kep_nev, ' .
@@ -78,6 +91,13 @@ class GalleryModel {
         return $getGalleryObjectsQuery;
     }
     
+    /**
+     * 
+     * @param type $galleryObjectId
+     * @return type
+     * @author Oravecz Kálmán
+     * Get textual informations for gallery element
+     */
     public function getGalleryObjectText($galleryObjectId) {
         $getGalleryObjectTextQueryString = 'SELECT text.Text, text.TextId FROM text ' . 
             'WHERE SuperiorId = ' . $galleryObjectId . ' ' .
@@ -86,6 +106,10 @@ class GalleryModel {
         return $getGalleryObjectText;
     }
 
+    /**
+     * @author Oravecz Kálmán
+     * Insert element to gallery
+     */
     public function insertGalleryImages() {
         foreach ($this->dataArray['images'] as $pictureData) {
             switch ($this->dataArray['mediaType']) {
@@ -135,7 +159,13 @@ class GalleryModel {
         $delete_picture_query = $this -> update_query($delete_picture_query_string);
         return $delete_picture_query;
     }
-
+    
+    /**
+     * 
+     * @return type
+     * @author Oravecz Kálmán
+     * Function for delete elements from gallery
+     */
     public function deleteFromGallery() {
         $retArray = array();
         $deleteGalleryPictureQueryString = 'DELETE FROM gallery_picture WHERE MainHeaderId = ' .
@@ -153,6 +183,12 @@ class GalleryModel {
         return $retArray;
     }
     
+    /**
+     * 
+     * @return type
+     * @author Oravecz Kálmán
+     * Update function for sequence of elments in gallery 
+     */
     public function updateGallery() {
         $updatePicturesQueryString = 'UPDATE `gallery_picture` SET ' .
             '`Rank` = ' . $this->dataArray['rank'] . ' ' .
@@ -161,6 +197,12 @@ class GalleryModel {
         return $updatePicturesQuery;
     }
     
+    /**
+     * 
+     * @return type
+     * @author Oravecz Kálmán
+     * Update gallery element thumbnail database function
+     */
     public function updatePictureThumbnail() {
         $updateThumbnailsQueryString = 'UPDATE `Picture` SET ' .
             'ThumbName = "' . $this->dataArray['thumbKepnev'] . '" ' .

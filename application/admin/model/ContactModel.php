@@ -17,7 +17,12 @@ class ContactModel {
     public function setDataArray($dataArray) {
         $this->dataArray = $dataArray;
     }
-
+    /**
+     * 
+     * @return boolean
+     * @author Oravecz Kálmán
+     * Function for get present contact information on site
+     */
     public function GetContactInformation() {
         $getInformationQueryString = 'SELECT * FROM kontakt_form';
         $getInformationQuery = $this->db->SelectQuery($getInformationQueryString);
@@ -28,6 +33,12 @@ class ContactModel {
         }
     }
 
+    /**
+     * 
+     * @return boolean
+     * @author Oravecz Kálmán
+     * Function for insert Contact information
+     */
     public function InsertContactInformation() {
         $insertContactQueryString = 'INSERT INTO kontakt_form SET ' .
             'Name = "' . $this->dataArray['Name'] . '", ' .
@@ -53,6 +64,12 @@ class ContactModel {
         }
     }
 
+    /**
+     * 
+     * @return boolean
+     * @author Oravecz Kálmán
+     * Function for update contact information on site
+     */
     public function UpdateContactInformation() {
         $updateContactQueryString = 'UPDATE kontakt_form SET ' .
             'Name = "' . $this->dataArray['Name'] . '", ' .

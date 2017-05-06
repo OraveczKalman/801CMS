@@ -3,7 +3,14 @@ include_once(CORE_PATH . 'AncestorClass.php');
 class ArticleModel extends AncestorClass {
     private $dataArray;
     private $db;
-
+    
+    /**
+     * 
+     * @param type $db
+     * @param type $dataArray
+     * @author Oravecz Kálmán
+     * Constructor for ArticleModel
+     */
     public function __construct($db, $dataArray=null) {
         if (!is_null($dataArray)) {
             $this->setDataArray($dataArray);
@@ -19,6 +26,12 @@ class ArticleModel extends AncestorClass {
         $this->dataArray = $dataArray;
     }
 
+    /**
+     * 
+     * @return type
+     * @author Oravecz Kálmán
+     * Function for get articles to document
+     */
     public function getDocumentArticles() {
         $articlesArray = array();
         $articlesArray['table'] = 'text';
@@ -28,6 +41,10 @@ class ArticleModel extends AncestorClass {
         return $getDocumentArticlesQuery;
     }
 
+    /**
+     * @author Oravecz Kálmán
+     * Function for insert or update articles depends on it's living or not before form submit
+     */
     public function chapterAssorter() {
         $insertChapterQueryString = "INSERT INTO text(SuperiorId, Type, Title, Text, Language, Created, CreatedBy, Modified, ModifiedBy, Active) VALUES ";
         $insertChapterQueryStringValues = '';

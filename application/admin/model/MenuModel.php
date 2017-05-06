@@ -231,7 +231,12 @@ class MenuModel {
         return $updateLangHeaderQuery;
     }
     
-    public function updateLangHeaderField() {
+    public function updateMainHeaderField() {
+        $nowDate = date('Y-m-d H:i:s');
         
+    }
+
+    public function updateLangHeaderField() {
+        $nowDate = date('Y-m-d H:i:s');
     }
 }

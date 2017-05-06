@@ -150,7 +150,7 @@ class UserModel {
     /**
      * 
      * @return type
-     * @author ORavecz Kálmán
+     * @author Oravecz Kálmán
      * Function for get all user rights from table
      */
     public function getUserRights() {
