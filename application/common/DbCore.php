@@ -173,7 +173,7 @@ class DbCore extends AncestorClass {
      * @author Oravecz Kálmán
      * Function for execute update type queries
      */
-    public function updateQuery($sql) { //UPDATE típusú lekérdezések függvénye
+    public function updateQuery($sql) {
         try {
             $stmt = $this->dbLink->prepare($sql);
             $result = $stmt->execute();
@@ -187,10 +187,20 @@ class DbCore extends AncestorClass {
     
     /**
      * 
-     * @param string $message
-     * @author Oravecz Kálmán
-     * Logwriter function
+     * @param type $sql
+     * @return type
      */
+    public function otherQuery($sql) {
+        try {
+            $this->dbLink->exec($sql);
+        } catch (PDOException $e) {
+            $result = array();
+            $result['error'] = $e->getMessage();
+            $this->logWriter($e->getMessage() . ': ' . $sql);
+            return $result;
+        }
+    }
+    
     public function logWriter($message) {
         $message = "[" . date("Y-m-d H:i:s") . "]" . $message;
         file_put_contents(CORE_PATH . "logs/log" . date("Ymd") . ".txt", $message);

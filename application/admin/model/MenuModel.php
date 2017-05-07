@@ -232,11 +232,12 @@ class MenuModel {
     }
     
     public function updateMainHeaderField() {
-        $nowDate = date('Y-m-d H:i:s');
-        
+        $updateField = $this->db->updateQueryBuilder($this->dataArray);
+        return $updateField;
     }
 
     public function updateLangHeaderField() {
-        $nowDate = date('Y-m-d H:i:s');
+        $updateField = $this->db->updateQueryBuilder($this->dataArray);
+        return $updateField;
     }
 }

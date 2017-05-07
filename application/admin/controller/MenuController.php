@@ -348,11 +348,21 @@ class MenuController {
     }
 
     public function deleteMenu() {
-        $menuInfo = array();
-        $menuInfo['Active'] = 0;
-        $menuInfo['MainHeaderId'] = $this->dataArray[0]['menuObject']['menuId'];
-        $menu = new MenuModel($this->db, $menuInfo);
-        $menuDelete = $menu->updateMenu();
+        //var_dump('xxx');
+        $mainHeaderInfo = array();
+        $mainHeaderInfo['table'] = 'main_header';
+        $mainHeaderInfo['fields'] = array('Active' => 0);
+        $mainHeaderInfo['where'] = 'MainHeaderId = ' . $this->dataArray[0]['menuObject']['menuId'];
+        $menu = new MenuModel($this->db, $mainHeaderInfo);
+        $menuDelete = $menu->updateMainHeaderField();
+        if (!isset($menuDelete['error'])) {
+            $langHeaderInfo = array();
+            $langHeaderInfo['table'] = 'lang_header';
+            $langHeaderInfo['fields'] = array('Active' => 0);
+            $langHeaderInfo['where'] = 'MainHeaderId = ' . $this->dataArray[0]['menuObject']['menuId'];
+            $menu->setDataArray($langHeaderInfo);
+            $langDelete = $menu->updateLangHeaderField();            
+        }
     }
 
     public function rearrangeMenu() {
