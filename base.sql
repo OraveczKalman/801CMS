@@ -66,18 +66,6 @@ CREATE TABLE IF NOT EXISTS `gallery_picture` (
   PRIMARY KEY (`MainHeaderId`,`PictureId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
--- Dumping data for table alap.gallery_picture: ~7 rows (approximately)
-/*!40000 ALTER TABLE `gallery_picture` DISABLE KEYS */;
-INSERT INTO `gallery_picture` (`MainHeaderId`, `PictureId`, `Rank`, `Cover`, `Active`) VALUES
-	(1, 1, 0, NULL, 1),
-	(1, 2, 0, NULL, 1),
-	(1, 3, 0, NULL, 1),
-	(1, 4, 0, NULL, 1),
-	(1, 5, 0, NULL, 1),
-	(1, 6, 0, NULL, 1),
-	(1, 7, 0, NULL, 1);
-/*!40000 ALTER TABLE `gallery_picture` ENABLE KEYS */;
-
 -- Dumping structure for tábla alap.genre
 CREATE TABLE IF NOT EXISTS `genre` (
   `GenreId` bigint(20) NOT NULL AUTO_INCREMENT,
