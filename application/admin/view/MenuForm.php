@@ -132,7 +132,9 @@
             showErrors(data.error);
         }
     }
-    
+<?php
+    if (isset($menuPointData)) {
+?>
     function shareOnFacebook() {
         FB.ui({
             method: 'share',
@@ -140,6 +142,9 @@
             href: '<?php print $_SESSION['prefix'] . '://' . $_SERVER['HTTP_HOST'] . '/' . $menuPointData[0]['Link']; ?>'
         }, function(response){});
     }
+<?php
+    }
+?>
 </script>
 <div class="row-fluid">
     <div class="col-sm-12">
@@ -328,7 +333,6 @@
                 <div id="additionalWrapper" style="display:none;"></div>
                 <div>
                     <button type="button" class="btn btn-default" onclick="javascript: $('#MenuForm').submit();" name="feltoltes" id="feltoltes"><?php if (!isset($menuPointData)) { print $menuJson->labels->upload; } else if (isset($menuPointData)) { print $menuJson->labels->update; }?></button>
-                    <button type="button" class="btn btn-facebook" onclick="javascript: shareOnFacebook();" id="facebookShare" name="facebookShare"><?php print $menuJson->labels->facebookShare; ?></button>
                     <input type="hidden" name="ParentId" id="ParentId" value="<?php if (isset($menuPointData)) { print $menuPointData[0]['ParentId']; } else if (!isset($menuPointData)) { print $_POST['menuObject']['parentId']; } ?>" />
                     <input type="hidden" name="ParentNode" id="ParentNode" value="<?php if (isset($menuPointData)) { print $menuPointData[0]['MainNode']; } else if (!isset($menuPointData)) { print $_POST['menuObject']['parentNode']; } ?>" />
                     <input type="hidden" name="MoreFlag" id="MoreFlag" value="0" />
@@ -337,6 +341,7 @@
 <?php
                     if (isset($menuPointData)) {
 ?>
+                    <button type="button" class="btn btn-facebook" onclick="javascript: shareOnFacebook();" id="facebookShare" name="facebookShare"><?php print $menuJson->labels->facebookShare; ?></button>
                     <input type="hidden" name="MainHeaderId" id="MainHeaderId" value="<?php print $menuPointData[0]['MainHeaderId']; ?>" />
                     <input type="hidden" name="LangHeaderId" id="LangHeaderId" value="<?php print $menuPointData[0]['LangHeaderId']; ?>" />
                     <input type="hidden" name="RankHidden" id="RankHidden" value="<?php print $menuPointData[0]['Rank']; ?>" />  
