@@ -64,25 +64,25 @@
                     break;
                 case 6 :
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Tabellakod" class="col-sm-2 control-label">Tabellakód</label>';
+                    additionalHtml += '<label for="Tabellakod" class="col-sm-2 control-label"><?php print $menuJson->labels->tableCode; ?></label>';
                     additionalHtml += '<div class="col-sm-10">';
                     additionalHtml += '<input class="form-control" type="text" id="Tabellakod" name="Tabellakod">';
                     additionalHtml += '</div>';
                     additionalHtml += '</div>';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Csapatszam" class="col-sm-2 control-label">Csapatszám</label>';
+                    additionalHtml += '<label for="Csapatszam" class="col-sm-2 control-label"><?php print $menuJson->labels->teamCount; ?></label>';
                     additionalHtml += '<div class="col-sm-10">';
                     additionalHtml += '<input class="form-control" type="text" id="Csapatszam" name="Csapatszam">';
                     additionalHtml += '</div>';
                     additionalHtml += '</div>';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Fejszoveg" class="col-sm-2 control-label">Fejszöveg</label>';
+                    additionalHtml += '<label for="Fejszoveg" class="col-sm-2 control-label"><?php print $menuJson->labels->headText; ?></label>';
                     additionalHtml += '<div class="col-sm-10">';
                     additionalHtml += '<input class="form-control" type="text" id="Fejszoveg" name="Fejszoveg">';
                     additionalHtml += '</div>';
                     additionalHtml += '</div>';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Ideny" class="col-sm-2 control-label">Idény</label>';
+                    additionalHtml += '<label for="Ideny" class="col-sm-2 control-label"><?php print $menuJson->labels->season; ?></label>';
                     additionalHtml += '<div class="col-sm-10">';
                     additionalHtml += '<input class="form-control" type="text" id="Ideny" name="Ideny">';
                     additionalHtml += '</div>';
@@ -92,7 +92,7 @@
                     break;
                 case 7 :
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Feltoltendo" class="col-sm-2 control-label">File</label>';
+                    additionalHtml += '<label for="Feltoltendo" class="col-sm-2 control-label"><?php print $menuJson->labels->fileLabel; ?></label>';
                     additionalHtml += '<div class="col-sm-10"><input class="form-control" type="file" id="Feltoltendo" name="Feltoltendo[]"></div>';
                     additionalHtml += '</div>';
                     $('#additionalWrapper').html(additionalHtml);
@@ -150,7 +150,7 @@
     <div class="col-sm-12">
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
-                <a href="#menuContainer" role="tab" data-toggle="tab">Menüadatok</a>
+                <a href="#menuContainer" role="tab" data-toggle="tab"><?php print $menuJson->labels->headLabel; ?></a>
             </li>
 <?php
             if (isset($controllerCollection)) {
