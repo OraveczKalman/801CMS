@@ -1,8 +1,7 @@
 <?php
-include_once(CORE_PATH . 'FormController.php');
 include_once(ADMIN_MODEL_PATH . 'ContactModel.php');
 
-class ContactFormController extends FormController {
+class ContactFormController /*extends FormController*/ {
     private $dataArray;
     private $db;
 
@@ -45,6 +44,18 @@ class ContactFormController extends FormController {
         include_once(ADMIN_VIEW_PATH . 'ContactFormView.php');
     }
 
+    private function ValidateField() {
+        include_once(CORE_PATH . 'Validator.php');
+        $validateInfo = array();
+        $validateInfo[] = array('function'=>$this->dataArray[0]['function'], 'data'=>$this->dataArray[0]['data'], 'controllId'=>$this->dataArray[0]['controllId']);
+        $validator = new mainValidator($validateInfo);
+        $errorArray = $validator -> validateCore();
+        if (!empty($errorArray)) {
+            print json_encode($errorArray);
+        }
+    }
+
+    
     private function ValidateContactFormFull() {
         include_once(CORE_PATH . 'Validator.php');
         $validateInfo = array();
