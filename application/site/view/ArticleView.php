@@ -14,7 +14,7 @@ if (isset($documentData['Body'])) {
 <?php
     foreach ($documentData['Body'] as $document2) {
 ?>
-    <div class="col-sm-12" id="column<?php print $i; ?>" <?php if ($i>0) { print 'style="display:none;"'; } ?>>
+    <div class="col-sm-12 articleColumn" id="column<?php print $i; ?>" <?php if ($i>0) { print 'style="display:none;"'; } ?>>
 <?php
         print $document2['Text']; 
 ?>
@@ -30,8 +30,9 @@ if (isset($documentData['Body'])) {
 <div class="row-fluid">
     <div class="col-sm-12">
 <?php
-        for ($i=0; $i<=count($documentData['Body']); $i++) {
+        for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
 ?>
+        <button type="button" onclick="javascript: pageSwitcher(<?php print $i; ?>);" class="btn btn-dark"><?php print $i+1; ?></button>
 <?php
         }
 ?>
@@ -40,9 +41,9 @@ if (isset($documentData['Body'])) {
 <?php
     }
 }
-if ($this -> docData[0]['Commentable'] == 1 && $_SESSION['setupData']['messageWallType'] == 2) {
+if ($this -> dataArray[0]['Commentable'] == 1 && $_SESSION['setupData']['messageWallType'] == 2) {
 ?>
-    <div class="fb-comments" data-href="<?php print $_SESSION['prefix']; ?>://<?php print $_SERVER['HTTP_HOST']; ?>/<?php print $this->docData[0]['Link']; ?>" data-width="770" data-num-posts="2" data-colorscheme="dark"></div>
+    <div class="fb-comments" data-href="<?php print $_SESSION['prefix']; ?>://<?php print $_SERVER['HTTP_HOST']; ?>/<?php print $this->dataArray[0]['Link']; ?>" data-width="770" data-num-posts="2" data-colorscheme="dark"></div>
 <?php
 }
 ?>
@@ -53,10 +54,12 @@ if ($this -> docData[0]['Commentable'] == 1 && $_SESSION['setupData']['messageWa
     $likeBoxDataArray = array();
     $likeBoxDataArray[0]['event'] = 'RenderLikeBox';
     include_once(SITE_CONTROLLER_PATH . 'LikeBoxController.php');
-    $likeBox = new LikeBoxController($likeBoxDataArray, $this->db);
-    $sponsorsDataArray = array();
-    $sponsorsDataArray[0]['event'] = 'RenderSponsors';
-    include_once(SITE_CONTROLLER_PATH . 'SponsorController.php');
-    $sponsors = new SponsorController($sponsorsDataArray, $this->db);
+    $likeBox = new LikeBoxController( $this->db, $likeBoxDataArray);
 ?>
 </div>
+<script type="text/javascript">
+    function pageSwitcher(pageNumber) {
+        $(".articleColumn").css("display", "none");
+        $("#column" + pageNumber).css("display", "block");
+    }
+</script>

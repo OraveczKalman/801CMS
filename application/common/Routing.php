@@ -58,23 +58,17 @@ class Router {
         if (!is_null($this->db)) {
             $menu = new LinkModel($this->db);
             if ($cmd == '') {
-                $menuPoint = $menu->getRole(array('table' => 'main_header',
-                    'fields' => 'main_header.*, lang_header.*, role.ControllerName, cimlap_kep.ProfilePicture',
-                    'joins' => 'INNER JOIN role ON main_header.Role = role.RoleId ' .
-                        'LEFT JOIN lang_header ON lang_header.MainHeaderId = main_header.MainHeaderId ' .
-                        'LEFT JOIN (SELECT picture.ThumbName AS ProfilePicture, gallery_picture.MainHeaderId FROM picture LEFT JOIN gallery_picture ' .
-                        'ON gallery_picture.PictureId = picture.PictureId WHERE gallery_picture.Cover=1) AS cimlap_kep ' .
-                        'ON cimlap_kep.MainHeaderId = main_header.MainHeaderId ',
-                    'where' => 'main_header.MainPage = 1 AND main_header.Active = 1'));
+                $menuPointDataArray = array();
+                $menuPointDataArray["mainPage"] = 1;
+                $menuPointDataArray["active"] = 1;
+                $menu->setDataArray($menuPointDataArray);
+                $menuPoint = $menu->getRoleMain();
             } else {
-                $menuPoint = $menu->getRole(array('table' => 'main_header',
-                    'fields' => 'main_header.*, lang_header.*, role.ControllerName, cimlap_kep.ProfilePicture',
-                    'joins' => 'INNER JOIN role ON main_header.Role = role.RoleId ' .
-                        'LEFT JOIN lang_header ON lang_header.MainHeaderId = main_header.MainHeaderId ' .
-                        'LEFT JOIN (SELECT picture.ThumbName AS ProfilePicture, gallery_picture.MainHeaderId FROM picture LEFT JOIN gallery_picture ' .
-                        'ON gallery_picture.PictureId = picture.PictureId WHERE gallery_picture.Cover=1) AS cimlap_kep ' .
-                        'ON cimlap_kep.MainHeaderId = main_header.MainHeaderId ',
-                    'where' => 'lang_header.Link LIKE "' . $cmd . '" AND main_header.Active = 1'));
+                $menuPointDataArray = array();
+                $menuPointDataArray["cmd"] = $cmd;
+                $menuPointDataArray["active"] = 1;
+                $menu->setDataArray($menuPointDataArray);
+                $menuPoint = $menu->getRoleCommon();
             }
             if (!empty($menuPoint)) {
                 $menuPoint[0] = array_merge($menuPoint[0], $_POST);
@@ -120,7 +114,7 @@ class Router {
                     $controllerName = ucfirst($commandArray[1]) . 'Controller';
                 }
                 if (!isset($controllerName)) {
-                    $adminMainMenu = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/NewAdminMainMenuHu.json'));
+                    $adminMainMenu = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/'. $_SESSION['setupData']['languageSign'] . '/NewAdminMainMenu.json'));
                     include_once(ADMIN_VIEW_PATH . 'MainLayout.php');
                 } else if (isset($controllerName)) {
                     include_once(ADMIN_CONTROLLER_PATH . $controllerName . '.php');

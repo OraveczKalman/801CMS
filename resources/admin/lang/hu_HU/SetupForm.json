@@ -1,0 +1,31 @@
+{
+    "labels":{
+        "headLabel":"Oldal alapbeállításai",
+        "galleryThumbnail":"Galéria nézőkép mérete",
+        "widthLabel":"Sz",
+        "heightLabel":"M",
+        "chooseLabel":"Válassz",
+        "galleryPicture":"Galéria kép mérete",
+        "galleryHeader":"Galéria fejléc mérete",
+        "articleThumbnail":"Cikk nézőkép mérete",
+        "articlePicture":"Cikk kép mérete",
+        "articleCover":"Cikk címlapkép mérete",
+        "youtubeVideo":"Youtube video mérete",
+        "video":"Video mérete",
+        "mainMenus":"Fő menüpontok száma",
+        "siteHeader":"Oldal címsor",
+        "adminHeader":"Admin címsor",
+        "developers":"Készítők",
+        "maxImageText":"Max. képaláírás",
+        "newsPerPage":"Hírek száma egy oldalon",
+        "messageWallType":"Üzenőfal típusa",
+        "typeLabel1":"Saját",
+        "typeLabel2":"Facebook",   
+        "siteType":"Oldal típusa",
+        "siteTypeLabel1":"Normál",
+        "siteTypeLabel2":"Egy oldalas parallax",
+        "siteTypeLabel3":"Több oldalas parallax",
+        "send":"Adatok küldése",
+        "sucessLabel":"A mentés sikeres volt!"
+    }
+}

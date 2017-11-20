@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="<?php print $_SESSION['setupData']['siteAuthor']; ?>">
     <title><?php print $_SESSION['setupData']['siteTitle']; ?></title>
-    <link href="<?php print COMMON_CSS_PATH; ?>bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="<?php print ADMIN_CSS_PATH; ?>bootstrap.css" rel="stylesheet" type="text/css">
     <link href="<?php print ADMIN_CSS_PATH; ?>metisMenu.css" rel="stylesheet" type="text/css">
     <link href="<?php print ADMIN_CSS_PATH; ?>timeline.css" rel="stylesheet" type="text/css">
     <link href="<?php print ADMIN_CSS_PATH; ?>sb-admin-2.css" rel="stylesheet" type="text/css">
@@ -24,15 +24,16 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script type="text/javascript" src="<?php print COMMON_JS_PATH; ?>jquery-2.1.3.min.js"></script>
+    <!--<script type="text/javascript" src="<?php //print COMMON_JS_PATH; ?>jquery-2.1.3.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script type="text/javascript" src="<?php print COMMON_JS_PATH; ?>bootstrap.min.js"></script>
+    <script type="text/javascript" src="<?php print ADMIN_JS_PATH; ?>bootstrap.min.js"></script>
     <script type="text/javascript" src="<?php print COMMON_JS_PATH; ?>jquery.form.min.js"></script>
     <script type="text/javascript" src="<?php print ADMIN_JS_PATH; ?>metisMenu.min.js"></script>
     <script type="text/javascript" src="<?php print ADMIN_JS_PATH; ?>sb-admin-2.js"></script>
     <script type="text/javascript" src="<?php print ADMIN_JS_PATH; ?>jquery.Jcrop.min.js"></script>
     <script type="text/javascript" src="<?php print ADMIN_JS_PATH; ?>CoreScripts.js"></script>
-
+    
     <script type="text/javascript" src="//cdn.ckeditor.com/4.4.7/full/ckeditor.js"></script>
     <script type="text/javascript" src="//cdn-source.ckeditor.com/4.4.7/standard/adapters/jquery.js"></script>
 </head>
@@ -58,6 +59,7 @@
         </div>
 
         <ul class="nav navbar-top-links navbar-right">
+            <li><a href="javascript: void(0);" onclick="javascript: loadPage('./admin/LanguageForm', 'RenderLanguageForm');"><?php print $adminMainMenu->labels->languageForm; ?></a></li>
             <li><a href="javascript: void(0);" onclick="javascript: loadPage('./admin/ContactForm', 'RenderContactForm');"><?php print $adminMainMenu->labels->contactForm; ?></a></li>
             <li><a href="javascript: void(0);" onclick="javascript: loadPage('./admin/Setup', 'RenderSetupForm');"><?php print $adminMainMenu->labels->siteSetup; ?></a></li>
             <li><a href="javascript: void(0);" onclick="javascript: loadPage('./admin/User', 'newUserForm');"><?php print $adminMainMenu->labels->newUser; ?></a></li>

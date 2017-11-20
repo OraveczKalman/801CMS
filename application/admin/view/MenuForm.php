@@ -221,7 +221,13 @@
                     <label for="Nyelv" class="col-sm-2 control-label"><?php print $menuJson->labels->language; ?></label>
                     <div class="col-sm-10">
                         <select class="form-control" id="Nyelv" name="Nyelv">
-                            <option value="hu">Magyar</option>
+<?php
+                        foreach ($languages as $languages2) {
+?>
+                            <option value="<?php print $languages2['LanguageSign']; ?>"><?php print $languages2['Description']; ?></option>
+<?php
+                        }
+?>
                         </select>
                     </div>
                 </div>

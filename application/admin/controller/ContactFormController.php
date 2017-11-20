@@ -39,6 +39,7 @@ class ContactFormController /*extends FormController*/ {
     }
 
     private function RenderContactForm() {
+        $contactLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/ContactForm.json'));
         $contactObj = new ContactModel($this->db);
         $contactData = $contactObj -> GetContactInformation();
         include_once(ADMIN_VIEW_PATH . 'ContactFormView.php');

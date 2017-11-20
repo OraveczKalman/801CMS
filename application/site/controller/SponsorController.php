@@ -1,14 +1,14 @@
 <?php
 class SponsorController {
-    private $sponsorData;
+    private $dataArray;
     private $db;
 
-    public function __construct($db, $sponsorData=null) {
-        if (!is_null($sponsorData)) {
-            $this->sponsorData = $sponsorData;
+    public function __construct($db, $dataArray=null) {
+        if (!is_null($dataArray)) {
+            $this->dataArray = $dataArray;
         }
         $this->db = $db;
-        call_user_func(array($this, $this->sponsorData[0]['event']));
+        call_user_func(array($this, $this->dataArray[0]['event']));
     }
 
     private function RenderSponsors() {

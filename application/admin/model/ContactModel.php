@@ -24,12 +24,11 @@ class ContactModel {
      * Function for get present contact information on site
      */
     public function GetContactInformation() {
-        $getInformationQueryString = 'SELECT * FROM kontakt_form';
-        $getInformationQuery = $this->db->SelectQuery($getInformationQueryString);
-        if (!isset($getInformationQuery['error'])) {
-            return $getInformationQuery;
-        } else if (!isset($getInformationQuery['error'])) {
-            return false;
+        try {
+            $getInformationQuery = $this->db->dbLink->prepare("SELECT * FROM kontakt_form");
+            $getInformationQuery->execute();
+        } catch (PDOException $e) {
+            $this->db->logWriter($e->errorInfo);
         }
     }
 
@@ -40,27 +39,37 @@ class ContactModel {
      * Function for insert Contact information
      */
     public function InsertContactInformation() {
-        $insertContactQueryString = 'INSERT INTO kontakt_form SET ' .
-            'Name = "' . $this->dataArray['Name'] . '", ' .
-            'Address = "' . $this->dataArray['Address'] . '" , ' .
-            'Phone = "' . $this->dataArray['Phone'] . '", ' .
-            'Fax = ' . $this->dataArray['Fax'] . ', ' .
-            'Mobile = "' . $this->dataArray['Mobile'] . '", '.
-            'TargetMail = "' . $this->dataArray['TargetMail'] . '", ' .
-            'SmtpPassword = "' . $this->dataArray['SmtpPassword'] . '" , ' .
-            'SmtpServer = "' . $this->dataArray['SmtpServer'] . '", ' .
-            'Port = ' . $this->dataArray['Port'] . ', ' .
-            'UserName = "' . $this->dataArray['UserName'] . '", '.
-            'Created = NOW(), ' .
-            'Created_By = "' . $_SESSION['admin']['userData']['UserId'] . '", ' .
-            'Modified = NOW(), ' .
-            'Modified_By = "' . $_SESSION['admin']['userData']['UserId'] . '", ' .
-            'Active = 1';
-        $insertContactQuery = $this->db->InsertQuery($insertContactQueryString);
-        if (isset($insertContactQuery['error'])) {
-            return false;
-        } else if (!isset($insertContactQuery['error'])) {
-            return $insertContactQuery;
+        try {
+            $insertContactQuery = $this->db->dbLink->prepare("INSERT INTO kontakt_form SET
+                Name = :name,
+                Address = :address,
+                Phone = :phone,
+                Fax = :fax,
+                Mobile = :mobile,
+                TargetMail = :targetMail,
+                SmtpPassword = :smtpPassword,
+                SmtpServer = :smtpServer,
+                Port = :port,
+                UserName = :userName,
+                Created = NOW(),
+                Created_By = :userId,
+                Modified = NOW(),
+                Modified_By = :userId,
+                Active = 1");
+            $insertContactQuery->bindParam(":name", $this->dataArray['Name'], PDO::PARAM_STR);
+            $insertContactQuery->bindParam(":address", $this->dataArray['Address'], PDO::PARAM_STR);
+            $insertContactQuery->bindParam(":phone", $this->dataArray['Phone'], PDO::PARAM_STR);
+            $insertContactQuery->bindParam(":fax", $this->dataArray['Fax'], PDO::PARAM_STR);
+            $insertContactQuery->bindParam(":mobile", $this->dataArray['Mobile'], PDO::PARAM_STR);
+            $insertContactQuery->bindParam(":targetMail", $this->dataArray['TargetMail'], PDO::PARAM_STR);
+            $insertContactQuery->bindParam(":smtpPassword", $this->dataArray['SmtpPassword'], PDO::PARAM_STR);
+            $insertContactQuery->bindParam(":smtpServer", $this->dataArray['SmtpServer'], PDO::PARAM_STR);
+            $insertContactQuery->bindParam(":port", $this->dataArray['Port'], PDO::PARAM_INT);
+            $insertContactQuery->bindParam(":userName", $this->dataArray['UserName'], PDO::PARAM_STR);
+            $insertContactQuery->bindParam(":userId", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
+            $insertContactQuery->execute();
+        } catch(PDOException $e) {
+            $this->db->logWriter($e->errorInfo);
         }
     }
 
@@ -71,26 +80,37 @@ class ContactModel {
      * Function for update contact information on site
      */
     public function UpdateContactInformation() {
-        $updateContactQueryString = 'UPDATE kontakt_form SET ' .
-            'Name = "' . $this->dataArray['Name'] . '", ' .
-            'Address = "' . $this->dataArray['Address'] . '" , ' .
-            'Phone = "' . $this->dataArray['Phone'] . '", ' .
-            'Fax = ' . $this->dataArray['Fax'] . ', ' .
-            'Mobile = "' . $this->dataArray['Mobile'] . '", '.
-            'TargetMail = "' . $this->dataArray['TargetMail'] . '", ' .
-            'SmtpPassword = "' . $this->dataArray['SmtpPassword'] . '" , ' .
-            'SmtpServer = "' . $this->dataArray['SmtpServer'] . '", ' .
-            'Port = ' . $this->dataArray['Port'] . ', ' .
-            'UserName = "' . $this->dataArray['UserName'] . '", ' .
-            'Modified = NOW(), ' .
-            'Modified_By = "' . $_SESSION['admin']['userData']['UserId'] . '", ' .
-            'Active = 1 ' .
-            'WHERE ContactId = ' . $this->dataArray['cid_hidden'];
-        $updateContactQuery = $this->db->UpdateQuery($updateContactQueryString);
-        if (isset($updateContactQuery['error'])) {
-            return false;
-        } else if (!isset($updateContactQuery['error'])) {
-            return $updateContactQuery;
+        try {
+            $updateContactQuery = $this->db->dbLink->prepare("UPDATE kontakt_form SET
+                Name = :name,
+                Address = :address,
+                Phone = :phone,
+                Fax = :fax,
+                Mobile = :mobile,
+                TargetMail = :targetMail,
+                SmtpPassword = :smtpPassword,
+                SmtpServer = :smtpServer,
+                Port = :port,
+                UserName = :userName,
+                Modified = NOW(),
+                Modified_By = :userId,
+                Active = 1 
+                WHERE ContactId = :contactId");
+            $updateContactQuery->bindParam(":name", $this->dataArray['Name'], PDO::PARAM_STR);
+            $updateContactQuery->bindParam(":address", $this->dataArray['Address'], PDO::PARAM_STR);
+            $updateContactQuery->bindParam(":phone", $this->dataArray['Phone'], PDO::PARAM_STR);
+            $updateContactQuery->bindParam(":fax", $this->dataArray['Fax'], PDO::PARAM_STR);
+            $updateContactQuery->bindParam(":mobile", $this->dataArray['Mobile'], PDO::PARAM_STR);
+            $updateContactQuery->bindParam(":targetMail", $this->dataArray['TargetMail'], PDO::PARAM_STR);
+            $updateContactQuery->bindParam(":smtpPassword", $this->dataArray['SmtpPassword'], PDO::PARAM_STR);
+            $updateContactQuery->bindParam(":smtpServer", $this->dataArray['SmtpServer'], PDO::PARAM_STR);
+            $updateContactQuery->bindParam(":port", $this->dataArray['Port'], PDO::PARAM_INT);
+            $updateContactQuery->bindParam(":userName", $this->dataArray['UserName'], PDO::PARAM_STR);
+            $updateContactQuery->bindParam(":userId", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
+            $updateContactQuery->bindParam(":contactId", $this->dataArray['cid_hidden'], PDO::PARAM_INT);
+            $updateContactQuery->execute();
+        } catch (PDOException $e) {
+            $this->db->logWriter($e->errorInfo);
         }
     }
 }

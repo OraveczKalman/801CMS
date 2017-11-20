@@ -1,0 +1,17 @@
+{
+    "labels":{
+        "headLabel":"Kontakt form beállításai",
+        "name":"Név",
+        "email":"E-mail",
+        "address":"Cím",
+        "phone":"Telefonszám",
+        "fax":"Fax",
+        "cellPhone":"Mobiltelefon",
+        "smtpServer":"Smtp Server",
+        "smtpPassword":"Smtp Jelszó",
+        "smtpPort":"Smtp Port",
+        "smtpUsername":"Smtp felhasználónév",
+        "send":"Adatok küldése",
+        "sucessLabel":"A mentés sikeres volt!"
+    }
+}

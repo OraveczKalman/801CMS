@@ -17,9 +17,7 @@
 </script>
 <div class="row-fluid">
     <div class="col-sm-12">
-        <h1>
-            Felhasználók
-        </h1>
+        <h1>Felhasználók</h1>
         <table class="table table-striped">
             <thead>
             <tr>

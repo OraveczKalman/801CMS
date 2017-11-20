@@ -1,12 +1,14 @@
 <?php
 class LikeBoxController {
-    private $likeBoxData;
+    private $dataArray;
     private $db;
 
-    public function __construct($likeBoxData, $db) {
-        $this->likeBoxData = $likeBoxData;
+    public function __construct($db, $dataArray = null) {
+        if ($dataArray != null) {
+            $this->dataArray = $dataArray;
+        }
         $this->db = $db;
-        call_user_func(array($this, $this->likeBoxData[0]['event']));
+        call_user_func(array($this, $this->dataArray[0]['event']));
     }
 
     private function RenderLikeBox() {

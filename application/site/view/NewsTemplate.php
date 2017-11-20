@@ -1,10 +1,9 @@
 <?php
-if (isset($this->headerData[0]['fullReload'])) {
-?>
-<div class="col-md-8" id="szoveges">
-<?php
-}
+
 foreach ($newsData as $newsData2) {
+?>
+<div class="post-preview">
+<?php
     //var_dump($newsData2);
     $mediaData = $this->getNewsPicture($newsData2['MainHeaderId']);
     //var_dump($mediaData);
@@ -12,21 +11,28 @@ foreach ($newsData as $newsData2) {
         $newsData2['Text'] = $this->mediaChanger($mediaData, $newsData2['Text']);
     }
 ?>
-    <h2>
-        <a href="<?php print $newsData2['Link']; ?>"><?php print $newsData2['Title']; ?></a>
-    </h2>
-    <hr>
-    <!--<a href="<?php //print $newsData2['Link']; ?>">
-        <img class="img-responsive img-hover" src="http://placehold.it/900x300" alt="">
+    <a href="<?php print $newsData2['Link']; ?>">
+        <h2 class="post-title">
+            <?php print $newsData2['Title']; ?>
+        </h2>
+        <h3 class="post-subtitle">
+            <?php print $newsData2['Text']; ?>
+        </h3>
     </a>
-    <hr>-->
+    <p class="post-meta">
+        <?php print $newsData2['Created']; ?>
+    </p>
+    <hr>
 <?php
-    print $newsData2['Text'];
+    
     if ($newsData2['MoreFlag'] == 1) {
 ?>
     <a class="btn btn-primary" href="<?php print $newsData2['Link']; ?>">Bővebben <i class="fa fa-angle-right"></i></a>
 <?php
     }
+?>
+</div>
+<?php
 }
 if ($_SESSION['actNewsCount'] > $_SESSION['setupData']['newsCount']) {
 ?>

@@ -2,7 +2,7 @@
 include_once('AncestorClass.php');
 class DbCore extends AncestorClass {
     private $databaseConfig;
-    private $dbLink;
+    public $dbLink;
 
     /**
      * 
@@ -64,6 +64,7 @@ class DbCore extends AncestorClass {
         if (!empty($dataArray['limit'])) {
             $selectQueryString .= ' LIMIT ' . $dataArray['limit']['page'] . ', ' . $dataArray['limit']['limit'];
         }
+        //print $selectQueryString;
         $selectQuery = $this->selectQuery($selectQueryString);
         return $selectQuery;
     }
@@ -202,6 +203,7 @@ class DbCore extends AncestorClass {
     }
     
     public function logWriter($message) {
+        var_dump($message);
         $message = "[" . date("Y-m-d H:i:s") . "]" . $message;
         file_put_contents(CORE_PATH . "logs/log" . date("Ymd") . ".txt", $message);
     }

@@ -3,7 +3,7 @@ class MenuModel {
     private $dataArray;
     private $db;
 
-    public function __construct($db, $dataArray=null) {
+    public function __construct($db, $dataArray=null) { 
         if (!is_null($dataArray)) {
             $this->setDataArray($dataArray);
         }
@@ -122,29 +122,40 @@ class MenuModel {
     }
     
     private function insertLangHeader($dataArray) {
-        $nowDate = date('Y-m-d H:i:s');
-        $insertLangHeaderQueryString = "INSERT INTO lang_header SET
-            MainHeaderId = " . $dataArray['MainHeaderId'] . ",
-            ParentId = " . $dataArray['ParentId'] . ",
-            Rank = " . $dataArray['Rank'] . ",
-            Caption = '" . $dataArray['Caption'] . "',
-            Title = '" . $dataArray['Title'] . "',
-            Heading = '" . $dataArray['Heading'] . "',
-            Keywords = '" . $dataArray['Keywords'] . "',
-            Link = '" . $dataArray['Link'] . "',
-            Language = '" . $dataArray['Language'] . "',
-            Counter = " . $dataArray['Counter'] . ",
-            Created = '" . $nowDate . "',
-            CreatedBy = " . $_SESSION['admin']['userData']['UserId'] . ",
-            Modified = '" . $nowDate . "',
-            ModifiedBy = " . $_SESSION['admin']['userData']['UserId'] . ",
-            Active = 1";
-        $insertLangHeaderQuery = $this->db->insertQuery($insertLangHeaderQueryString);
-        if (isset($insertLangHeaderQuery['error'])) {
-            
-            $insertLangHeaderQuery['error'] = $insertLangHeaderQuery['error'] . ': ' . $insertLangHeaderQueryString;
+        try {
+            $insertLangHeaderQuery = $this->db->dbLink->prepare("INSERT INTO lang_header SET
+                MainHeaderId = :mainHeaderId,
+                ParentId = :parentId,
+                Rank = :rank,
+                Caption = :caption,
+                Title = :title,
+                Heading = :heading,
+                Keywords = :keywords,
+                Link = :link,
+                Language = :language,
+                Counter = :counter,
+                Created = NOW(),
+                CreatedBy = :createdBy,
+                Modified = NOW(),
+                ModifiedBy = :modifiedBy,
+                Active = 1");
+            //print $insertLangHeaderQuery->queryString;
+            $insertLangHeaderQuery->bindParam(":mainHeaderId", $dataArray['MainHeaderId'], PDO::PARAM_INT);
+            $insertLangHeaderQuery->bindParam(":parentId", $dataArray['ParentId'], PDO::PARAM_INT);
+            $insertLangHeaderQuery->bindParam(":rank", $dataArray['Rank'], PDO::PARAM_INT);
+            $insertLangHeaderQuery->bindParam(":caption", $dataArray['Caption'], PDO::PARAM_STR);
+            $insertLangHeaderQuery->bindParam(":title", $dataArray['Title'], PDO::PARAM_STR);
+            $insertLangHeaderQuery->bindParam(":heading", $dataArray['Heading'], PDO::PARAM_STR);
+            $insertLangHeaderQuery->bindParam(":keywords", $dataArray['Keywords'], PDO::PARAM_STR);
+            $insertLangHeaderQuery->bindParam(":link", $dataArray['Link'], PDO::PARAM_STR);
+            $insertLangHeaderQuery->bindParam(":language", $dataArray['Language'], PDO::PARAM_STR);
+            $insertLangHeaderQuery->bindParam(":counter", $dataArray['Counter'], PDO::PARAM_INT);
+            $insertLangHeaderQuery->bindParam(":createdBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
+            $insertLangHeaderQuery->bindParam(":modifiedBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
+            $insertLangHeaderQuery->execute();
+        } catch (PDOException $ex) {
+            $this->db->logWriter($ex->errorInfo);
         }
-        return $insertLangHeaderQuery;
     }
 
     public function updateMenu() {

@@ -15,6 +15,7 @@ class SetupController {
     }
 
     private function RenderSetupForm() {
+        $setupLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/SetupForm.json'));
         $setupDataArray = array();
         $setupDataArray['setupId'] = 1;
         $setup = new SetupFormModel($this->db, $setupDataArray);

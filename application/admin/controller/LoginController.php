@@ -34,6 +34,7 @@ class LoginController {
                 print json_encode($errorArray);
             } else {
                 $_SESSION['admin']['userData'] = $enteredUserData[0];
+                $_SESSION['admin']['userData']['lang'] = 'Hu';
             }
         } else if (!empty($errorArray)) {
             print json_encode($errorArray);

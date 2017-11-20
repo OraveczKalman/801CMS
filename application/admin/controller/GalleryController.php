@@ -80,12 +80,12 @@ class GalleryController {
     }
     
     private function editGalleryForm() {
-        $galleryLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/NewGalleryForm' . $_SESSION['admin']['userData']['lang'] . '.json'));
+        $galleryLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewGalleryForm.json'));
         include_once(ADMIN_VIEW_PATH . 'GalleryForm.php');
     }
 
     private function getGalleryList() {
-        $pictureListLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/NewPictureList' . $_SESSION['admin']['userData']['lang'] . '.json'));
+        $pictureListLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewPictureList.json'));
         $gallery = new GalleryModel($this->db, $this->dataArray);
         $galleryObjects = $gallery -> getGalleryData();
         include_once(ADMIN_VIEW_PATH . 'PictureList.php');

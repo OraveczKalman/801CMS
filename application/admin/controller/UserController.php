@@ -19,7 +19,7 @@ class UserController {
         $userDataArray['where'] = " WHERE userRightId > 1";
         $user = new UserModel($this->db, $userDataArray);
         $rightList = $user->getUserRights();
-        $labelObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/NewUserFormHu.json'));
+        $labelObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewUserForm.json'));
         include_once(ADMIN_VIEW_PATH . 'UserFormView.php');
     }
     
@@ -28,12 +28,12 @@ class UserController {
         $userDataArray['where'] = " WHERE userRightId = 1";
         $user = new UserModel($this->db, $userDataArray);
         $rightList = $user->getUserRights();
-        $labelObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/NewUserFormHu.json'));
+        $labelObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewUserForm.json'));
         include_once(ADMIN_VIEW_PATH . 'FirstUserFormView.php');    
     }
 
     private function EditUserForm() {
-        $labelObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/NewUserFormHu.json'));
+        $labelObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewUserForm.json'));
         $this->dataArray[0]['where'] = 'UserId = ' . $_POST['userId'];
         $user = new UserModel($this->db, $this->dataArray);
         $userData = $user->getUser();

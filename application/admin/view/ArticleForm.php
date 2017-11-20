@@ -38,10 +38,12 @@
     }
 
     function insertAtCursor(insert) {
-	insert = insert.trim();
-        CKEDITOR.instances[actChapter].insertText(insert);
-        if (parseInt($('#' + actStateHidden).val(), 10) === 0) {
-            $('#' + actStateHidden).val(2);
+        if (actChapter !== "cikk0") {
+            insert = insert.trim();
+            CKEDITOR.instances[actChapter].insertText(insert);
+            if (parseInt($('#' + actStateHidden).val(), 10) === 0) {
+                $('#' + actStateHidden).val(2);
+            }
         }
     }
     

@@ -31,28 +31,28 @@ class MenuController {
     private function ValidateMenuFormFull() {
         include_once(CORE_PATH . 'Validator.php');
         $validateInfo = array();
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Felirat'], 'controllId'=>'Felirat');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Cim'], 'controllId'=>'Cim');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Cimsor'], 'controllId'=>'Cimsor');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Kulcsszavak'], 'controllId'=>'Kulcsszavak');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Link'], 'controllId'=>'Link');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Target'], 'controllId'=>'Target');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Nyelv'], 'controllId'=>'Nyelv');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Module'], 'controllId'=>'Module');       
-        $validateInfo[] = array('function'=>'validateInt', 'data'=>$_POST['Szerep'], 'controllId'=>'Szerep');
-        $validateInfo[] = array('function'=>'validateInt', 'data'=>$_POST['ParentId'], 'controllId'=>'ParentId');
-        $validateInfo[] = array('function'=>'validateInt', 'data'=>$_POST['MoreFlag'], 'controllId'=>'MoreFlag');
-        if (isset($_POST['MainPage'])) {
-            $validateInfo[] = array('function'=>'validateInt', 'data'=>$_POST['MainPage'], 'controllId'=>'MainPage');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Felirat'], 'controllId'=>'Felirat');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Cim'], 'controllId'=>'Cim');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Cimsor'], 'controllId'=>'Cimsor');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Kulcsszavak'], 'controllId'=>'Kulcsszavak');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Link'], 'controllId'=>'Link');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Target'], 'controllId'=>'Target');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Nyelv'], 'controllId'=>'Nyelv');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Module'], 'controllId'=>'Module');       
+        $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['Szerep'], 'controllId'=>'Szerep');
+        $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['ParentId'], 'controllId'=>'ParentId');
+        $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['MoreFlag'], 'controllId'=>'MoreFlag');
+        if (isset($this->dataArray[0]['MainPage'])) {
+            $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['MainPage'], 'controllId'=>'MainPage');
         }
-        if (isset($_POST['Kommentezheto'])) {
-            $validateInfo[] = array('function'=>'validateInt', 'data'=>$_POST['Kommentezheto'], 'controllId'=>'Kommentezheto');
+        if (isset($this->dataArray[0]['Kommentezheto'])) {
+            $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['Kommentezheto'], 'controllId'=>'Kommentezheto');
         }
-        if (isset($_POST['User_In'])) {
-            $validateInfo[] = array('function'=>'validateInt', 'data'=>$_POST['User_In'], 'controllId'=>'User_In');
+        if (isset($this->dataArray[0]['User_In'])) {
+            $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['User_In'], 'controllId'=>'User_In');
         }
-        if (isset($_POST['Slider'])) {
-            $validateInfo[] = array('function'=>'validateInt', 'data'=>$_POST['Slider'], 'controllId'=>'Slider');
+        if (isset($this->dataArray[0]['Slider'])) {
+            $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['Slider'], 'controllId'=>'Slider');
         }
         $validator = new mainValidator($validateInfo);
         $errorArray = $validator -> validateCore();
@@ -66,7 +66,7 @@ class MenuController {
     private function ValidateField() {
         include_once(CORE_PATH . 'Validator.php');
         $validateInfo = array();
-        $validateInfo[] = array('function'=>$_POST['function'], 'data'=>$_POST['data'], 'controllId'=>$_POST['controllId']);
+        $validateInfo[] = array('function'=>$this->dataArray[0]['function'], 'data'=>$this->dataArray[0]['data'], 'controllId'=>$this->dataArray[0]['controllId']);
         $validator = new mainValidator($validateInfo);
         $errorArray = $validator -> validateCore();
         if (!empty($errorArray)) {
@@ -89,8 +89,9 @@ class MenuController {
     private function newMenuForm() {
         $moduleDataArray = array();
         $moduleDataArray['table'] = 'main_header';
-        $moduleDataArray['fields'] = 'main_header.Title, main_header.Link';
-        $moduleDataArray['where'] = 'main_header.MainHeaderId NOT IN (SELECT MainHeaderId FROM Rank)';
+        $moduleDataArray['fields'] = 'main_header.MainHeaderId, lang_header.Title, lang_header.Link';
+        $moduleDataArray['joins'] = 'LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId';
+        $moduleDataArray['where'] = 'main_header.MainHeaderId NOT IN (SELECT MainHeaderId FROM lang_header)';
         $menu = new MenuModel( $this->db, $moduleDataArray);
         $moduleList = $menu->getMenu();     
         if (!isset($this->dataArray[0]['ParentRole'])) {
@@ -123,52 +124,55 @@ class MenuController {
         $errors = $this->ValidateMenuFormFull();
         if ($errors == '') {
             $menuDataArray = array();
-            $menuDataArray['Caption'] = $_POST['Felirat'];
-            $menuDataArray['Title'] = $_POST['Cim'];
-            $menuDataArray['Heading'] = $_POST['Cimsor'];
-            $menuDataArray['Keywords'] = $_POST['Kulcsszavak'];
-            $menuDataArray['Link'] = $_POST['Link'];
-            $menuDataArray['Target'] = $_POST['Target'];
-            if (isset($_POST['MainPage'])) {
-                $menuDataArray['MainPage'] = $_POST['MainPage'];
-            } else if (!isset($_POST['MainPage'])) { 
+            $menuDataArray['Caption'] = $this->dataArray[0]['Felirat'];
+            $menuDataArray['Title'] = $this->dataArray[0]['Cim'];
+            $menuDataArray['Heading'] = $this->dataArray[0]['Cimsor'];
+            $menuDataArray['Keywords'] = $this->dataArray[0]['Kulcsszavak'];
+            $menuDataArray['Link'] = $this->dataArray[0]['Link'];
+            $menuDataArray['Target'] = $this->dataArray[0]['Target'];
+            if (isset($this->dataArray[0]['MainPage'])) {
+                $menuDataArray['MainPage'] = $this->dataArray[0]['MainPage'];
+            } else if (!isset($this->dataArray[0]['MainPage'])) { 
                 $menuDataArray['MainPage'] = 0;
             }
-            $menuDataArray['Language'] = $_POST['Nyelv'];
-            if (isset($_POST['Kommentezheto'])) {        
-                $menuDataArray['Commentable'] = $_POST['Kommentezheto'];
-            } else if (!isset($_POST['Kommentezheto'])) {
+            $menuDataArray['Language'] = $this->dataArray[0]['Nyelv'];
+            if (isset($this->dataArray[0]['Kommentezheto'])) {        
+                $menuDataArray['Commentable'] = $this->dataArray[0]['Kommentezheto'];
+            } else if (!isset($this->dataArray[0]['Kommentezheto'])) {
                 $menuDataArray['Commentable'] = 0;
             }
-            if (isset($_POST['User_In'])) {
-                $menuDataArray['UserIn'] = $_POST['User_In'];
-            } else if (!isset($_POST['User_In'])) {
+            if (isset($this->dataArray[0]['User_In'])) {
+                $menuDataArray['UserIn'] = $this->dataArray[0]['User_In'];
+            } else if (!isset($this->dataArray[0]['User_In'])) {
                 $menuDataArray['UserIn'] = 0;
             }
-            if (isset($_POST['Szerep'])) {
-                $menuDataArray['Role'] = $_POST['Szerep'];
-            }
             $menuDataArray['AdditionalField'] = 'NULL';
-            if ($_POST['Szerep'] == 4) {
-                $menuDataArray['AdditionalField'] = $_POST['GalleryType'];
+            if (isset($this->dataArray[0]['Szerep'])) {
+                $menuDataArray['Role'] = $this->dataArray[0]['Szerep'];
+                switch ($menuDataArray['Role']) {
+                    case 4:
+                        $menuDataArray['AdditionalField'] = $this->dataArray[0]['GalleryType'];
+                        break;
+                    case 6:
+                        $tableJson = '{';
+                        $tableJson .= '"Tabellakod":"' . $this->dataArray[0]['Tabellakod'] . '",';
+                        $tableJson .= '"Csapatszam":"' . $this->dataArray[0]['Csapatszam'] . '",';
+                        $tableJson .= '"Fejszoveg":"' . $this->dataArray[0]['Fejszoveg'] . '",';
+                        $tableJson .= '"Ideny":"' . $this->dataArray[0]['Ideny'] . '"';
+                        $tableJson .= '}';
+                        $menuDataArray['AdditionalField'] = $tableJson;                        
+                        break;
+                }
             }
-            if ($_POST['Szerep'] == 6) {
-                $tableJson = '{';
-                $tableJson .= '"Tabellakod":"' . $_POST['Tabellakod'] . '",';
-                $tableJson .= '"Csapatszam":"' . $_POST['Csapatszam'] . '",';
-                $tableJson .= '"Fejszoveg":"' . $_POST['Fejszoveg'] . '",';
-                $tableJson .= '"Ideny":"' . $_POST['Ideny'] . '"';
-                $tableJson .= '}';
-                $menuDataArray['AdditionalField'] = $tableJson;
-            }
-            $menuDataArray['ParentId'] = $_POST['ParentId'];
-            $menuDataArray['MainNode'] = $_POST['ParentNode'];
-            $menuDataArray['MoreFlag'] = $_POST['MoreFlag'];
-            if ($_POST['Module'] != '') {
-                $menuDataArray['Module'] = $_POST['Module'];
-            } else if ($_POST['Module'] == '') {
+            $menuDataArray['ParentId'] = $this->dataArray[0]['ParentId'];
+            $menuDataArray['MainNode'] = $this->dataArray[0]['ParentNode'];
+            $menuDataArray['MoreFlag'] = $this->dataArray[0]['MoreFlag'];
+            if ($this->dataArray[0]['Module'] != '') {
+                $menuDataArray['Module'] = $this->dataArray[0]['Module'];
+            } else if ($this->dataArray[0]['Module'] == '') {
                 $menuDataArray['Module'] = null;
-            }
+            }          
+
             $menuDataArray['Counter'] = 0;
             $menuDataArray['Popup'] = 0;
             $menuDataArray['Created'] = date('Y-m-d H:i:s');
@@ -201,7 +205,7 @@ class MenuController {
                 $retArray['good']['parentNode'] = $menuDataArray['MainNode'];
                 $retArray['good']['role'] = $menuDataArray['Role'];
                 print json_encode($retArray);
-            }
+            }     
         } else {
             print $errors;
         }
@@ -212,10 +216,11 @@ class MenuController {
         $menuDataArray['table'] = 'main_header';
         $menuDataArray['fields'] = '*';
         $menuDataArray['joins'] = 'LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId';
-        $menuDataArray['where'] = 'main_header.MainHeaderId = ' . $_REQUEST['menuObject']['menuId'];
+        $menuDataArray['where'] = 'main_header.MainHeaderId = ' . $this->dataArray[0]['menuObject']['menuId'];
         $moduleDataArray = array();
         $moduleDataArray['table'] = 'main_header';
-        $moduleDataArray['fields'] = 'main_header.Title, main_header.Link';
+        $moduleDataArray['fields'] = 'lang_header.Title, lang_header.Link';
+        $moduleDataArray['joins'] = 'LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId';
         $moduleDataArray['where'] = 'main_header.MainHeaderId NOT IN (SELECT MainHeaderId FROM lang_header)';
         $menu = new MenuModel($this->db, $menuDataArray);      
         $menuPointData = $menu->getMenu();
@@ -254,66 +259,68 @@ class MenuController {
         $errors = $this->ValidateMenuFormFull();      
         if ($errors == '') {
             $menuDataArray = array();
-            $menuDataArray['Caption'] = $_POST['Felirat'];
-            $menuDataArray['Title'] = $_POST['Cim'];
-            $menuDataArray['Heading'] = $_POST['Cimsor'];
-            $menuDataArray['Keywords'] = $_POST['Kulcsszavak'];
-            $menuDataArray['Link'] = $_POST['Link'];
-            $menuDataArray['Target'] = $_POST['Target'];
-            if (isset($_POST['MainPage'])) {
-                $menuDataArray['MainPage'] = $_POST['MainPage'];
-            } else if (!isset($_POST['MainPage'])) { 
+            $menuDataArray['Caption'] = $this->dataArray[0]['Felirat'];
+            $menuDataArray['Title'] = $this->dataArray[0]['Cim'];
+            $menuDataArray['Heading'] = $this->dataArray[0]['Cimsor'];
+            $menuDataArray['Keywords'] = $this->dataArray[0]['Kulcsszavak'];
+            $menuDataArray['Link'] = $this->dataArray[0]['Link'];
+            $menuDataArray['Target'] = $this->dataArray[0]['Target'];
+            if (isset($this->dataArray[0]['MainPage'])) {
+                $menuDataArray['MainPage'] = $this->dataArray[0]['MainPage'];
+            } else if (!isset($this->dataArray[0]['MainPage'])) { 
                 $menuDataArray['MainPage'] = 0;
             }
-            $menuDataArray['Language'] = $_POST['Nyelv'];
-            if (isset($_POST['Kommentezheto'])) {        
-                $menuDataArray['Commentable'] = $_POST['Kommentezheto'];
-            } else if (!isset($_POST['Kommentezheto'])) {
+            $menuDataArray['Language'] = $this->dataArray[0]['Nyelv'];
+            if (isset($this->dataArray[0]['Kommentezheto'])) {        
+                $menuDataArray['Commentable'] = $this->dataArray[0]['Kommentezheto'];
+            } else if (!isset($this->dataArray[0]['Kommentezheto'])) {
                 $menuDataArray['Commentable'] = 0;
             }
-            if (isset($_POST['User_In'])) {
-                $menuDataArray['UserIn'] = $_POST['User_In'];
-            } else if (!isset($_POST['User_In'])) {
+            if (isset($this->dataArray[0]['User_In'])) {
+                $menuDataArray['UserIn'] = $this->dataArray[0]['User_In'];
+            } else if (!isset($this->dataArray[0]['User_In'])) {
                 $menuDataArray['UserIn'] = 0;
             }
-            if (isset($_POST['Szerep'])) {
-                $menuDataArray['Role'] = $_POST['Szerep'];
-            }
             $menuDataArray['AdditionalField'] = 'NULL';
-            if ($_POST['Szerep'] == 4) {
-                $menuDataArray['AdditionalField'] = $_POST['GalleryType'];
-            }           
-            if ($_POST['Szerep'] == 6) {
-                $tableJson = '{';
-                $tableJson .= '"Tabellakod":"' . $_POST['Tabellakod'] . '",';
-                $tableJson .= '"Csapatszam":"' . $_POST['Csapatszam'] . '",';
-                $tableJson .= '"Fejszoveg":"' . $_POST['Fejszoveg'] . '",';
-                $tableJson .= '"Ideny":"' . $_POST['Ideny'] . '"';
-                $tableJson .= '}';
-                $menuDataArray['AdditionalField'] = $tableJson;
+            if (isset($this->dataArray[0]['Szerep'])) {
+                $menuDataArray['Role'] = $this->dataArray[0]['Szerep'];
+                switch ($this->$menuDataArray['Role']) {
+                    case 4:
+                        $menuDataArray['AdditionalField'] = $this->dataArray[0]['GalleryType'];
+                        break;
+                    case 6:
+                        $tableJson = '{';
+                        $tableJson .= '"Tabellakod":"' . $this->dataArray[0]['Tabellakod'] . '",';
+                        $tableJson .= '"Csapatszam":"' . $this->dataArray[0]['Csapatszam'] . '",';
+                        $tableJson .= '"Fejszoveg":"' . $this->dataArray[0]['Fejszoveg'] . '",';
+                        $tableJson .= '"Ideny":"' . $this->dataArray[0]['Ideny'] . '"';
+                        $tableJson .= '}';
+                        $menuDataArray['AdditionalField'] = $tableJson;                        
+                        break;
+                }
             }
-            $menuDataArray['ParentId'] = $_POST['ParentId'];
-            $menuDataArray['MainNode'] = $_POST['ParentNode'];
-            $menuDataArray['MoreFlag'] = $_POST['MoreFlag'];
-            if ($_POST['Module'] != '') {
-                $menuDataArray['Module'] = $_POST['Module'];
-            } else if ($_POST['Module'] == '') {
+            $menuDataArray['ParentId'] = $this->dataArray[0]['ParentId'];
+            $menuDataArray['MainNode'] = $this->dataArray[0]['ParentNode'];
+            $menuDataArray['MoreFlag'] = $this->dataArray[0]['MoreFlag'];
+            if ($this->dataArray[0]['Module'] != '') {
+                $menuDataArray['Module'] = $this->dataArray[0]['Module'];
+            } else if ($this->dataArray[0]['Module'] == '') {
                 $menuDataArray['Module'] = null;
             }
-            $menuDataArray['Popup'] = $_POST['popupHidden'];
+            $menuDataArray['Popup'] = $this->dataArray[0]['popupHidden'];
             $menuDataArray['Active'] = 1;
-            $menuDataArray['MainHeaderId'] = $_POST['MainHeaderId'];
-            $menuDataArray['LangHeaderId'] = $_POST['LangHeaderId'];
-            $menuDataArray['Rank'] = $_POST['RankHidden'];
+            $menuDataArray['MainHeaderId'] = $this->dataArray[0]['MainHeaderId'];
+            $menuDataArray['LangHeaderId'] = $this->dataArray[0]['LangHeaderId'];
+            $menuDataArray['Rank'] = $this->dataArray[0]['RankHidden'];
             $menu = new MenuModel($this->db, $menuDataArray);
             $menuData = $menu->updateMenu();
             if ($menuData == true) {
                 if ($menuDataArray['Role'] == 7 && !empty($_FILES)) {
                     include_once(CORE_PATH . 'UploadController.php');
                     include_once(ADMIN_MODEL_PATH . 'GalleryModel.php');
-                    $oldFileData = explode('|', $_POST['oldFile']);
+                    $oldFileData = explode('|', $this->dataArray[0]['oldFile']);
                     $deleteDataArray = array();
-                    $deleteDataArray['MainHeaderId'] = $_POST['MainHeaderId'];
+                    $deleteDataArray['MainHeaderId'] = $this->dataArray[0]['MainHeaderId'];
                     $deleteDataArray['PictureId'] = $oldFileData[0];
                     $mediaDataObject = new GalleryModel($deleteDataArray, $this->db);
                     $deleteSuccess = $mediaDataObject->deleteFromGallery();
@@ -327,7 +334,7 @@ class MenuController {
                         $uploadedFiles = $uploadObject->uploadFiles();
                         if (!empty($uploadedFiles['successfulUpload'])) {
                             $uploadInsertArray = array();
-                            $uploadInsertArray['MainHeaderId'] = $_POST['MainHeaderId'];
+                            $uploadInsertArray['MainHeaderId'] = $this->dataArray[0]['MainHeaderId'];
                             $uploadInsertArray['mediaType'] = 5;
                             $uploadInsertArray['images'][0]['fileName'] = $uploadedFiles['successfulUpload'][0]['fileName'];
                             $mediaDataObject->setDataArray($uploadInsertArray);
@@ -336,9 +343,9 @@ class MenuController {
                     }
                 }
                 $retArray = array();
-                $retArray['good']['menuId'] = $_POST['MainHeaderId'];
-                $retArray['good']['parentId'] = $_POST['ParentId'];
-                $retArray['good']['parentNode'] = $_POST['ParentNode'];
+                $retArray['good']['menuId'] = $this->dataArray[0]['MainHeaderId'];
+                $retArray['good']['parentId'] = $this->dataArray[0]['ParentId'];
+                $retArray['good']['parentNode'] = $this->dataArray[0]['ParentNode'];
                 $retArray['good']['role'] = $menuDataArray['Role'];
                 print json_encode($retArray);
             }

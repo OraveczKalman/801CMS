@@ -1,0 +1,9 @@
+{
+    "labels":{
+        "headLabel":"Nyelvi beállítások",
+        "language":"Nyelv",
+        "languageSign":"Nyelv jele",
+        "send":"Adatok küldése",
+        "sucessLabel":"A mentés sikeres volt!"
+    }
+}

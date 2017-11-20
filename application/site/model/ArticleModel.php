@@ -3,7 +3,7 @@ include_once(CORE_PATH . 'AncestorClass.php');
 include_once(CORE_PATH . '/YoutubeClass.php');
 
 class ArticleModel extends AncestorClass {
-    private $docData;
+    private $dataArray;
     private $mediaData;
     private $db;
 

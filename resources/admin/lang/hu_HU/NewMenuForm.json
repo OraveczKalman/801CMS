@@ -1,5 +1,6 @@
 {
     "labels":{
+        "headLabel":"Menüadatok",
         "caption":"Felirat",
         "title":"Cím",
         "heading":"Címsor",
@@ -20,7 +21,12 @@
         "releaseDate":"Megjelenés dátuma",
         "modul":"Modul",
         "gallerytype":"Galéria típus",
-        "facebookShare":"Megosztás a Facebookon"
+        "facebookShare":"Megosztás a Facebookon",
+        "tableCode":"Tabellakód",
+        "teamCount":"Csapatszám",
+        "headText":"Fejszöveg",
+        "season":"Idény",
+        "fileLabel":"File"
     },
     "targets":{
         "choose": { "label":"Válassz", "value":"" },

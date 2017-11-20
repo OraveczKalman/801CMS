@@ -19,7 +19,7 @@ class ArticleController {
     }
 
     private function editArticleForm() {
-        $articleFormObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/NewArticleForm' . $_SESSION['admin']['userData']['lang'] . '.json'));
+        $articleFormObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewArticleForm.json'));
         $bevezetoData = array();
         $bevezetoData['MainHeaderId'] = $this->dataArray[0]['MainHeaderId'];
         $bevezetoData['Role'] = 1;

@@ -46,49 +46,66 @@ class ArticleModel extends AncestorClass {
      * Function for insert or update articles depends on it's living or not before form submit
      */
     public function chapterAssorter() {
-        $insertChapterQueryString = "INSERT INTO text(SuperiorId, Type, Title, Text, Language, Created, CreatedBy, Modified, ModifiedBy, Active) VALUES ";
-        $insertChapterQueryStringValues = '';
-        $updateChapterQueryString = "";
-        foreach ($this->dataArray[0]['cikk'] as $szovegek) {
-            switch ($szovegek['chapterState']) {
-                case 1 :
-                    if ($szovegek['Szoveg'] != '') {
-                        $insertChapterQueryStringValues .= "(" . $szovegek['FelettesId'] . ", "
-                            . $szovegek['Tipus'] . ", '"
-                            . "', '"
-                            . $szovegek['Szoveg'] . "', '"
-                            . $szovegek['Nyelv'] . "', "
-                            . "NOW(), "
-                            . $_SESSION['admin']['userData']['UserId'] . ", "
-                            . "NOW(), "
-                            . $_SESSION['admin']['userData']['UserId'] . ", 1), ";
-                    }
-                    break;
-                case 2 :
-                    $updateChapterQueryString .= "UPDATE text SET 
-                        SuperiorId = " . $szovegek['FelettesId'] . ", 
-                        Type = " . $szovegek['Tipus'] . ", 
-                        Text = '" . $szovegek['Szoveg'] . "', 
-                        Language = '" . $szovegek['Nyelv'] . "', 
-                        Modified = NOW(), 
-                        ModifiedBy = " . $_SESSION['admin']['userData']['UserId'] . " 
-                        WHERE TextId = " . $szovegek['SzovegId'] . ";";
-                    break;
+        try
+        {
+            $data = array();
+            $insertChapterQueryStringValues = '';
+            $updateChapterQueryString = "";
+            foreach ($this->dataArray[0]['cikk'] as $szovegek) {
+                switch ($szovegek['chapterState']) {
+                    case 1 :
+                        if ($szovegek['Szoveg'] != '') {
+                            $insertChapterQuery = $this->db->dbLink->prepare("INSERT INTO text SET
+                                SuperiorId = :superiorId, 
+                                Type = :type, 
+                                Title = :title, 
+                                Text = :text, 
+                                Language = :language, 
+                                Created = NOW(), 
+                                CreatedBy = :createdBy, 
+                                Modified = NOW(), 
+                                ModifiedBy = :modifiedBy, 
+                                Active = 1");
+                            $szovegek["Cim"] = "";
+                            $insertChapterQuery->bindParam(":superiorId", $szovegek["FelettesId"], PDO::PARAM_INT);
+                            $insertChapterQuery->bindParam(":type", $szovegek["Tipus"], PDO::PARAM_INT);
+                            $insertChapterQuery->bindParam(":title", $szovegek["Cim"], PDO::PARAM_STR);
+                            $insertChapterQuery->bindParam(":text", $szovegek["Szoveg"], PDO::PARAM_STR);
+                            $insertChapterQuery->bindParam(":language", $szovegek["Nyelv"], PDO::PARAM_STR);
+                            $insertChapterQuery->bindParam(":createdBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
+                            $insertChapterQuery->bindParam(":modifiedBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
+                            $insertChapterQuery->execute();
+                        }
+                        break;
+                    case 2 :
+                        $updateChapterQuery = $this->db->dbLink->prepare("UPDATE text SET 
+                            SuperiorId = :superiorId, 
+                            Type = :type, 
+                            Title = :title, 
+                            Text = :text, 
+                            Language = :language, 
+                            Created = NOW(), 
+                            CreatedBy = :createdBy, 
+                            Modified = NOW(), 
+                            ModifiedBy = :modifiedBy 
+                            WHERE TextId = :textId");
+                        $szovegek["Cim"] = "";
+                        $updateChapterQuery->bindParam(":textId", $szovegek["SzovegId"], PDO::PARAM_INT);
+                        $updateChapterQuery->bindParam(":superiorId", $szovegek["FelettesId"], PDO::PARAM_INT);
+                        $updateChapterQuery->bindParam(":type", $szovegek["Tipus"], PDO::PARAM_INT);
+                        $updateChapterQuery->bindParam(":title", $szovegek["Cim"], PDO::PARAM_STR);
+                        $updateChapterQuery->bindParam(":text", $szovegek["Szoveg"], PDO::PARAM_STR);
+                        $updateChapterQuery->bindParam(":language", $szovegek["Nyelv"], PDO::PARAM_STR);
+                        $updateChapterQuery->bindParam(":createdBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
+                        $updateChapterQuery->bindParam(":modifiedBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
+                        $updateChapterQuery->execute();
+                        break;
+                }
             }
-        }
-
-        if ($insertChapterQueryStringValues != '') {
-            $insertChapterQueryString = trim($insertChapterQueryString . $insertChapterQueryStringValues, ', ');
-            $insertChapterQuery = $this->db->insertQuery($insertChapterQueryString);
-        }
-        if ($updateChapterQueryString != '') {
-            $updateChapterQuery = $this->db->updateQuery($updateChapterQueryString);
-        }
-
-        if (!isset($insertChapterQuery['error']) && !isset($updateChapterQuery['error'])) {
-            print json_encode($goodArray = array('good'=>$this->dataArray[0]['cikk'][0]['FelettesId']));
-        } else {
-            print json_encode($errorArray = array('error'=>$insertChapterQuery['error'] . ' ' . $updateChapterQuery['error']));
+            $data["good"] = 0;
+            print json_encode($data);            
+        } catch (PDOException $e) {
+            $this->db->logWriter($e->errorInfo);
         }
     }
 }
