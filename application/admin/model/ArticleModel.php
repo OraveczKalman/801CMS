@@ -102,7 +102,7 @@ class ArticleModel extends AncestorClass {
                         break;
                 }
             }
-            $data["good"] = 0;
+            $data["good"] = $szovegek["FelettesId"];
             print json_encode($data);            
         } catch (PDOException $e) {
             $this->db->logWriter($e->errorInfo);
