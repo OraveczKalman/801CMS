@@ -79,9 +79,3 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    function pageSwitcher(pageNumber) {
-        $(".articleColumn").css("display", "none");
-        $("#column" + pageNumber).css("display", "block");
-    }
-</script>
