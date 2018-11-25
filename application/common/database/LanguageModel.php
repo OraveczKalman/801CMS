@@ -59,7 +59,7 @@ class LanguageModel {
      * New language upload
      */
     public function newLanguage() {
-        $newLanguageQueryString = "INSERT INTO language SET 
+        $newLanguageQueryString = "INSERT INTO `language` SET 
             Description = '" . $this->dataArray["Language"] . "', 
             LanguageSign = '" . $this->dataArray["LanguageSign"] . "',
             Created = NOW(), 
@@ -79,17 +79,22 @@ class LanguageModel {
      * Update language data
      */
     public function updateLanguage() {
-        $updateUserQueryString = "UPDATE language SET 
-            Description = '" . $this->dataArray["description"] . "', 
-            LanguageSign = '" . $this->dataArray["languageSign"] . "',
-            Modified = NOW(), 
-            ModifiedBy = " . $_SESSION['admin']['userData']['UserId'] . ", 
-            Active = " . $this->dataArray['active'] . " 
-            WHERE LanguageId = " . $this->dataArray['LanguageId'];
-        print $updateUserQueryString;
-        $updateUserQuery = $this->db->updateQuery($updateUserQueryString);
-
-        return $updateUserQuery;
+        $updateLanguageQueryString = "UPDATE `language` SET ";
+        if (isset($this->dataArray['fields'])) {
+            $updateLanguageQueryString .= $this->dataArray['fields'];
+            if (isset($this->dataArray['where'])) {
+                $updateLanguageQueryString .= $this->dataArray['where'];
+            }
+            $updateLanguageQuery = $this->db->updateQuery($updateLanguageQueryString);
+        } else {
+            $updateLanguageQuery = array('error'=>'updateLanguage: Fields not set to this query.');
+            $this->db->logWriter($updateLanguageQuery['error']);
+        }
+        if (!isset($updateLanguageQuery['error'])) {
+            return 0;
+        } else {
+            return $updateLanguageQuery;
+        }
     }
 
     /**
@@ -99,18 +104,17 @@ class LanguageModel {
      * User deactivate function
      */
     public function deleteLanguage() {
-        $deleteLanguageQueryString = "UPDATE language SET " .
-            "Modified = NOW(), " .
-            "Modified_By = " . $_SESSION['admin']['userData']['UserId'] . ", " .
-            "Active = " . $this->dataArray['active'] . " " .
-            "WHERE LanguageId = " . $this->dataArray['userid'];
-
+        //var_dump($this->dataArray);
+        $deleteLanguageQueryString = "UPDATE `language` SET Modified = NOW(),
+            ModifiedBy = " . $_SESSION['admin']['userData']['UserId'] . ", 
+            Active = 0 " . $this->dataArray['where'];
+        //var_dump($deleteLanguageQueryString);
         $deleteLanguageQuery = $this->db->updateQuery($deleteLanguageQueryString);
 
-        if ($error == '') {
+        if (!isset($deleteLanguageQuery['error'])) {
             return 0;
-        } else if ($error != '') {
-            return $error;
+        } else {
+            return $deleteLanguageQuery;
         }
     }
 }
