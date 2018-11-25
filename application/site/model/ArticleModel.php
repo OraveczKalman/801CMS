@@ -29,6 +29,7 @@ class ArticleModel extends AncestorClass {
     }
     
     private function getDocumentData() {
+        $documentData['CoverPicture'] = $this->getCoverPicture($this->dataArray[0]['MainHeaderId']);
         $documentData['Header'] = $this -> getDocumentArticles($this->dataArray[0]['MainHeaderId'], 1);
         $documentData['Body'] = $this -> getDocumentArticles($this->dataArray[0]['MainHeaderId'], 2);
         if (!empty($documentData)) {
@@ -65,14 +66,34 @@ class ArticleModel extends AncestorClass {
     }
 
     public function getDocumentArticles($parentId, $role) {
-        $getDocumentArticlesQueryString = 'SELECT * FROM text WHERE SuperiorId = ' . $parentId . ' AND Type = ' . $role;
-        $getDocumentArticlesQuery = $this->db->selectQuery($getDocumentArticlesQueryString);
-        return $getDocumentArticlesQuery;
+        $result = array();
+        $getDocumentArticlesDataArray = array();
+        $getDocumentArticlesDataArray["sql"] = 'SELECT * FROM text WHERE SuperiorId=:mainHeaderId AND Type=:role';
+        $getDocumentArticlesDataArray["parameters"][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$parentId, "paramType"=>1);
+        $getDocumentArticlesDataArray["parameters"][1] = array("paramName"=>"role", "paramVal"=>$role, "paramType"=>1);
+        $result = $this->db->parameterSelect($getDocumentArticlesDataArray);
+        return $result;
     }
 
     public function getDocumentPicture($docId) {
-        $getDocumentPictureQueryString = 'SELECT picture.* FROM picture, gallery_picture WHERE gallery_picture.MainHeaderId = ' . $docId . ' AND gallery_picture.PictureId = picture.PictureId AND gallery_picture.Active = 1';
-        $getDocumentPictureQuery = $this->db->selectQuery($getDocumentPictureQueryString);
-        return $getDocumentPictureQuery;
+        $result = array();
+        $getDocumentPictureDataArray = array();
+        $getDocumentPictureDataArray["sql"] = 'SELECT picture.* FROM picture, gallery_picture WHERE gallery_picture.MainHeaderId=:mainHeaderId
+            AND gallery_picture.PictureId = picture.PictureId AND gallery_picture.Active = 1';
+        $getDocumentPictureDataArray["parameters"][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$docId, "paramType"=>1);
+        $result = $this->db->parameterSelect($getDocumentPictureDataArray);
+        return $result;
     }
+    
+    public function getCoverPicture($docId) {
+        $result = '';
+        $getCoverDataArray = array();
+        $getCoverDataArray["sql"] = 'SELECT t2.Name FROM gallery_picture t1 
+            LEFT JOIN picture t2 ON t1.PictureId = t2.PictureId
+            WHERE t1.MainHeaderId=:mainHeaderId AND t1.Cover = 1';
+        $getCoverDataArray["parameters"][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$docId, "paramType"=>1);
+        $data = $this->db->parameterSelect($getCoverDataArray);
+        $result = $data[0]["Name"];
+        return $result;
+    } 
 }

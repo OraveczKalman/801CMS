@@ -1,80 +1,34 @@
-<?php
-
-foreach ($newsData as $newsData2) {
-?>
-<div class="post-preview">
-<?php
-    //var_dump($newsData2);
-    $mediaData = $this->getNewsPicture($newsData2['MainHeaderId']);
-    //var_dump($mediaData);
-    if (!empty($mediaData)) {
-        $newsData2['Text'] = $this->mediaChanger($mediaData, $newsData2['Text']);
-    }
-?>
-    <a href="<?php print $newsData2['Link']; ?>">
-        <h2 class="post-title">
-            <?php print $newsData2['Title']; ?>
-        </h2>
-        <h3 class="post-subtitle">
-            <?php print $newsData2['Text']; ?>
-        </h3>
-    </a>
-    <p class="post-meta">
-        <?php print $newsData2['Created']; ?>
-    </p>
-    <hr>
-<?php
-    
-    if ($newsData2['MoreFlag'] == 1) {
-?>
-    <a class="btn btn-primary" href="<?php print $newsData2['Link']; ?>">Bővebben <i class="fa fa-angle-right"></i></a>
-<?php
-    }
-?>
-</div>
-<?php
-}
-if ($_SESSION['actNewsCount'] > $_SESSION['setupData']['newsCount']) {
-?>
-<ul class="pager">
-<?php
-    if ($this->headerData[0]['page']-$this->headerData[0]['limit']>=0) {
-?>
-    <li class="previous">
-        <a href="javascript:void(0);" onclick="javascript: NewsPage(<?php print $this->headerData[0]['page'] - $this->headerData[0]['limit']; ?>, '<?php print $this->headerData[0]['Link']; ?>');">&larr; Újabb hírek</a>
+<h1 class="mt-4 mb-3">Blog Home One
+    <small>Subheading</small>
+</h1>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="index.html">Home</a>
     </li>
+    <li class="breadcrumb-item active">Blog Home 1</li>
+</ol>
+<?php
+    foreach ($newsData as $newsData2) {
+?>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <a href="#">
+                        <img class="img-fluid rounded" src="http://placehold.it/750x300" alt="">
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="card-title"><?php print $newsData2['Title']; ?></h2>
+                    <p class="card-text"><?php print $newsData2['Text']; ?></p>
+                    <a href="<?php print $newsData2['Link']; ?>" class="btn btn-primary">Read More &rarr;</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            Posted on <?php print $newsData2['Created']; ?>
+            <!--<a href="#">Start Bootstrap</a>-->
+        </div>
+    </div>
 <?php
     }
-    if ($this->headerData[0]['page']+$this->headerData[0]['limit']<=$_SESSION['actNewsCount']) {
-?>
-    <li class="next">
-        <a href="javascript:void(0);" onclick="javascript: NewsPage(<?php print $this->headerData[0]['page'] + $this->headerData[0]['limit']; ?>, '<?php print $this->headerData[0]['Link']; ?>');">Korábbi hírek &rarr;</a>
-    </li>
-<?php
-    }
-?>
-</ul>
-<?php
-}
-if (isset($this->headerData[0]['fullReload'])) {
-?>
-</div>
-<?php
-}
-if (isset($this->headerData[0]['fullReload'])) {
-?>
-<!-- Blog Sidebar Widgets Column -->
-<div class="col-md-4">
-<?php
-    $likeBoxDataArray = array();
-    $likeBoxDataArray[0]['event'] = 'RenderLikeBox';
-    include_once(SITE_CONTROLLER_PATH . 'LikeBoxController.php');
-    $likeBox = new LikeBoxController($likeBoxDataArray, $this->db);
-    $sponsorsDataArray = array();
-    $sponsorsDataArray[0]['event'] = 'RenderSponsors';
-    include_once(SITE_CONTROLLER_PATH . 'SponsorController.php');
-    $sponsors = new SponsorController($sponsorsDataArray, $this->db);
-?>
-</div>
-<?php
-}

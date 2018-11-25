@@ -35,57 +35,19 @@ class MenuModel {
     }
 
     private function getMenuItems($dataArray) {
-        $dataArray['table'] = 'main_header';
-        $dataArray['fields'] = 'main_header.MainHeaderId, main_header.Target, lang_header.Caption, lang_header.Link, main_header.Role, main_header.MainNode';
-        $dataArray['joins'] = 'left join lang_header on lang_header.MainHeaderId = main_header.MainHeaderId';
-        $dataArray['where'] = ' lang_header.ParentId = ' . $dataArray['parentId'] . ' and main_header.MainNode = ' . $dataArray['parentNode'] . 
-            ' and main_header.MainHeaderId not in (select MainHeaderId from main_header where Role = 4 and AdditionalField = 1)';
-        $menuItems = $this->db->selectBuilder($dataArray);
-        //var_dump($menuItems);
-        return $menuItems;
+        $getMenuItemsDataArray = array();
+        $getMenuItemsDataArray["sql"] = "SELECT main_header.MainHeaderId, main_header.Target, lang_header.Caption, lang_header.Link, main_header.Role, main_header.MainNode 
+            FROM main_header LEFT JOIN lang_header on lang_header.MainHeaderId = main_header.MainHeaderId 
+            WHERE lang_header.ParentId=:parentId and main_header.MainNode=:parentNode and main_header.MainHeaderId NOT IN 
+            (SELECT MainHeaderId FROM main_header where Role = 4 AND AdditionalField = 1)";
+        $getMenuItemsDataArray["parameters"][0] = array("paramName"=>"parentId", "paramVal"=>$dataArray["parentId"], "paramType"=>1);
+        $getMenuItemsDataArray["parameters"][1] = array("paramName"=>"parentNode", "paramVal"=>$dataArray["parentNode"], "paramType"=>1);
+        $result = $this->db->parameterSelect($getMenuItemsDataArray);
+        return $result;
     }
 
     public function getMenu() {
         $getMenuQuery = $this->db->selectBuilder($this->dataArray);
         return $getMenuQuery;
-    }
-
-    public function getMenuRoles() {
-        $getMenuRolesQueryString = 'SELECT * FROM role ' . $this->dataArray['where'] . ' ORDER BY RoleId';
-        $getMenuRolesQuery = $this->db->selectQuery($getMenuRolesQueryString);
-        return $getMenuRolesQuery;
-    }
-
-    public function insertMenu() {
-        $rankArray = array();
-        $rankArray['table'] = 'rank';
-        $rankArray['fields']['ParentId'] = $this->dataArray['ParentId'];
-        unset($this->dataArray['ParentId']);
-        $menuDataArray = array();
-        $menuDataArray['table'] = 'main_header';
-        $menuDataArray['fields'] = $this->dataArray;
-        $insertMenuQuery = $this->db->insertQueryBuilder($menuDataArray);
-        if (!isset($insertMenuQuery['error'])) {
-            $maxRankArray = array('table' => 'rank',
-                'fields' => 'MAX(rank)+1 AS maxRank',
-                'where' => 'rank.ParentId = ' . $rankArray['fields']['ParentId']);
-            $maxRank = $this->db->selectBuilder($maxRankArray);
-            $rankArray['fields']['Rank'] = $maxRank[0]['maxRank'];
-            $rankArray['fields']['MainHeaderId'] = $insertMenuQuery['lastInsert'];
-            $insertRankQuery = $this->db->insertQueryBuilder($rankArray);
-            return $insertMenuQuery;
-        } else if (isset($insertMenuQuery['error'])) {
-            return $insertMenuQuery;
-        }
-    }
-
-    public function updateMenu() {
-        unset($this->dataArray['ParentId']);
-        $menuArray = array();
-        $menuArray['table'] = 'main_header';
-        $menuArray['fields'] = $this->dataArray;
-        $menuArray['where'] = 'main_header.MainHeaderId = ' . $this->dataArray['MainHeaderId'];
-        $updateMenu = $this->db->updateQueryBuilder($menuArray);
-        return $updateMenu;
     }
 }
