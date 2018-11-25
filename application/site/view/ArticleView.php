@@ -7,12 +7,6 @@
         <a href="#">Home</a>
     </li>
 </ol>
-
-<?php
-    /*print '<pre>';
-    print_r($documentData);
-    print '</pre>';*/
-?>
     
 <div class="row">
     <div class="col-lg-8">
@@ -22,10 +16,33 @@
         <hr>
         <p class="lead"><?php print $documentData['Header'][0]['Text']; ?></p>
 <?php
+    $displayText = "";
     for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
+        if ($i==0) {
+            $displayText = "block;";
+        } else {
+            $displayText = "none;";
+        }
+?>
+        <div id="sheet<?php print $i+1; ?>" class="sheet" style="display:<?php print $displayText; ?>">
+<?php
         print $documentData['Body'][$i]['Text'];
+?>
+        </div>
+<?php
     }
 ?>
+        <div class="btn-toolbar mb-3" role="toolbar">
+            <div class="btn-group mr-2" role="group">
+ <?php
+    for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
+?>
+                <button type="button" class="btn btn-secondary" onclick="javascript: PageSwitcher(<?php print $i+1; ?>)"><?php print $i+1; ?></button>
+<?php
+    }
+?>
+            </div>
+        </div>
     </div>
     <div class="col-md-4">
         <div class="card mb-4">
