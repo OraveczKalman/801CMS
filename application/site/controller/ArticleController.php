@@ -2,7 +2,8 @@
 include_once(SITE_MODEL_PATH . '/ArticleModel.php');
 
 class ArticleController {
-    private $docData;
+    private $dataArray;
+    private $mediaData;
     private $db;
 
     public function __construct($docData, $db) {
@@ -36,7 +37,7 @@ class ArticleController {
     }
 
     private function mediaChanger($textData) {
-        foreach ($this -> mediaData as $mediaData2) {
+        foreach ($this->mediaData as $mediaData2) {
             switch ($mediaData2['MediaType']) {
                 case 1 :
                     $textData = str_replace('#kep_bal_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="kep_bal">', $textData);
