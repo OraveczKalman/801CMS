@@ -4,7 +4,6 @@ include_once(CORE_PATH . '/YoutubeClass.php');
 
 class ArticleModel extends AncestorClass {
     private $dataArray;
-    private $mediaData;
     private $db;
 
     public function __construct($db, $dataArray=null) {
