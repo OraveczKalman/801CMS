@@ -18,16 +18,18 @@ class MenuModel {
         $this->dataArray = $dataArray;
     }
 
-    public function GenerateMenuTree($parentId, $level) {
+    public function GenerateMenuTree($parentId, $level, $languages) {
         $dataArray = array();
         $dataArray['parentNode'] = $level;
         $dataArray['parentId'] = $parentId;
+        $dataArray['languages'] = $languages;
         $menuItems = $this->getMenuItems($dataArray);
         for ($i=0; $i<=count($menuItems)-1; $i++) {
             if ($menuItems[$i]['Role'] == 1 || $menuItems[$i]['Role'] == 2 || $menuItems[$i]['Role'] == 5 || $menuItems[$i]['Role'] == 21) {
                 $subDataArray = array();
                 $subDataArray['parentNode'] = $level;
                 $subDataArray['parentId'] =  $menuItems[$i]['MainHeaderId'];
+                $subDataArray['languages'] = $languages;
                 $menuItems[$i]['subItems'] = $this->getMenuItems($subDataArray);
             }
         }
@@ -35,25 +37,53 @@ class MenuModel {
     }
 
     private function getMenuItems($dataArray) {
-        $dataArray['table'] = 'main_header';
-        $dataArray['fields'] = 'main_header.MainHeaderId, lang_header.Caption, main_header.Role, main_header.MainNode';
-        $dataArray['joins'] = 'left join lang_header on lang_header.MainHeaderId = main_header.MainHeaderId';
-        $dataArray['where'] = ' lang_header.ParentId = ' . $dataArray['parentId'] . ' and main_header.MainNode = ' . $dataArray['parentNode'] . ' and main_header.Active = 1';
-        $menuItems = $this->db->selectBuilder($dataArray);
+        $dataArray['fields'] = '';
+        $dataArray['joins'] = '';
+        for ($i=0; $i<=count($dataArray['languages'])-1; $i++) {
+            $dataArray['fields'] .= ', t' . $dataArray['languages'][$i]['LanguageSign'] . '.HeadersCount' . $dataArray['languages'][$i]['LanguageSign'];
+            $dataArray['joins'] .= " LEFT JOIN (SELECT MainHeaderId, `Language`, COUNT(MainHeaderId) AS HeadersCount" . $dataArray['languages'][$i]['LanguageSign'] . " FROM lang_header) t" . $dataArray['languages'][$i]['LanguageSign'] . " ON t1.MainHeaderId = t" . $dataArray['languages'][$i]['LanguageSign'] . ".MainHeaderId AND t" . $dataArray['languages'][$i]['LanguageSign'] . ".`Language` = '" . $dataArray['languages'][$i]['LanguageSign'] . "'";
+        }
+        $getMenuItemsDataArray['sql'] = "SELECT t1.MainHeaderId, t2.Caption, t1.Role, t1.MainNode";
+        $getMenuItemsDataArray['sql'] .= $dataArray['fields'];
+        $getMenuItemsDataArray['sql'] .= " FROM main_header t1 LEFT JOIN lang_header t2 ON t2.MainHeaderId = t1.MainHeaderId ";
+        $getMenuItemsDataArray['sql'] .= $dataArray['joins'];
+        $getMenuItemsDataArray['sql'] .= " WHERE t2.ParentId=:parentId AND t1.MainNode=:parentNode AND t1.Active = 1";
+        $getMenuItemsDataArray['parameters'][0] = array("paramName"=>"parentId", "paramVal"=>$dataArray['parentId'], "paramType"=>1);
+        $getMenuItemsDataArray['parameters'][1] = array("paramName"=>"parentNode", "paramVal"=>$dataArray['parentNode'], "paramType"=>1);
+        $menuItems = $this->db->parameterSelect($getMenuItemsDataArray);
         return $menuItems;
     }
 
-    public function getMenu() {
-        $getMenuQuery = $this->db->selectBuilder($this->dataArray);
+    public function getMenu($menuId) {
+        $getMenuDataArray['sql'] = "SELECT * FROM main_header 
+            LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId WHERE main_header.MainHeaderId = 1";
+        $getMenuDataArray['parameters'][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$menuId, "paramType"=>1);
+        $getMenuQuery = $this->db->parameterSelect($getMenuDataArray);
         return $getMenuQuery;
     }
 
+    public function getModules() {
+        $getModulesQueryString = "SELECT lang_header.Title, lang_header.Link FROM main_header 
+            LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId 
+            WHERE main_header.MainHeaderId NOT IN (SELECT MainHeaderId FROM lang_header)";
+        $getModulesQuery = $this->db->selectQuery($getModulesQueryString);
+        return $getModulesQuery;
+    }
+    
     public function getMenuRoles() {
         $getMenuRolesQueryString = 'SELECT * FROM role ' . $this->dataArray['where'] . ' ORDER BY RoleId';
         $getMenuRolesQuery = $this->db->selectQuery($getMenuRolesQueryString);
         return $getMenuRolesQuery;
     }
 
+    private function getMaxRank($parentId) {
+        $getMaxRankQuery = array();
+        $getMaxRankQuery['sql'] = "SELECT MAX(Rank)+1 AS maxRank FROM lang_header WHERE ParentId=:parentId";
+        $getMaxRankQuery['parameters'][0] = array("paramName"=>"parentId", "paramVal"=>$parentId, "paramType"=>1);
+        $result = $this->db->parameterSelect($getMaxRankQuery);
+        return $result;
+    }
+    
     public function insertMenu() {
         $mainHeaderDataArray = array();
         $mainHeaderDataArray['AdditionalField'] = $this->dataArray['AdditionalField'];
@@ -68,11 +98,8 @@ class MenuModel {
         $mainHeaderDataArray['Module'] = $this->dataArray['Module'];
         $mainHeaderData = $this->insertMainHeader($mainHeaderDataArray);
         if (!isset($mainHeaderData['error'])) {
+            $maxRank = $this->getMaxRank($this->dataArray['ParentId']);
             $rankArray = array();
-            $maxRankArray = array('table' => 'lang_header',
-                'fields' => 'MAX(Rank)+1 AS maxRank',
-                'where' => 'lang_header.ParentId = ' . $this->dataArray['ParentId']);
-            $maxRank = $this->db->selectBuilder($maxRankArray);
             if (is_null($maxRank[0]['maxRank'])) {
                 $maxRank[0]['maxRank'] = 0;
             }
@@ -122,40 +149,34 @@ class MenuModel {
     }
     
     private function insertLangHeader($dataArray) {
-        try {
-            $insertLangHeaderQuery = $this->db->dbLink->prepare("INSERT INTO lang_header SET
-                MainHeaderId = :mainHeaderId,
-                ParentId = :parentId,
-                Rank = :rank,
-                Caption = :caption,
-                Title = :title,
-                Heading = :heading,
-                Keywords = :keywords,
-                Link = :link,
-                Language = :language,
-                Counter = :counter,
-                Created = NOW(),
-                CreatedBy = :createdBy,
-                Modified = NOW(),
-                ModifiedBy = :modifiedBy,
-                Active = 1");
-            //print $insertLangHeaderQuery->queryString;
-            $insertLangHeaderQuery->bindParam(":mainHeaderId", $dataArray['MainHeaderId'], PDO::PARAM_INT);
-            $insertLangHeaderQuery->bindParam(":parentId", $dataArray['ParentId'], PDO::PARAM_INT);
-            $insertLangHeaderQuery->bindParam(":rank", $dataArray['Rank'], PDO::PARAM_INT);
-            $insertLangHeaderQuery->bindParam(":caption", $dataArray['Caption'], PDO::PARAM_STR);
-            $insertLangHeaderQuery->bindParam(":title", $dataArray['Title'], PDO::PARAM_STR);
-            $insertLangHeaderQuery->bindParam(":heading", $dataArray['Heading'], PDO::PARAM_STR);
-            $insertLangHeaderQuery->bindParam(":keywords", $dataArray['Keywords'], PDO::PARAM_STR);
-            $insertLangHeaderQuery->bindParam(":link", $dataArray['Link'], PDO::PARAM_STR);
-            $insertLangHeaderQuery->bindParam(":language", $dataArray['Language'], PDO::PARAM_STR);
-            $insertLangHeaderQuery->bindParam(":counter", $dataArray['Counter'], PDO::PARAM_INT);
-            $insertLangHeaderQuery->bindParam(":createdBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
-            $insertLangHeaderQuery->bindParam(":modifiedBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
-            $insertLangHeaderQuery->execute();
-        } catch (PDOException $ex) {
-            $this->db->logWriter($ex->errorInfo);
-        }
+        $insertLangHeaderQuery = array();
+        $insertLangHeaderQuery['sql'] = $this->db->dbLink->prepare("INSERT INTO lang_header SET
+            MainHeaderId=:mainHeaderId,
+            ParentId=:parentId,
+            Rank=:rank,
+            Caption=:caption,
+            Title=:title,
+            Heading=:heading,
+            Keywords=:keywords,
+            Link=:link,
+            Language=:language,
+            Counter=:counter,
+            Created=NOW(),
+            CreatedBy=:createdBy,
+            Active = 1");
+        $insertLangHeaderQuery["parameters"][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$dataArray['MainHeaderId'], "paramType"=>PDO::PARAM_INT);
+        $insertLangHeaderQuery["parameters"][1] = array("paramName"=>"parentId", "paramVal"=>$dataArray['ParentId'], "paramType"=>PDO::PARAM_INT);
+        $insertLangHeaderQuery["parameters"][2] = array("paramName"=>"rank", "paramVal"=>$dataArray['Rank'], "paramType"=>PDO::PARAM_INT);
+        $insertLangHeaderQuery["parameters"][3] = array("paramName"=>"caption", "paramVal"=>$dataArray['Caption'], "paramType"=>PDO::PARAM_STR);
+        $insertLangHeaderQuery["parameters"][4] = array("paramName"=>"title", "paramVal"=>$dataArray['Title'], "paramType"=>PDO::PARAM_STR);
+        $insertLangHeaderQuery["parameters"][5] = array("paramName"=>"heading", "paramVal"=>$dataArray['Heading'], "paramType"=>PDO::PARAM_STR);
+        $insertLangHeaderQuery["parameters"][6] = array("paramName"=>"keywords", "paramVal"=>$dataArray['Keywords'], "paramType"=>PDO::PARAM_STR);
+        $insertLangHeaderQuery["parameters"][7] = array("paramName"=>"link", "paramVal"=>$dataArray['Link'], "paramType"=>PDO::PARAM_STR);
+        $insertLangHeaderQuery["parameters"][8] = array("paramName"=>"language", "paramVal"=>$dataArray['Language'], "paramType"=>PDO::PARAM_STR);
+        $insertLangHeaderQuery["parameters"][9] = array("paramName"=>"counter", "paramVal"=>$dataArray['Counter'], "paramType"=>PDO::PARAM_INT);
+        $insertLangHeaderQuery["parameters"][10] = array("paramName"=>"createdBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+        $result = $this->db->parameterInsert($insertLangHeaderQuery);
+        return $result;
     }
 
     public function updateMenu() {

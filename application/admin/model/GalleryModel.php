@@ -77,23 +77,23 @@ class GalleryModel {
      * Get all elements to gallery
      */
     public function getGalleryObjects($menuId) {
-        $result = array();
-        try {
-            $getGalleryObjectQuery = $this->db->dbLink->prepare('SELECT picture.PictureId, picture.Name AS kep_nev_big, ' .
-                'picture.ThumbName AS kep_nev, ' .
-                'picture.MediaType, ' .
-                '(SELECT main_header.Role FROM main_header WHERE gallery_picture.MainHeaderId = main_header.MainHeaderId) AS Szerep, ' .
-                'gallery_picture.MainHeaderId, gallery_picture.Rank ' .
-                'FROM gallery_picture ' .
-                'INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId ' .
-                'WHERE gallery_picture.MainHeaderId = :menuId AND gallery_picture.Active = 1 ' .
-                'ORDER BY gallery_picture.Rank ASC');
-            $getGalleryObjectQuery->bindParam(':menuId', $menuId, PDO::PARAM_INT);
-            $getGalleryObjectQuery->execute();
-            $result = $getGalleryObjectQuery->fetchAll();
-        } catch (PDOException $e) {
-            $this->db->logWriter($e->errorInfo);
-        }
+        //$result = array();
+        //try {
+        $getGalleryObjectQuery = $this->db->dbLink->prepare('SELECT picture.PictureId, picture.Name AS kep_nev_big, 
+            picture.ThumbName AS kep_nev, 
+            picture.MediaType, 
+            (SELECT main_header.Role FROM main_header WHERE gallery_picture.MainHeaderId = main_header.MainHeaderId) AS Szerep, 
+            gallery_picture.MainHeaderId, gallery_picture.Rank 
+            FROM gallery_picture 
+            INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId 
+            WHERE gallery_picture.MainHeaderId = :menuId AND gallery_picture.Active = 1 
+            ORDER BY gallery_picture.Rank ASC');
+        $getGalleryObjectQuery->bindParam(':menuId', $menuId, PDO::PARAM_INT);
+        $getGalleryObjectQuery->execute();
+        $result = $getGalleryObjectQuery->fetchAll();
+        //} catch (PDOException $e) {
+        //    $this->db->logWriter($e->errorInfo);
+        //}
         return $result;
     }
     
@@ -232,7 +232,7 @@ class GalleryModel {
      */
     public function updatePictureThumbnail() {
         try {
-            $updateThumbnailsQuery = $this->db->dbLink->prepare("UPDATE `Picture` SET 
+            $updateThumbnailsQuery = $this->db->dbLink->prepare("UPDATE `picture` SET 
                 ThumbName = :thumbName
                 WHERE `PictureId` = :pictureId");
             $updateThumbnailsQuery->bindParam(":thumbName", $this->dataArray["thumbKepnev"], PDO::PARAM_STR);
@@ -240,6 +240,26 @@ class GalleryModel {
             $updateThumbnailsQuery->execute();
         } catch (PDOException $e) {
             $this->db->logWriter($e->errorInfo);
+        }
+    }
+    
+    public function makeCoverImage() {
+        try {
+            //var_dump($this->dataArray);
+            $resetCoverImageQuery = $this->db->dbLink->prepare("UPDATE gallery_picture SET cover=0 WHERE MainHeaderId=:mainHeaderId");
+            $resetCoverImageQuery->bindParam(":mainHeaderId", $this->dataArray["gallery"], PDO::PARAM_INT);
+            $resetCoverImageQuery->execute();
+            $resetCoverImageQuery->debugDumpParams();
+            //var_dump("UPDATE gallery_picture SET cover=1 WHERE MainHeaderId=" . $this->dataArray["gallery"] . " AND PictureId=" . $this->dataArray["mediaId"]);
+            $updateCoverImageQuery = $this->db->dbLink->prepare("UPDATE gallery_picture SET cover=1 WHERE MainHeaderId=:mainHeaderId AND PictureId=:mediaId");
+            $updateCoverImageQuery->bindParam(":mainHeaderId", $this->dataArray["gallery"], PDO::PARAM_INT);
+            $updateCoverImageQuery->bindParam(":mediaId", $this->dataArray["mediaId"], PDO::PARAM_INT);           
+            $updateCoverImageQuery->execute();
+            $updateCoverImageQuery->debugDumpParams();
+        } catch (PDOException $e) {
+            //var_dump($e->getMessage());
+            $this->db->logWriter($e->errorInfo);
+            //$updateCoverImageQuery->debugDumpParams();
         }
     }
 }

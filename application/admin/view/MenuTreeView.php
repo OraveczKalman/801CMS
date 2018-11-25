@@ -47,8 +47,14 @@
 ?>
                     <div>
                         <?php print $menuItems[$i][$j]['Caption']; ?>
-                        <a href="javascript: void(0);" onclick="javascript: loadEditMenuForm({ menuId:<?php print $menuItems[$i][$j]['MainHeaderId']; ?>, parentId:<?php print $i; ?>, parentNode:<?php print $i; ?> });"><i class="fa fa-pencil"></i></a>
                         <a href="javascript: void(0);" onclick="javascript: deleteMenu({ menuId:<?php print $menuItems[$i][$j]['MainHeaderId']; ?> });"><i class="fa fa-eraser"></i></a>
+<?php
+    for ($k=0; $k<=count($languageList)-1; $k++) {
+?>
+                        <a href="javascript: void(0);" onclick="javascript: loadEditMenuForm({ menuId:<?php print $menuItems[$i][$j]['MainHeaderId']; ?>, parentId:<?php print $i; ?>, parentNode:<?php print $i; ?> }); "><?php print $languageList[$k]["LanguageSign"]; ?></a>
+<?php
+    }
+?>
                     </div>
 <?php
                 }

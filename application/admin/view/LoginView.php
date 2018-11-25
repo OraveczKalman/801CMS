@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
-        <meta name="author" content="<?php print $_SESSION['setupData']['siteAuthor']; ?>">
-        <title><?php print $_SESSION['setupData']['siteTitle']; ?></title>
+        <meta name="author" content="<?php if (!isset($_SESSION['setupData']['siteAuthor'])) { print "Site author not set"; } else { print $_SESSION['setupData']['siteAuthor']; } ?>">
+        <title><?php if (!isset($_SESSION['setupData']['siteTitle'])) { print "Untitled Site"; } else { print $_SESSION['setupData']['siteTitle']; } ?></title>
         <!-- Bootstrap Core CSS -->
         <link href="<?php print COMMON_CSS_PATH; ?>bootstrap.min.css" rel="stylesheet">
         <!-- MetisMenu CSS -->
@@ -53,7 +53,7 @@
                     <div class="login-panel panel panel-default">
 
                         <div class="panel-heading">
-                            <h3 class="panel-title"><?php print $_SESSION['setupData']['siteTitle']; ?></h3>
+                            <h3 class="panel-title"><?php if (!isset($_SESSION['setupData']['siteTitle'])) { print "Untitled Site"; } else { print $_SESSION['setupData']['siteTitle']; } ?></h3>
                         </div>
 
                         <div class="panel-body">

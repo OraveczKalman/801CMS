@@ -9,7 +9,7 @@ class LanguageFormController /*extends FormController*/ {
         $this -> dataArray = $dataArray;
         $this -> db = $db;
         if (!isset($this->dataArray[0]['event'])) {
-            $this->dataArray['event'] = 'RenderLanguageForm';
+            $this->dataArray[0]['event'] = 'RenderLanguageForm';
         }
         call_user_func(array($this, $this->dataArray[0]['event']));
     }
@@ -23,7 +23,7 @@ class LanguageFormController /*extends FormController*/ {
                 print json_encode($goodArray = array('good'=>1));
             } else {
                 print json_encode($errorArray = array('error'=>$languageData['error']));
-            }                
+            }
         } else {
             print $errors;
         }
@@ -31,9 +31,42 @@ class LanguageFormController /*extends FormController*/ {
 
     private function RenderLanguageForm() {
         $languageLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/LanguageForm.json'));
+        $languageDataArray = array("where"=>" WHERE Active=1");
+        $languageModel = new LanguageModel($this->db, $languageDataArray);
+        $languageList = $languageModel->getLanguage();
         include_once(ADMIN_VIEW_PATH . 'LanguageFormView.php');
     }
+    
+    private function DeleteLanguage() {
+        $deleteLanguageDataArray = array();
+        $deleteLanguageDataArray['where'] = " WHERE LanguageId = " . $this->dataArray[0]['languageId'];
+        $languageModel = new LanguageModel($this->db, $deleteLanguageDataArray);
+        $languageData = $languageModel->deleteLanguage();
+        if ($languageData != 0) {
+            print json_encode($errorArray = array('error'=>$languageData['error']));
+        } else {
+            print json_encode($goodArray = array('good'=>1));
+        }
+    }
 
+    private function SetDefaultLanguage() {
+        $setDefaultLanguageDataArray = array("fields"=>"`Default`=0");
+        $languageModel = new LanguageModel($this->db, $setDefaultLanguageDataArray);
+        $languageData = $languageModel->updateLanguage();
+        if ($languageData != 0) {
+            print json_encode($errorArray = array('error'=>$languageData['error']));
+        } else {
+            $setDefaultLanguageDataArray = array("fields"=>"`Default`=1", "where"=>" WHERE LanguageId=" . $this->dataArray[0]["languageId"]);
+            $languageModel->setDataArray($setDefaultLanguageDataArray);
+            $languageData = $languageModel->updateLanguage();
+            if ($languageData != 0) {
+                print json_encode($errorArray = array('error'=>$languageData['error']));
+            } else {
+                print json_encode($goodArray = array('good'=>1));
+            }
+        }
+    }
+    
     private function ValidateField() {
         include_once(CORE_PATH . 'Validator.php');
         $validateInfo = array();

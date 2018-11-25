@@ -71,7 +71,7 @@
                             <h3 class="panel-title"><?php print $labelObject->labels->header; ?></h3>
                         </div>
                         <div class="panel-body">
-                            <form class="form-horizontal" role="form" id="userReg" method="post" action="admin">
+                            <form class="form-horizontal" role="form" id="userReg" method="post" action="admin/user">
                                 <div class="form-group">
                                     <label for="Name" class="col-sm-2 control-label"><?php print $labelObject->labels->name; ?></label>
                                     <div class="col-sm-5">

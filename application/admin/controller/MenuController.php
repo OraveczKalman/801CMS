@@ -87,13 +87,17 @@ class MenuController {
     }
         
     private function newMenuForm() {
+        include_once(DATABASE_PATH . 'LanguageModel.php');
         $moduleDataArray = array();
         $moduleDataArray['table'] = 'main_header';
         $moduleDataArray['fields'] = 'main_header.MainHeaderId, lang_header.Title, lang_header.Link';
         $moduleDataArray['joins'] = 'LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId';
         $moduleDataArray['where'] = 'main_header.MainHeaderId NOT IN (SELECT MainHeaderId FROM lang_header)';
         $menu = new MenuModel( $this->db, $moduleDataArray);
-        $moduleList = $menu->getMenu();     
+        $moduleList = $menu->getMenu();
+        $languageDataArray = array('where'=>'WHERE Active=1');
+        $languageModel = new LanguageModel($this->db, $languageDataArray);
+        $languages = $languageModel->getLanguage();
         if (!isset($this->dataArray[0]['ParentRole'])) {
             $this->dataArray[0]['ParentRole'] = 0;
         }
@@ -116,7 +120,7 @@ class MenuController {
         }
 
         $menuRoles = $this -> GetMenuRoleData();
-        $menuJson = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . '/lang/NewMenuFormHu.json'));
+        $menuJson = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . '/lang/' . $_SESSION['setupData']['languageSign'] . '/NewMenuForm.json'));
         include_once(ADMIN_VIEW_PATH . 'MenuForm.php');
     }
         
@@ -212,20 +216,19 @@ class MenuController {
     }
 
     private function editMenuForm() {
-        $menuDataArray = array();
-        $menuDataArray['table'] = 'main_header';
-        $menuDataArray['fields'] = '*';
-        $menuDataArray['joins'] = 'LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId';
-        $menuDataArray['where'] = 'main_header.MainHeaderId = ' . $this->dataArray[0]['menuObject']['menuId'];
+        include_once(DATABASE_PATH . 'LanguageModel.php');
         $moduleDataArray = array();
         $moduleDataArray['table'] = 'main_header';
         $moduleDataArray['fields'] = 'lang_header.Title, lang_header.Link';
         $moduleDataArray['joins'] = 'LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId';
         $moduleDataArray['where'] = 'main_header.MainHeaderId NOT IN (SELECT MainHeaderId FROM lang_header)';
-        $menu = new MenuModel($this->db, $menuDataArray);      
-        $menuPointData = $menu->getMenu();
+        $languageDataArray = array('where'=>'WHERE Active=1');
+        $languageModel = new LanguageModel($this->db, $languageDataArray);
+        $languages = $languageModel->getLanguage();
+        $menu = new MenuModel($this->db);      
+        $menuPointData = $menu->getMenu($this->dataArray[0]['menuObject']['menuId']);
         $menu->setDataArray($moduleDataArray);
-        $moduleList = $menu->getMenu();        
+        $moduleList = $menu->getModules();        
         switch ($menuPointData[0]['Role']) {
             case 3 :
                 include_once(ADMIN_CONTROLLER_PATH . 'ArticleController.php');
@@ -251,7 +254,7 @@ class MenuController {
                 $menuPointData[0]['FileName'] =  $file[0]['PictureId'] . '|' . $file[0]['Name'];
                 break;
         }
-        $menuJson = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . '/lang/NewMenuFormHu.json'));
+        $menuJson = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . '/lang/' . $_SESSION['setupData']['languageSign'] . '/NewMenuForm.json'));
         include_once(ADMIN_VIEW_PATH . 'MenuForm.php');
     }
 
@@ -284,7 +287,7 @@ class MenuController {
             $menuDataArray['AdditionalField'] = 'NULL';
             if (isset($this->dataArray[0]['Szerep'])) {
                 $menuDataArray['Role'] = $this->dataArray[0]['Szerep'];
-                switch ($this->$menuDataArray['Role']) {
+                switch ($menuDataArray['Role']) {
                     case 4:
                         $menuDataArray['AdditionalField'] = $this->dataArray[0]['GalleryType'];
                         break;
@@ -379,7 +382,7 @@ class MenuController {
             $rankInfo['Rank'] = $i;
             $rankInfo['PointId'] = $ranks;
             $rankInfo['ParentId'] = $this->dataArray['postVars']['parent'];
-            $menu = new Menu_Model($this->db, $rankInfo);
+            $menu = new MenuModel($this->db, $rankInfo);
             $rankUpdate = $menu->UpdateRank();
             $i++;
         }	

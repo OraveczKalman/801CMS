@@ -80,22 +80,28 @@ class UserModel {
         if (!isset($_SESSION['admin']['dataArray']['UserId'])) {
             $_SESSION['admin']['dataArray']['UserId'] = 0;
         }
-        $newUserQueryString = "INSERT INTO user SET " .
-            "Name = '" . $this->dataArray['Name'] . "', " .
-            "UserName = '" . $this->dataArray['UserName'] . "', " .
-            "Password = SHA2('" . $this->dataArray['Password'] . "', 512), " .
-            "Pwdr = '" . $this->dataArray['Pwdr'] . "', " .
-            "Email = '" . $this->dataArray['Email'] . "', " .
-            "RightId = '" . $this->dataArray['RightId'] . "', " .
-            "News = '" . $this->dataArray['News'] . "', " .
-            "Created = NOW(), " .
-            "CreatedBy = " . $_SESSION['admin']['dataArray']['UserId'] . ", " .
-            "Modified = NOW(), " .
-            "ModifiedBy = " . $_SESSION['admin']['dataArray']['UserId'] . ", " .
-            "Active = 1";
-        $newUserQuery = $this->db->insertQuery($newUserQueryString);
-
-        return $newUserQuery;
+        $newUserQuery = array();
+        $newUserQuery['sql'] = "INSERT INTO user SET 
+            Name=:Name, 
+            UserName=:UserName, 
+            Password=SHA2(:Password, 512), 
+            Pwdr=:Pwdr, 
+            Email=:Email, 
+            RightId=:RightId, 
+            News=:News, 
+            Created = NOW(), 
+            CreatedBy=:UserId, 
+            Active = 1";
+        $newUserQuery["parameters"][0] = array("paramName"=>"Name", "paramVal"=>$this->dataArray['Name'], "paramType"=>PDO::PARAM_STR); 
+        $newUserQuery["parameters"][1] = array("paramName"=>"UserName", "paramVal"=>$this->dataArray['UserName'], "paramType"=>PDO::PARAM_STR); 
+        $newUserQuery["parameters"][2] = array("paramName"=>"Password", "paramVal"=>$this->dataArray['Password'], "paramType"=>PDO::PARAM_STR); 
+        $newUserQuery["parameters"][3] = array("paramName"=>"Pwdr", "paramVal"=>$this->dataArray['Pwdr'], "paramType"=>PDO::PARAM_STR); 
+        $newUserQuery["parameters"][4] = array("paramName"=>"Email", "paramVal"=>$this->dataArray['Email'], "paramType"=>PDO::PARAM_STR); 
+        $newUserQuery["parameters"][5] = array("paramName"=>"RightId", "paramVal"=>$this->dataArray['RightId'], "paramType"=>PDO::PARAM_INT); 
+        $newUserQuery["parameters"][6] = array("paramName"=>"News", "paramVal"=>$this->dataArray['News'], "paramType"=>PDO::PARAM_STR); 
+        $newUserQuery["parameters"][7] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['dataArray']['UserId'], "paramType"=>PDO::PARAM_INT); 
+        $result = $this->db->parameterInsert($newUserQuery);
+        return $result;
     }
 
     /**
@@ -105,24 +111,31 @@ class UserModel {
      * Update user data
      */
     public function updateUser() {
-        $updateUserQueryString = "UPDATE user SET " .
-            "Name = '" . $this->dataArray['Name'] . "', " .
-            "UserName = '" . $this->dataArray['UserName'] . "', " .
-            "Password = SHA2('" . $this->dataArray['Password'] . "', 512), " .
-            "Pwdr = '" . $this->dataArray['Pwdr'] . "', " .
-            "Email = '" . $this->dataArray['Email'] . "', " .
-            "RightId = " . $this->dataArray['RightId'] . ", " .
-            "News = " . $this->dataArray['News'] . ", " .
-            "Created = NOW(), " .
-            "CreatedBy = " . $_SESSION['admin']['userData']['UserId'] . ", " .
-            "Modified = NOW(), " .
-            "ModifiedBy = " . $_SESSION['admin']['userData']['UserId'] . ", " .
-            "Active = " . $this->dataArray['active'] . " " .
-            "WHERE UserId = " . $this->dataArray['UserId'];
-        print $updateUserQueryString;
-        $updateUserQuery = $this->db->updateQuery($updateUserQueryString);
-
-        return $updateUserQuery;
+        $updateUserQuery = array();
+        $updateUserQuery["sql"] = "UPDATE user SET 
+            Name=:Name, 
+            UserName=:UserName, 
+            Password=SHA2(:Password, 512), 
+            Pwdr=:Pwdr, 
+            Email=:Email, 
+            RightId=:RightId, 
+            News=:News, 
+            Modified = NOW(), 
+            ModifiedBy=:UserId, 
+            Active=:Active 
+            WHERE UserId=:UpdatedUserId";
+        $updateUserQuery["parameters"][0] = array("paramName"=>"Name", "paramVal"=>$this->dataArray['Name'], "paramType"=>PDO::PARAM_STR); 
+        $updateUserQuery["parameters"][1] = array("paramName"=>"UserName", "paramVal"=>$this->dataArray['UserName'], "paramType"=>PDO::PARAM_STR); 
+        $updateUserQuery["parameters"][2] = array("paramName"=>"Password", "paramVal"=>$this->dataArray['Password'], "paramType"=>PDO::PARAM_STR); 
+        $updateUserQuery["parameters"][3] = array("paramName"=>"Pwdr", "paramVal"=>$this->dataArray['Pwdr'], "paramType"=>PDO::PARAM_STR); 
+        $updateUserQuery["parameters"][4] = array("paramName"=>"Email", "paramVal"=>$this->dataArray['Email'], "paramType"=>PDO::PARAM_STR); 
+        $updateUserQuery["parameters"][5] = array("paramName"=>"RightId", "paramVal"=>$this->dataArray['RightId'], "paramType"=>PDO::PARAM_INT); 
+        $updateUserQuery["parameters"][6] = array("paramName"=>"News", "paramVal"=>$this->dataArray['News'], "paramType"=>PDO::PARAM_STR); 
+        $updateUserQuery["parameters"][7] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['dataArray']['UserId'], "paramType"=>PDO::PARAM_INT); 
+        $updateUserQuery["parameters"][8] = array("paramName"=>"Active", "paramVal"=>$this->dataArray['active'], "paramType"=>PDO::PARAM_INT); 
+        $updateUserQuery["parameters"][9] = array("paramName"=>"UpdatedUserId", "paramVal"=>$this->dataArray['UserId'], "paramType"=>PDO::PARAM_INT); 
+        $result = $this->db->parameterUpdate($updateUserQuery);
+        return $result;
     }
 
     /**
@@ -132,19 +145,17 @@ class UserModel {
      * User deactivate function
      */
     public function deleteUser() {
-        $deleteUserQueryString = "UPDATE user SET " .
-            "Modified = NOW(), " .
-            "Modified_By = " . $_SESSION['admin']['userData']['UserId'] . ", " .
-            "Active = " . $this->dataArray['active'] . " " .
-            "WHERE User_Id = " . $this->dataArray['userid'];
-
-        $deleteUserQuery = $this->db->updateQuery($deleteUserQueryString);
-
-        if ($error == '') {
-            return 0;
-        } else if ($error != '') {
-            return $error;
-        }
+        $deleteUserQuery = array();
+        $deleteUserQuery = "UPDATE user SET 
+            Modified=NOW(), 
+            ModifiedBy=:UserId " . $_SESSION['admin']['userData']['UserId'] . ", 
+            Active=:Active" . $this->dataArray['active'] . " 
+            WHERE UserId=:ModifiedUserId";
+        $deleteUserQuery["parameters"][0] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT); 
+        $deleteUserQuery["parameters"][1] = array("paramName"=>"Active", "paramVal"=>$this->dataArray['active'], "paramType"=>PDO::PARAM_INT); 
+        $deleteUserQuery["parameters"][2] = array("paramName"=>"ModifiedUserId", "paramVal"=>$this->dataArray['UserId'], "paramType"=>PDO::PARAM_INT); 
+        $result = $this->db->parameterUpdate($deleteUserQuery);
+        return $result;
     }
     
     /**

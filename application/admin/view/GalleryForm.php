@@ -131,8 +131,16 @@
     }
 
     function makeCimlap(mediaDescription) {
+        console.log(mediaDescription.mediaType);
         switch (mediaDescription.mediaType) {
             case 1 :
+                $.post('./admin/Gallery', { 
+                    event:'makeCover',
+                    mediaId: mediaDescription.mediaId,
+                    mediaName: mediaDescription.media,
+                    gallery: mediaDescription.galleryId
+                }, function (data) {
+                });
                 break;
             case 2 :
                 $.post('./admin/Gallery', { 

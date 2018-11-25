@@ -33,12 +33,13 @@ class ArticleModel extends AncestorClass {
      * Function for get articles to document
      */
     public function getDocumentArticles() {
-        $articlesArray = array();
-        $articlesArray['table'] = 'text';
-        $articlesArray['fields'] = 'text.*';
-        $articlesArray['where'] = 'text.SuperiorId = ' . $this->dataArray['MainHeaderId'] . ' AND text.Type = ' . $this->dataArray['Role'];
-        $getDocumentArticlesQuery = $this->db->selectBuilder($articlesArray);
-        return $getDocumentArticlesQuery;
+        $result = array();
+        $getDocumentArticlesDataArray = array();
+        $getDocumentArticlesDataArray['sql'] = 'SELECT text.* FROM text WHERE text.SuperiorId=:superiorId AND text.Type=:role';
+        $getDocumentArticlesDataArray['parameters'][0] = array("paramName"=>"superiorId", "paramVal"=>$this->dataArray['MainHeaderId'], "paramType"=>1);
+        $getDocumentArticlesDataArray['parameters'][1] = array("paramName"=>"role", "paramVal"=>$this->dataArray['Role'], "paramType"=>1);
+        $result = $this->db->parameterSelect($getDocumentArticlesDataArray);
+        return $result;
     }
 
     /**
@@ -55,7 +56,8 @@ class ArticleModel extends AncestorClass {
                 switch ($szovegek['chapterState']) {
                     case 1 :
                         if ($szovegek['Szoveg'] != '') {
-                            $insertChapterQuery = $this->db->dbLink->prepare("INSERT INTO text SET
+                            $insertChapterQuery = array();
+                            $insertChapterQuery['sql'] = "INSERT INTO text SET
                                 SuperiorId = :superiorId, 
                                 Type = :type, 
                                 Title = :title, 
@@ -63,42 +65,37 @@ class ArticleModel extends AncestorClass {
                                 Language = :language, 
                                 Created = NOW(), 
                                 CreatedBy = :createdBy, 
-                                Modified = NOW(), 
-                                ModifiedBy = :modifiedBy, 
-                                Active = 1");
+                                Active = 1";
                             $szovegek["Cim"] = "";
-                            $insertChapterQuery->bindParam(":superiorId", $szovegek["FelettesId"], PDO::PARAM_INT);
-                            $insertChapterQuery->bindParam(":type", $szovegek["Tipus"], PDO::PARAM_INT);
-                            $insertChapterQuery->bindParam(":title", $szovegek["Cim"], PDO::PARAM_STR);
-                            $insertChapterQuery->bindParam(":text", $szovegek["Szoveg"], PDO::PARAM_STR);
-                            $insertChapterQuery->bindParam(":language", $szovegek["Nyelv"], PDO::PARAM_STR);
-                            $insertChapterQuery->bindParam(":createdBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
-                            $insertChapterQuery->bindParam(":modifiedBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
-                            $insertChapterQuery->execute();
+                            $insertChapterQuery["parameters"][0] = array("paramName"=>"superiorId", "paramVal"=>$szovegek["FelettesId"], "paramType"=>PDO::PARAM_INT);
+                            $insertChapterQuery["parameters"][1] = array("paramName"=>"type", "paramVal"=>$szovegek["Tipus"], "paramType"=>PDO::PARAM_INT);
+                            $insertChapterQuery["parameters"][2] = array("paramName"=>"title", "paramVal"=>$szovegek["Cim"], "paramType"=>PDO::PARAM_STR);
+                            $insertChapterQuery["parameters"][3] = array("paramName"=>"text", "paramVal"=>$szovegek["Szoveg"], "paramType"=>PDO::PARAM_STR);
+                            $insertChapterQuery["parameters"][4] = array("paramName"=>"language", "paramVal"=>$szovegek["Nyelv"], "paramType"=>PDO::PARAM_STR);
+                            $insertChapterQuery["parameters"][5] = array("paramName"=>"createdBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+                            $result = $this->db->parameterInsert($insertChapterQuery);
                         }
                         break;
                     case 2 :
-                        $updateChapterQuery = $this->db->dbLink->prepare("UPDATE text SET 
-                            SuperiorId = :superiorId, 
-                            Type = :type, 
-                            Title = :title, 
-                            Text = :text, 
-                            Language = :language, 
-                            Created = NOW(), 
-                            CreatedBy = :createdBy, 
+                        $updateChapterQuery = array();
+                        $updateChapterQuery['sql'] = "UPDATE text SET 
+                            SuperiorId =:superiorId, 
+                            Type =:type, 
+                            Title =:title, 
+                            Text =:text, 
+                            Language =:language, 
                             Modified = NOW(), 
-                            ModifiedBy = :modifiedBy 
-                            WHERE TextId = :textId");
+                            ModifiedBy =:modifiedBy 
+                            WHERE TextId =:textId";
                         $szovegek["Cim"] = "";
-                        $updateChapterQuery->bindParam(":textId", $szovegek["SzovegId"], PDO::PARAM_INT);
-                        $updateChapterQuery->bindParam(":superiorId", $szovegek["FelettesId"], PDO::PARAM_INT);
-                        $updateChapterQuery->bindParam(":type", $szovegek["Tipus"], PDO::PARAM_INT);
-                        $updateChapterQuery->bindParam(":title", $szovegek["Cim"], PDO::PARAM_STR);
-                        $updateChapterQuery->bindParam(":text", $szovegek["Szoveg"], PDO::PARAM_STR);
-                        $updateChapterQuery->bindParam(":language", $szovegek["Nyelv"], PDO::PARAM_STR);
-                        $updateChapterQuery->bindParam(":createdBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
-                        $updateChapterQuery->bindParam(":modifiedBy", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
-                        $updateChapterQuery->execute();
+                        $updateChapterQuery["parameters"][0] = array("paramName"=>"textId", "paramVal"=>$szovegek["SzovegId"], "paramType"=>PDO::PARAM_INT);
+                        $updateChapterQuery["parameters"][1] = array("paramName"=>"superiorId", "paramVal"=>$szovegek["FelettesId"], "paramType"=>PDO::PARAM_INT);
+                        $updateChapterQuery["parameters"][2] = array("paramName"=>"type", "paramVal"=>$szovegek["Tipus"], "paramType"=>PDO::PARAM_INT);
+                        $updateChapterQuery["parameters"][3] = array("paramName"=>"title", "paramVal"=>$szovegek["Cim"], "paramType"=>PDO::PARAM_STR);
+                        $updateChapterQuery["parameters"][4] = array("paramName"=>"text", "paramVal"=>$szovegek["Szoveg"], "paramType"=>PDO::PARAM_STR);
+                        $updateChapterQuery["parameters"][5] = array("paramName"=>"language", "paramVal"=>$szovegek["Nyelv"], "paramType"=>PDO::PARAM_STR);
+                        $updateChapterQuery["parameters"][6] = array("paramName"=>"modifiedBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+                        $result = $this->db->parameterUpdate($updateChapterQuery);
                         break;
                 }
             }

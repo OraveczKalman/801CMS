@@ -149,7 +149,10 @@ class GalleryController {
     }
     
     private function makeCover() {
-        $menu_model = new Menu_Model(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
-        $menu_model -> UpdateOneField(array('Profile_Picture' => $this-> dataArray['postVars']['mediaName'], 'PointId' => $this-> dataArray['postVars']['gallery']));
+        //var_dump($this->dataArray);
+        $gallery = new GalleryModel($this->db, $this->dataArray[0]);
+        $newCover = $gallery->makeCoverImage();
+        //$menu_model = new Menu_Model(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+        //$menu_model->UpdateOneField(array('Profile_Picture' => $this->dataArray['postVars']['mediaName'], 'PointId' => $this-> dataArray['postVars']['gallery']));
     }
 }

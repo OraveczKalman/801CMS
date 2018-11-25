@@ -20,7 +20,11 @@ class SetupController {
         $setupDataArray['setupId'] = 1;
         $setup = new SetupFormModel($this->db, $setupDataArray);
         $setupData = $setup -> getSetupData();
-        $setupData = json_decode($setupData[0]['SetupData']);
+        if (!empty($setupData)) {
+            $setupData = json_decode($setupData[0]['SetupData']);
+        } else {
+            unset($setupData);
+        }
         include_once(ADMIN_VIEW_PATH . 'SetupFormView.php');
     }
 

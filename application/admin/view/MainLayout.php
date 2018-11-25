@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="<?php print $_SESSION['setupData']['siteAuthor']; ?>">
-    <title><?php print $_SESSION['setupData']['siteTitle']; ?></title>
+    <meta name="author" content="<?php if (!isset($_SESSION['setupData']['siteAuthor'])) { print "Site author not set"; } else { print $_SESSION['setupData']['siteAuthor']; } ?>">
+    <title><?php if (!isset($_SESSION['setupData']['siteTitle'])) { print "Untitled Site"; } else { print $_SESSION['setupData']['siteTitle']; } ?></title>
     <link href="<?php print ADMIN_CSS_PATH; ?>bootstrap.css" rel="stylesheet" type="text/css">
     <link href="<?php print ADMIN_CSS_PATH; ?>metisMenu.css" rel="stylesheet" type="text/css">
     <link href="<?php print ADMIN_CSS_PATH; ?>timeline.css" rel="stylesheet" type="text/css">
@@ -55,7 +55,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="./admin"><?php print $_SESSION['setupData']['siteTitle']; ?></a>
+            <a class="navbar-brand" href="./admin"><?php if (!isset($_SESSION['setupData']['siteTitle'])) { print "Untitled Site"; } else { print $_SESSION['setupData']['siteTitle']; } ?></a>
         </div>
 
         <ul class="nav navbar-top-links navbar-right">
@@ -97,13 +97,13 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
-    $.ajaxSetup({ cache: true });
-    $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
+    //$.ajaxSetup({ cache: true });
+    /*$.getScript('//connect.facebook.net/en_US/sdk.js', function(){
             FB.init({
             appId: '836761219799816',
             version: 'v2.7' // or v2.1, v2.2, v2.3, ...
         });     
-    });
+    });*/
 });
 </script>
 </body>

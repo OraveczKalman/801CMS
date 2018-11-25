@@ -224,7 +224,7 @@
 <?php
                         foreach ($languages as $languages2) {
 ?>
-                            <option value="<?php print $languages2['LanguageSign']; ?>"><?php print $languages2['Description']; ?></option>
+                            <option value="<?php print $languages2['LanguageSign']; ?>" <?php if (isset($menuPointData) && $menuPointData[0]['Language'] == $languages2['LanguageSign']) { print ' selected="selected"'; } ?>><?php print $languages2['Description']; ?></option>
 <?php
                         }
 ?>
