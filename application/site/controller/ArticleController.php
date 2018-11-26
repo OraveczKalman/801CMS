@@ -24,10 +24,12 @@ class ArticleController {
         $documentData['Header'] = $this->docModel->getDocumentArticles($this->dataArray[0]['MainHeaderId'], 1);
         $documentData['Body'] = $this->docModel->getDocumentArticles($this->dataArray[0]['MainHeaderId'], 2);
         if (!empty($documentData)) {
-            $documentData['Header'][0]['Szoveg'] = $this->mediaChanger($documentData['Header'][0]['Text']);
-            for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
-                if (!empty($this -> mediaData)) {
-                    $documentData['Body'][$i]['Text'] = $this->mediaChanger($documentData['Body'][$i]['Text']);
+            if (!empty($documentData['Header'])) {
+                $documentData['Header'][0]['Szoveg'] = $this->mediaChanger($documentData['Header'][0]['Text']);
+                for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
+                    if (!empty($this -> mediaData)) {
+                        $documentData['Body'][$i]['Text'] = $this->mediaChanger($documentData['Body'][$i]['Text']);
+                    }
                 }
             }
             return $documentData;
