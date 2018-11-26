@@ -49,7 +49,11 @@ class ArticleModel extends AncestorClass {
             WHERE t1.MainHeaderId=:mainHeaderId AND t1.Cover = 1';
         $getCoverDataArray["parameters"][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$docId, "paramType"=>1);
         $data = $this->db->parameterSelect($getCoverDataArray);
-        $result = $data[0]["Name"];
+        if (!empty($data)) {
+            $result = $data[0]["Name"];
+        } else {
+            $result = "";
+        }
         return $result;
     } 
 }
