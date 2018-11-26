@@ -12,17 +12,18 @@
     <div class="col-lg-8">
         <img class="img-fluid rounded" src="<?php print UPLOADED_PATH . "/media/" . $documentData["CoverPicture"]; ?>" alt="">
         <hr>
-        <p>Posted on <?php print $documentData['Header'][0]['Created']; ?></p>
+        <p>Posted on <?php if (!empty($documentData['Header'])) { print $documentData['Header'][0]['Created']; } ?></p>
         <hr>
-        <p class="lead"><?php print $documentData['Header'][0]['Text']; ?></p>
+        <p class="lead"><?php if (!empty($documentData['Header'])) { print $documentData['Header'][0]['Text']; } ?></p>
 <?php
     $displayText = "";
-    for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
-        if ($i==0) {
-            $displayText = "block;";
-        } else {
-            $displayText = "none;";
-        }
+    if (count($documentData['Body']) > 1) {
+        for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
+            if ($i==0) {
+                $displayText = "block;";
+            } else {
+                $displayText = "none;";
+            }
 ?>
         <div id="sheet<?php print $i+1; ?>" class="sheet" style="display:<?php print $displayText; ?>">
 <?php
@@ -30,15 +31,26 @@
 ?>
         </div>
 <?php
+        }
+    } else if (count($documentData['Body']) == 1) {
+?>
+        <div id="sheet1" class="sheet">
+<?php
+        print $documentData['Body'][$i]['Text'];
+?>
+        </div>
+<?php        
     }
 ?>
         <div class="btn-toolbar mb-3" role="toolbar">
             <div class="btn-group mr-2" role="group">
  <?php
-    for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
+    if (count($documentData['Body']) > 1) {
+        for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
 ?>
                 <button type="button" class="btn btn-secondary" onclick="javascript: PageSwitcher(<?php print $i+1; ?>)"><?php print $i+1; ?></button>
 <?php
+        }
     }
 ?>
             </div>
