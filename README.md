@@ -1,1 +1,1 @@
-801CMS is a content management system.
+A 801CMS egy tartalomkezelő rendszer mely összefoglalja eddigi tapasztalataimat a PHP backend és JavaScript frontend programozásról. A rendszer PHP5 és 7 nyelven készült a frontend pedig jQuery és bootstrap keretrendszerekkel.
