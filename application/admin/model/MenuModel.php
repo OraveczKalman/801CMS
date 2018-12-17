@@ -97,6 +97,7 @@ class MenuModel {
         $mainHeaderDataArray['Commentable'] = $this->dataArray['Commentable'];
         $mainHeaderDataArray['Module'] = $this->dataArray['Module'];
         $mainHeaderData = $this->insertMainHeader($mainHeaderDataArray);
+        //var_dump($mainHeaderData);
         if (!isset($mainHeaderData['error'])) {
             $maxRank = $this->getMaxRank($this->dataArray['ParentId']);
             $rankArray = array();
@@ -124,33 +125,52 @@ class MenuModel {
     }
     
     private function insertMainHeader($dataArray) {
-        $nowDate = date('Y-m-d H:i:s');
-        $insertMainHeaderQueryString = "INSERT INTO main_header SET
-            AdditionalField = '" . $dataArray['AdditionalField'] . "',
-            Role = '" . $dataArray['Role'] . "',
-            MainPage = " . $dataArray['MainPage'] . ",
-            MainNode = " . $dataArray['MainNode'] . ",
-            MoreFlag = " . $dataArray['MoreFlag'] . ",
-            Target = '" . $dataArray['Target'] . "',
-            UserIn = " . $dataArray['UserIn'] . ",
-            Popup = " . $dataArray['Popup'] . ",
-            Commentable = " . $dataArray['Commentable'] . ",
-            Module = '" . $dataArray['Module'] .  "',
-            Created = '" . $nowDate . "',
-            CreatedBy = " . $_SESSION['admin']['userData']['UserId'] . ",
-            Modified = '" . $nowDate . "',
-            ModifiedBy = " . $_SESSION['admin']['userData']['UserId'] . ",
+        $insertMainHeaderQuery = array();
+        $insertMainHeaderQuery['sql'] = "INSERT INTO main_header SET
+            AdditionalField=:AdditionalField,
+            Target=:Target,
+            Module=:Module,
+            Role=:Role,
+            MainPage=:MainPage,
+            MainNode=:MainNode,
+            MoreFlag=:MoreFlag,          
+            UserIn=:UserIn,
+            Popup=:Popup,
+            Commentable=:Commentable,
+            Created=NOW(),
+            CreatedBy=:UserId,
             Active = 1";
-        $insertMainHeaderQuery = $this->db->insertQuery($insertMainHeaderQueryString);
-        if (isset($insertMainHeaderQuery['error'])) {
-            $insertMainHeaderQuery['error'] = $insertMainHeaderQuery['error'] . ': ' . $insertMainHeaderQueryString;
+        if (!is_null($dataArray['AdditionalField'])) {
+            $insertMainHeaderQuery['parameters'][0] = array("paramName"=>"AdditionalField", "paramVal"=>$dataArray['AdditionalField'], "paramType"=>PDO::PARAM_STR);
+        } else {
+            $insertMainHeaderQuery['parameters'][0] = array("paramName"=>"AdditionalField", "paramVal"=>null, "paramType"=>PDO::PARAM_STR);
         }
-        return $insertMainHeaderQuery;
+        $insertMainHeaderQuery['parameters'][1] = array("paramName"=>"Role", "paramVal"=>$dataArray['Role'], "paramType"=>PDO::PARAM_INT);
+        $insertMainHeaderQuery['parameters'][2] = array("paramName"=>"MainPage", "paramVal"=>$dataArray['MainPage'], "paramType"=>PDO::PARAM_INT);
+        $insertMainHeaderQuery['parameters'][3] = array("paramName"=>"MainNode", "paramVal"=>$dataArray['MainNode'], "paramType"=>PDO::PARAM_INT);
+        $insertMainHeaderQuery['parameters'][4] = array("paramName"=>"MoreFlag", "paramVal"=>$dataArray['MoreFlag'], "paramType"=>PDO::PARAM_INT);
+        if (!is_null($dataArray['Target'])) {
+            $insertMainHeaderQuery['parameters'][5] = array("paramName"=>"Target", "paramVal"=>$dataArray['Target'], "paramType"=>PDO::PARAM_STR);
+        } else {
+            $insertMainHeaderQuery['parameters'][5] = array("paramName"=>"Target", "paramVal"=>null, "paramType"=>PDO::PARAM_STR);
+        }
+        $insertMainHeaderQuery['parameters'][6] = array("paramName"=>"UserIn", "paramVal"=>$dataArray['UserIn'], "paramType"=>PDO::PARAM_INT);
+        $insertMainHeaderQuery['parameters'][7] = array("paramName"=>"Popup", "paramVal"=>$dataArray['Popup'], "paramType"=>PDO::PARAM_INT);
+        $insertMainHeaderQuery['parameters'][8] = array("paramName"=>"Commentable", "paramVal"=>$dataArray['Commentable'], "paramType"=>PDO::PARAM_INT);
+        if (!is_null($dataArray['Module'])) {
+            $insertMainHeaderQuery['parameters'][9] = array("paramName"=>"Module", "paramVal"=>$dataArray['Module'], "paramType"=>PDO::PARAM_STR);
+        } else {
+            $insertMainHeaderQuery['parameters'][9] = array("paramName"=>"Module", "paramVal"=>null, "paramType"=>PDO::PARAM_STR);
+        }
+        $insertMainHeaderQuery['parameters'][10] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+
+        $insertMainHeaderResult = $this->db->parameterInsert($insertMainHeaderQuery);
+        return $insertMainHeaderResult;
     }
     
     private function insertLangHeader($dataArray) {
         $insertLangHeaderQuery = array();
-        $insertLangHeaderQuery['sql'] = $this->db->dbLink->prepare("INSERT INTO lang_header SET
+        $insertLangHeaderQuery['sql'] = "INSERT INTO lang_header SET
             MainHeaderId=:mainHeaderId,
             ParentId=:parentId,
             Rank=:rank,
@@ -163,7 +183,7 @@ class MenuModel {
             Counter=:counter,
             Created=NOW(),
             CreatedBy=:createdBy,
-            Active = 1");
+            Active = 1";
         $insertLangHeaderQuery["parameters"][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$dataArray['MainHeaderId'], "paramType"=>PDO::PARAM_INT);
         $insertLangHeaderQuery["parameters"][1] = array("paramName"=>"parentId", "paramVal"=>$dataArray['ParentId'], "paramType"=>PDO::PARAM_INT);
         $insertLangHeaderQuery["parameters"][2] = array("paramName"=>"rank", "paramVal"=>$dataArray['Rank'], "paramType"=>PDO::PARAM_INT);
@@ -215,52 +235,66 @@ class MenuModel {
     }
     
     private function updateMainHeader($dataArray) {
-        $nowDate = date('Y-m-d H:i:s');
-        $updateMainHeaderQueryString = "UPDATE main_header SET
-            AdditionalField = '" . $dataArray['AdditionalField'] . "',
-            Role = '" . $dataArray['Role'] . "',
-            MainPage = " . $dataArray['MainPage'] . ",
-            MainNode = " . $dataArray['MainNode'] . ",
-            MoreFlag = " . $dataArray['MoreFlag'] . ",
-            Target = '" . $dataArray['Target'] . "',
-            UserIn = " . $dataArray['UserIn'] . ",
-            Popup = " . $dataArray['Popup'] . ",
-            Commentable = " . $dataArray['Commentable'] . ",
-            Module = '" . $dataArray['Module'] .  "',
-            Created = '" . $nowDate . "',
-            CreatedBy = " . $_SESSION['admin']['userData']['UserId'] . ",
-            Modified = '" . $nowDate . "',
-            ModifiedBy = " . $_SESSION['admin']['userData']['UserId'] . ",
-            Active = 1 WHERE MainHeaderId = " . $dataArray['MainHeaderId'];
-        $updateMainHeaderQuery = $this->db->insertQuery($updateMainHeaderQueryString);
-        if (isset($updateMainHeaderQuery['error'])) {
-            $updateMainHeaderQuery['error'] = $updateMainHeaderQuery['error'] . ': ' . $updateMainHeaderQueryString;
-        }
-        return $updateMainHeaderQuery;       
+        $updateMainHeaderQuery['sql'] = "UPDATE main_header SET
+            AdditionalField=:AdditionalField,
+            Role=:Role,
+            MainPage=:MainPage,
+            MainNode=:MainNode,
+            MoreFlag=:MoreFlag,
+            Target=:Target,
+            UserIn=:UserIn,
+            Popup=:Popup,
+            Commentable=:Commentable,
+            Module:=Module,
+            Modified=NOW(),
+            ModifiedBy=:UserId,
+            Active=1 WHERE MainHeaderId=:MainHeaderId";
+
+        $updateMainHeaderQuery['parameters'][0] = array("paramName"=>"AdditionalField", "paramVal"=>$dataArray['AdditionalField'], "paramType"=>PDO::PARAM_STR);
+        $updateMainHeaderQuery['parameters'][1] = array("paramName"=>"Role", "paramVal"=>$dataArray['Role'], "paramType"=>PDO::PARAM_INT);
+        $updateMainHeaderQuery['parameters'][2] = array("paramName"=>"MainPage", "paramVal"=>$dataArray['MainPage'], "paramType"=>PDO::PARAM_INT);
+        $updateMainHeaderQuery['parameters'][3] = array("paramName"=>"MainNode", "paramVal"=>$dataArray['MainNode'], "paramType"=>PDO::PARAM_INT);
+        $updateMainHeaderQuery['parameters'][4] = array("paramName"=>"MoreFlag", "paramVal"=>$dataArray['MoreFlag'], "paramType"=>PDO::PARAM_INT);
+        $updateMainHeaderQuery['parameters'][5] = array("paramName"=>"Target", "paramVal"=>$dataArray['Target'], "paramType"=>PDO::PARAM_INT);
+        $updateMainHeaderQuery['parameters'][6] = array("paramName"=>"UserIn", "paramVal"=>$dataArray['UserIn'], "paramType"=>PDO::PARAM_INT);
+        $updateMainHeaderQuery['parameters'][7] = array("paramName"=>"Popup", "paramVal"=>$dataArray['Popup'], "paramType"=>PDO::PARAM_INT);
+        $updateMainHeaderQuery['parameters'][8] = array("paramName"=>"Commentable", "paramVal"=>$dataArray['Commentable'], "paramType"=>PDO::PARAM_INT);
+        $updateMainHeaderQuery['parameters'][9] = array("paramName"=>"Module", "paramVal"=>$dataArray['Module'], "paramType"=>PDO::PARAM_STR);
+        $updateMainHeaderQuery['parameters'][10] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+        $updateMainHeaderQuery['parameters'][11] = array("paramName"=>"MainHeaderId", "paramVal"=>$dataArray['MainHeaderId'], "paramType"=>PDO::PARAM_INT);
+        
+        $updateMainHeaderResult = $this->db->parameterUpdate($updateMainHeaderQuery);
+        return $updateMainHeaderResult;       
     }
     
     private function updateLangHeader($dataArray) {
-        $nowDate = date('Y-m-d H:i:s');
-        $updateLangHeaderQueryString = "UPDATE lang_header SET
-            MainHeaderId = " . $dataArray['MainHeaderId'] . ",
-            ParentId = " . $dataArray['ParentId'] . ",
-            Rank = " . $dataArray['Rank'] . ",
-            Caption = '" . $dataArray['Caption'] . "',
-            Title = '" . $dataArray['Title'] . "',
-            Heading = '" . $dataArray['Heading'] . "',
-            Keywords = '" . $dataArray['Keywords'] . "',
-            Link = '" . $dataArray['Link'] . "',
-            Language = '" . $dataArray['Language'] . "',
-            Created = '" . $nowDate . "',
-            CreatedBy = " . $_SESSION['admin']['userData']['UserId'] . ",
-            Modified = '" . $nowDate . "',
-            ModifiedBy = " . $_SESSION['admin']['userData']['UserId'] . ",
-            Active = 1 WHERE LangHeaderId = " . $dataArray['LangHeaderId'];
-        $updateLangHeaderQuery = $this->db->insertQuery($updateLangHeaderQueryString);
-        if (isset($updateLangHeaderQuery['error'])) {
-            $updateLangHeaderQuery['error'] = $updateLangHeaderQuery['error'] . ': ' . $updateLangHeaderQueryString;
-        }
-        return $updateLangHeaderQuery;
+        $updateLangHeaderQuery = array();
+        $updateLangHeaderQuery['sql'] = "UPDATE lang_header SET
+            MainHeaderId=:MainHeaderId,
+            ParentId=:ParentId,
+            Rank=:Rank,
+            Caption=:Caption,
+            Title=:Title,
+            Heading=:Heading,
+            Keywords=:Keywords,
+            Link=:Link,
+            Language:=Language,
+            Modified=NOW(),
+            ModifiedBy=:UserId,
+            Active=1 WHERE LangHeaderId=:LangHeaderId";
+        $updateLangHeaderQuery["parameters"][0] = array("paramName"=>"MainHeaderId", "paramVal"=>$dataArray['MainHeaderId'], "paramType"=>PDO::PARAM_INT);
+        $updateLangHeaderQuery["parameters"][1] = array("paramName"=>"ParentId", "paramVal"=>$dataArray['ParentId'], "paramType"=>PDO::PARAM_INT);
+        $updateLangHeaderQuery["parameters"][2] = array("paramName"=>"Rank", "paramVal"=>$dataArray['Rank'], "paramType"=>PDO::PARAM_INT);
+        $updateLangHeaderQuery["parameters"][3] = array("paramName"=>"Caption", "paramVal"=>$dataArray['Caption'], "paramType"=>PDO::PARAM_STR);
+        $updateLangHeaderQuery["parameters"][4] = array("paramName"=>"Title", "paramVal"=>$dataArray['Title'], "paramType"=>PDO::PARAM_STR);
+        $updateLangHeaderQuery["parameters"][5] = array("paramName"=>"Heading", "paramVal"=>$dataArray['Heading'], "paramType"=>PDO::PARAM_STR);
+        $updateLangHeaderQuery["parameters"][6] = array("paramName"=>"Keywords", "paramVal"=>$dataArray['Keywords'], "paramType"=>PDO::PARAM_STR);
+        $updateLangHeaderQuery["parameters"][7] = array("paramName"=>"Link", "paramVal"=>$dataArray['Link'], "paramType"=>PDO::PARAM_STR);
+        $updateLangHeaderQuery["parameters"][8] = array("paramName"=>"Language", "paramVal"=>$dataArray['Language'], "paramType"=>PDO::PARAM_STR);
+        $updateLangHeaderQuery["parameters"][9] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+        $updateLangHeaderQuery["parameters"][10] = array("paramName"=>"LangHeaderId", "paramVal"=>$dataArray['LangHeaderId'], "paramType"=>PDO::PARAM_INT);
+        $updateLangHeaderResult = $this->db->parameterUpdate($updateLangHeaderQuery);
+        return $updateLangHeaderResult;
     }
     
     public function updateMainHeaderField() {

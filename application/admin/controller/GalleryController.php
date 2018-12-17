@@ -9,6 +9,7 @@ class GalleryController {
 
     public function __construct($dataArray, $db) {
         $this -> dataArray = $dataArray;
+        //var_dump($this->dataArray);
         if (!isset($this->dataArray[0]['event'])) {
             $this->dataArray[0]['event'] = 'editGalleryForm';
         }
@@ -51,6 +52,7 @@ class GalleryController {
     }
 
     private function FileUpload() {
+        var_dump('xxx');
         $uploadDataArray = array();
         $uploadDataArray[0]['fileArrayName'] = 'media';
         $uploadDataArray[0]['uploadPath'] = UPLOADED_MEDIA_PATH;
@@ -61,10 +63,13 @@ class GalleryController {
 
         $fileData = array();
         $fileData['images'] = $uploadedFiles['successfulUpload'];
+        var_dump($fileData);
         $fileData['MainHeaderId'] = $_POST['MainHeaderId'];
         $fileData['mediaType'] = $_POST['mediaTypeHidden'];
-        $galleryUpload = new GalleryModel($fileData, $this->db);
-        $galleryUpload->insertGalleryImages();
+        if (!empty($fileData['images'])) {
+            $galleryUpload = new GalleryModel($fileData, $this->db);
+            $galleryUpload->insertGalleryImages();
+        }
     }
 
     protected function UpdatePictureData() {
@@ -136,12 +141,8 @@ class GalleryController {
     }
     
     private function DeletePicture() {
-        $picturesDataArray = array();
-        $picturesDataArray['table'] = 'picture';
-        $picturesDataArray['fields'] = 'Name, ThumbName';
-        $picturesDataArray['where'] = 'PictureId = ' . $this->dataArray[0]['PictureId'];
-        $galleryModel = new GalleryModel($picturesDataArray, $this->db);
-        $picturesToDelete = $galleryModel->getPicture();
+        $galleryModel = new GalleryModel($this->db);
+        $picturesToDelete = $galleryModel->getPicture($this->dataArray[0]['PictureId']);
         unlink(UPLOADED_MEDIA_PATH . $picturesToDelete[0]['Name']);
         unlink(UPLOADED_MEDIA_PATH . $picturesToDelete[0]['ThumbName']);
         $galleryModel->setDataArray($this->dataArray[0]);
@@ -149,10 +150,7 @@ class GalleryController {
     }
     
     private function makeCover() {
-        //var_dump($this->dataArray);
         $gallery = new GalleryModel($this->db, $this->dataArray[0]);
         $newCover = $gallery->makeCoverImage();
-        //$menu_model = new Menu_Model(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
-        //$menu_model->UpdateOneField(array('Profile_Picture' => $this->dataArray['postVars']['mediaName'], 'PointId' => $this-> dataArray['postVars']['gallery']));
     }
 }

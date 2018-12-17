@@ -64,9 +64,12 @@ class GalleryModel {
         return $galleryPictures;
     }
     
-    public function getPicture() {
-        $getMenuQuery = $this->db->selectBuilder($this->dataArray);
-        return $getMenuQuery;
+    public function getPicture($pictureId) {
+        $getPicture = array();
+        $getPicture['sql'] = "SELECT Name, ThumbName FROM picture WHERE PictureId=:pictureId";
+        $getPicture['parameters'][0] = array("paramName"=>"pictureId", "paramVal"=>$pictureId, "paramType"=>PDO::PARAM_INT);
+        $getPictureResult = $this->db->parameterSelect($getPicture);
+        return $getPictureResult;
     }
     
     /**
@@ -77,9 +80,7 @@ class GalleryModel {
      * Get all elements to gallery
      */
     public function getGalleryObjects($menuId) {
-        //$result = array();
-        //try {
-        $getGalleryObjectQuery = $this->db->dbLink->prepare('SELECT picture.PictureId, picture.Name AS kep_nev_big, 
+        $getGalleryObjectQuery['sql'] = 'SELECT picture.PictureId, picture.Name AS kep_nev_big, 
             picture.ThumbName AS kep_nev, 
             picture.MediaType, 
             (SELECT main_header.Role FROM main_header WHERE gallery_picture.MainHeaderId = main_header.MainHeaderId) AS Szerep, 
@@ -87,13 +88,9 @@ class GalleryModel {
             FROM gallery_picture 
             INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId 
             WHERE gallery_picture.MainHeaderId = :menuId AND gallery_picture.Active = 1 
-            ORDER BY gallery_picture.Rank ASC');
-        $getGalleryObjectQuery->bindParam(':menuId', $menuId, PDO::PARAM_INT);
-        $getGalleryObjectQuery->execute();
-        $result = $getGalleryObjectQuery->fetchAll();
-        //} catch (PDOException $e) {
-        //    $this->db->logWriter($e->errorInfo);
-        //}
+            ORDER BY gallery_picture.Rank ASC';
+        $getGalleryObjectQuery['parameters'][0] = array('paramName'=>'menuId', 'paramVal'=>$menuId, 'paramType'=>PDO::PARAM_INT);
+        $result = $this->db->parameterSelect($getGalleryObjectQuery);
         return $result;
     }
     
@@ -105,17 +102,12 @@ class GalleryModel {
      * Get textual informations for gallery element
      */
     public function getGalleryObjectText($galleryObjectId) {
-        $result = array();
-        try {
-            $getGalleryObjectTextQuery = $this->db->dbLink->prepare("SELECT text.Text, text.TextId FROM text  
-                WHERE SuperiorId = :galleryObjectId
-                AND Type = 3");
-            $getGalleryObjectTextQuery->bindParam(':galleryObjectId', $galleryObjectId, PDO::PARAM_INT);
-            $getGalleryObjectTextQuery->execute();
-            $result = $getGalleryObjectTextQuery->fetchAll();
-        } catch (PDOException $e) {
-            $this->db->logWriter($e->errorInfo);
-        }
+        $getGalleryObjectTextQuery = array();
+        $getGalleryObjectTextQuery['sql'] = "SELECT text.Text, text.TextId FROM text  
+            WHERE SuperiorId = :galleryObjectId
+            AND Type = 3";
+        $getGalleryObjectTextQuery["parameters"][0] = array('paramName'=>'galleryObjectId', 'paramVal'=>$galleryObjectId, 'paramType'=>PDO::PARAM_INT);
+        $result = $this->db->parameterSelect($getGalleryObjectTextQuery);
         return $result;
     }
 
@@ -124,61 +116,65 @@ class GalleryModel {
      * Insert element to gallery
      */
     public function insertGalleryImages() {
-        try {
-            foreach ($this->dataArray['images'] as $pictureData) {
-                switch ($this->dataArray['mediaType']) {
-                    case 3 :
-                        $pictureData['thumbFileName'] = 'videoholder.png';
-                        break;
-                    case 4 :
-                        $pictureData['thumbFileName'] = 'musicholder.png';
-                        break;
-                    case 5 :
-                        $pictureData['thumbFileName'] = '';
-                        break;
-                }
-                $kepFeltoltQuery = $this->db->dbLink->prepare("INSERT INTO `picture` SET 
-                    Name = :fileName,
-                    ThumbName = :thumbFileName,
-                    MediaType = :mediaType,
-                    Created = NOW(),
-                    CreatedBy = :userId,
-                    Modified = NOW(),
-                    ModifiedBy = :userId,
-                    Active = 1");
-                $kepFeltoltQuery->bindParam(":fileName", $pictureData["fileName"], PDO::PARAM_STR);
-                $kepFeltoltQuery->bindParam(":thumbFileName", $pictureData["thumbFileName"], PDO::PARAM_STR);
-                $kepFeltoltQuery->bindParam(":mediaType", $this->dataArray["mediaType"], PDO::PARAM_INT);
-                $kepFeltoltQuery->bindParam(":userId", $_SESSION['admin']['userData']['UserId'], PDO::PARAM_INT);
-                $kepFeltoltQuery->execute();
-                $lastInsert = $this->db->dbLink->lastInsertId();
-                $insertGalTopicQuery = $this->db->dbLink->prepare("INSERT INTO gallery_picture SET 
+        $this->db->beginTran();
+        $fullResult = true;
+        foreach ($this->dataArray['images'] as $pictureData) {
+            switch ($this->dataArray['mediaType']) {
+                case 3 :
+                    $pictureData['thumbFileName'] = 'videoholder.png';
+                    break;
+                case 4 :
+                    $pictureData['thumbFileName'] = 'musicholder.png';
+                    break;
+                case 5 :
+                    $pictureData['thumbFileName'] = '';
+                    break;
+            }
+            $pictureUploadQuery = array();
+            $pictureUploadQuery['sql'] = "INSERT INTO `picture` SET 
+                Name = :fileName,
+                ThumbName = :thumbFileName,
+                MediaType = :mediaType,
+                Created = NOW(),
+                CreatedBy = :userId,
+                Modified = NOW(),
+                ModifiedBy = :userId,
+                Active = 1";
+            $pictureUploadQuery['parameters'][0] = array("paramName"=>"fileName", "paramVal"=>$pictureData["fileName"], "paramType"=>PDO::PARAM_STR);
+            $pictureUploadQuery['parameters'][1] = array("paramName"=>"thumbFileName", "paramVal"=>$pictureData["thumbFileName"], "paramType"=>PDO::PARAM_STR);
+            $pictureUploadQuery['parameters'][2] = array("paramName"=>"mediaType", "paramVal"=>$this->dataArray["mediaType"], "paramType"=>PDO::PARAM_INT);
+            $pictureUploadQuery['parameters'][3] = array("paramName"=>"userId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+            $pictureUploadResult = $this->db->parameterInsert($pictureUploadQuery);
+            if (!$pictureUploadResult) {
+                $fullResult = false;
+            } else {
+                $insertGalTopicQuery = array();
+                $insertGalTopicQuery['sql'] = "INSERT INTO gallery_picture SET 
                     MainHeaderId = :mainHeaderId,
                     PictureId = :pictureId,
                     Rank = 0,
-                    Active = 1");
-                $insertGalTopicQuery->bindParam(":mainHeaderId", $this->dataArray['MainHeaderId'], PDO::PARAM_INT);
-                $insertGalTopicQuery->bindParam(":pictureId", $lastInsert, PDO::PARAM_INT);
-                $insertGalTopicQuery->execute();
+                    Active = 1";
+                $insertGalTopicQuery["parameters"][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray['MainHeaderId'], "paramType"=>PDO::PARAM_INT);
+                $insertGalTopicQuery["parameters"][1] = array("paramName"=>"pictureId", "paramVal"=>$pictureUploadResult['lastInsert'], "paramType"=>PDO::PARAM_INT);
+                $insertGalTopicResult = $this->db->parameterInsert($insertGalTopicQuery);
             }
-        } catch (PDOException $e) {
-            $this->db->logWriter($e->errorInfo);
         }
+        if (!$fullResult) {
+            $this->db->rollBack();
+        } else {
+            $this->db->commit();
+        }
+        return $fullResult;
     }
 
     public function getGalleryCovers($parent) {
-        $result = array();
-        try {
-            $getGalleryCoversQuery = $this->db->dbLink->prepare("SELECT menu.Link, menu.Felirat, menu.Profile_Picture, menu.Menu_Id 
-                FROM menu 
-                LEFT JOIN rank ON menu.Menu_Id = rank.Point_id 
-                WHERE rank.ParentId = :parentId AND menu.Szerep = 3 AND menu.Active = 1");
-            $getGalleryCoversQuery->bindParam(":parentId", $parent, PDO::PARAM_INT);
-            $getGalleryCoversQuery->execute();
-            $result = $getGalleryCoversQuery->fetchAll();
-        } catch (PDOException $e) {
-            $this->db->logWriter($e->errorInfo);          
-        }
+        $getGalleryCoversQuery = array();
+        $getGalleryCoversQuery['sql'] = "SELECT menu.Link, menu.Felirat, menu.Profile_Picture, menu.Menu_Id 
+            FROM menu 
+            LEFT JOIN rank ON menu.Menu_Id = rank.Point_id 
+            WHERE rank.ParentId = :parentId AND menu.Szerep = 3 AND menu.Active = 1";
+        $getGalleryCoversQuery['parameters'][0] = array("paramName"=>":parentId", "paramVal"=>$parent, "paramType"=>PDO::PARAM_INT);
+        $result = $this->db->parameterSelect($getGalleryCoversQuery);
         return $result;
     }
     
@@ -189,19 +185,31 @@ class GalleryModel {
      * Function for delete elements from gallery
      */
     public function deleteFromGallery() {
-        try {
-            $retArray = array();
-            $deleteGalleryPictureQuery = $this->db->dbLink->prepare("DELETE FROM gallery_picture WHERE MainHeaderId = :mainHeaderId
-                AND PictureId = :pictureId");
-            $deleteGalleryPictureQuery->bindParam(":mainHeaderId", $this->dataArray["mainHeaderId"], PDO::PARAM_INT);
-            $deleteGalleryPictureQuery->bindParam(":pictureId", $this->dataArray["pictureId"], PDO::PARAM_INT);
-            $deleteGalleryPictureQuery->execute();
-            $deletePictureQuery = $this->db->dbLink->prepare("DELETE FROM picture WHERE PictureId = :pictureId");
-            $deletePictureQuery->bindParam(":pictureId", $this->dataArray["pictureId"], PDO::PARAM_INT);
-            $deletePictureQuery->execute();
-        } catch (PDOException $e) {
-            $this->db->logWriter($e->errorInfo);
+        $this->db->beginTran();
+        $fullResult = true;
+        $deleteGalleryPictureQuery = array();
+        $deleteGalleryPictureQuery['sql'] = "DELETE FROM gallery_picture WHERE MainHeaderId=:mainHeaderId AND PictureId=:pictureId";
+        $deleteGalleryPictureQuery["parameters"][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["MainHeaderId"], "paramType"=>PDO::PARAM_INT);
+        $deleteGalleryPictureQuery["parameters"][1] = array("paramName"=>"pictureId", "paramVal"=>$this->dataArray["PictureId"], "paramType"=>PDO::PARAM_INT);
+        $deleteGalleryPictureResult = $this->db->parameterUpdate($deleteGalleryPictureQuery);
+        var_dump($deleteGalleryPictureResult);
+        if (!$deleteGalleryPictureResult) {
+            $fullResult = false;
+        } else {
+            $deletePictureQuery = array();
+            $deletePictureQuery['sql'] = "DELETE FROM picture WHERE PictureId=:pictureId";
+            $deletePictureQuery['parameters'][0] = array("paramName"=>"pictureId", "paramVal"=>$this->dataArray["PictureId"], "paramType"=>PDO::PARAM_INT);
+            $deletePictureResult = $this->db->parameterUpdate($deletePictureQuery);
+            if (!$deletePictureResult) {
+                $fullResult = false;
+            }
         }
+        if (!$fullResult) {
+            $this->db->rollBack();
+        } else {
+            $this->db->commit();
+        }
+        return $fullResult;
     }
     
     /**
@@ -211,17 +219,19 @@ class GalleryModel {
      * Update function for sequence of elments in gallery 
      */
     public function updateGallery() {
-        try {
-            $updatePicturesQuery = $this->db->dbLink->prepare("UPDATE `gallery_picture` SET 
-                `Rank` = :rank 
-                WHERE `PictureId` = :pictureId");
-            $updatePicturesQuery->bindParam(":rank", $this->dataArray['rank'], PDO::PARAM_INT);
-            $updatePicturesQuery->bindParam(":pictureId", $this->dataArray['pic_id'], PDO::PARAM_INT);
-            $updatePicturesQuery->execute();
-        } catch (PDOException $e) {
-            $this->db->logWriter($e->errorInfo);
+        $this->db->beginTran();
+        $updatePicturesQuery = array();
+        $updatePicturesQuery['sql'] = "UPDATE `gallery_picture` SET 
+            `Rank`=:rank WHERE `PictureId`=:pictureId";
+        $updatePicturesQuery['parameters'][0] = array("paramName"=>"rank", "paramVal"=>$this->dataArray['rank'], "paramType"=>PDO::PARAM_INT);
+        $updatePicturesQuery['parameters'][1] = array("paramName"=>"pictureId", "paramVal"=>$this->dataArray['pic_id'], "paramType"=>PDO::PARAM_INT);
+        $result = $this->db->parameterUpdate($updatePicturesQuery);
+        if (!$result) {
+            $this->db->rollBack();
+        } else {
+            $this->db->commit();
         }
-        return $updatePicturesQuery;
+        return $result;
     }
     
     /**
@@ -231,35 +241,45 @@ class GalleryModel {
      * Update gallery element thumbnail database function
      */
     public function updatePictureThumbnail() {
-        try {
-            $updateThumbnailsQuery = $this->db->dbLink->prepare("UPDATE `picture` SET 
-                ThumbName = :thumbName
-                WHERE `PictureId` = :pictureId");
-            $updateThumbnailsQuery->bindParam(":thumbName", $this->dataArray["thumbKepnev"], PDO::PARAM_STR);
-            $updateThumbnailsQuery->bindParam(":pictureId", $this->dataArray["picId"], PDO::PARAM_INT);
-            $updateThumbnailsQuery->execute();
-        } catch (PDOException $e) {
-            $this->db->logWriter($e->errorInfo);
+        $this->db->beginTran();
+        $updateThumbnailsQuery = array();
+        $updateThumbnailsQuery['sql'] = "UPDATE `picture` SET 
+            ThumbName=:thumbName WHERE `PictureId`=:pictureId";
+        $updateThumbnailsQuery["parameters"][0] = array("paramName"=>"thumbName", "paramVal"=>$this->dataArray["thumbKepnev"], "paramType"=>PDO::PARAM_STR);
+        $updateThumbnailsQuery["parameters"][1] = array("paramName"=>"pictureId", "paramVal"=>$this->dataArray["picId"], "paramType"=>PDO::PARAM_INT);
+        $result = $this->db->parameterUpdate($updateThumbnailsQuery);
+        if (!$result) {
+            $this->db->rollBack();
+        } else {
+            $this->db->commit();
         }
+        return $result;
     }
     
     public function makeCoverImage() {
-        try {
-            //var_dump($this->dataArray);
-            $resetCoverImageQuery = $this->db->dbLink->prepare("UPDATE gallery_picture SET cover=0 WHERE MainHeaderId=:mainHeaderId");
-            $resetCoverImageQuery->bindParam(":mainHeaderId", $this->dataArray["gallery"], PDO::PARAM_INT);
-            $resetCoverImageQuery->execute();
-            $resetCoverImageQuery->debugDumpParams();
-            //var_dump("UPDATE gallery_picture SET cover=1 WHERE MainHeaderId=" . $this->dataArray["gallery"] . " AND PictureId=" . $this->dataArray["mediaId"]);
-            $updateCoverImageQuery = $this->db->dbLink->prepare("UPDATE gallery_picture SET cover=1 WHERE MainHeaderId=:mainHeaderId AND PictureId=:mediaId");
-            $updateCoverImageQuery->bindParam(":mainHeaderId", $this->dataArray["gallery"], PDO::PARAM_INT);
-            $updateCoverImageQuery->bindParam(":mediaId", $this->dataArray["mediaId"], PDO::PARAM_INT);           
-            $updateCoverImageQuery->execute();
-            $updateCoverImageQuery->debugDumpParams();
-        } catch (PDOException $e) {
-            //var_dump($e->getMessage());
-            $this->db->logWriter($e->errorInfo);
-            //$updateCoverImageQuery->debugDumpParams();
+        $this->db->beginTran();
+        $fullResult = true;
+        $resetCoverImageQuery = array();
+        $resetCoverImageQuery['sql'] = "UPDATE gallery_picture SET cover=0 WHERE MainHeaderId=:mainHeaderId";
+        $resetCoverImageQuery['parameters'][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["gallery"], "paramType"=>PDO::PARAM_INT);
+        $resetCoverImageResult = $this->db->parameterUpdate($resetCoverImageQuery);
+        if (!$resetCoverImageResult) { 
+            $fullResult = false;
+        } else {
+            $updateCoverImageQuery = array();
+            $updateCoverImageQuery['sql'] = "UPDATE gallery_picture SET cover=1 WHERE MainHeaderId=:mainHeaderId AND PictureId=:mediaId";
+            $updateCoverImageQuery['parameters'][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["gallery"], "paramType"=>PDO::PARAM_INT);
+            $updateCoverImageQuery['parameters'][1] = array("paramName"=>"mediaId", "paramVal"=>$this->dataArray["mediaId"], "paramType"=>PDO::PARAM_INT);           
+            $updateCoverImageResult = $this->db->parameterUpdate($updateCoverImageQuery);
+            if (!$updateCoverImageResult) {
+                $fullResult = false;
+            }
         }
+        if (!$fullResult) {
+            $this->db->rollBack();
+        } else {
+            $this->db->commit();
+        }
+        return $fullResult;
     }
 }

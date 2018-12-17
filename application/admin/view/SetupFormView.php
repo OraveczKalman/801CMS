@@ -91,9 +91,10 @@
     });
 
     function processError(data) {
+        alert('xxx');
         data = JSON.parse(data);
         if (typeof data.good !== "undefined") {
-            $('#MessageBox #MessageBody').html('<div style="text-align: center;"><?php print $setupLabels->labels->successLabel; ?></div>');
+            $('#MessageBox #MessageBody').html('<div style="text-align: center;"><?php print $setupLabels->labels->sucessLabel; ?></div>');
             $('#MessageBox').modal('show');
             setTimeout(function () {               
                 $('#MessageBox').modal('hide');
@@ -107,7 +108,7 @@
     <div class="col-sm-12">
         <h1><?php print $setupLabels->labels->headLabel; ?></h1>
 
-        <form id="setupForm" role="form" class="form-horizontal" method="post" action="./admin/Setup">
+        <form id="setupForm" role="form" class="form-horizontal" method="post" action="admin/Setup">
             <div class="form-group">
                 <label class="col-sm-3 control-label"><?php print $setupLabels->labels->galleryThumbnail; ?>:</label>
                 <div class="col-sm-7">
@@ -287,7 +288,7 @@
 
             <div class="form-group">
                 <input type="hidden" name="event" id="event" value="SaveSetupForm" />
-                <input type="submit" name="save" id="save" value="<?php print $setupLabels->labels->send; ?>" />
+                <input type="button" class="btn btn-default" onclick="javascript: $('#setupForm').submit();" name="save" id="save" value="<?php print $setupLabels->labels->send; ?>" />
             </div>
         </form>
     </div>

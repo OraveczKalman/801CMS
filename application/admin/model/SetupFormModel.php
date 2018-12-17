@@ -18,17 +18,21 @@ class SetupFormModel {
     }
 
     public function getSetupData() {
-        $getSetupDataQueryString = "SELECT * FROM setupdata WHERE SetupId = " . $this->dataArray['setupId'];
-        $getSetupDataQuery = $this -> db -> selectQuery($getSetupDataQueryString);
-        return $getSetupDataQuery;
+        $getSetupDataQuery = array();
+        $getSetupDataQuery['sql'] = "SELECT * FROM setupdata WHERE SetupId=:setupId";
+        $getSetupDataQuery['parameters'][0] = array("paramName"=>"setupId", "paramVal"=>$this->dataArray['setupId'], "paramType"=>PDO::PARAM_INT);
+        $getSetupDataQueryResult = $this->db->parameterSelect($getSetupDataQuery);
+        return $getSetupDataQueryResult;
     }
 
     public function updateSetupData() {
-        $updateSetupDataQueryString = "REPLACE INTO setupdata SET " .
-            "SetupId = " . $this->dataArray['id'] . ", " .
-            "SetupData = '" . $this->dataArray['data'] . "'";
-
-        $updateSetupDataQuery = $this -> db -> updateQuery($updateSetupDataQueryString);
-        return $updateSetupDataQuery;
+        $updateSetupDataQuery = array();
+        $updateSetupDataQuery['sql'] = "REPLACE INTO setupdata SET 
+            SetupId=:setupId, 
+            SetupData=:setupData";
+        $updateSetupDataQuery['parameters'][0] = array("paramName"=>"setupId", "paramVal"=>$this->dataArray['id'], "paramType"=>PDO::PARAM_INT);
+        $updateSetupDataQuery['parameters'][1] = array("paramName"=>"setupData", "paramVal"=>$this->dataArray['data'], "paramType"=>PDO::PARAM_STR);
+        $updateSetupDataResult = $this->db->parameterUpdate($updateSetupDataQuery);
+        return $updateSetupDataResult;
     }
 }

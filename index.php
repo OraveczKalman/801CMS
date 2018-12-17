@@ -8,6 +8,7 @@ if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 } else {
     $_SESSION['prefix'] = 'http';
 }
+//var_dump($_SESSION);
 include_once('./application/common/PathConfig.php');
 $db=null;
 if (file_exists(CORE_PATH . "DbConfig.json")) {
@@ -16,8 +17,16 @@ if (file_exists(CORE_PATH . "DbConfig.json")) {
     $db = new DbCore($databaseConfig[0]);
     if (!isset($_SESSION['setupData'])) {
         include_once(DATABASE_PATH . 'SetupModel.php');
-        $setupData = SetupModel::getSetupData(1, $db);
+        include_once(DATABASE_PATH . 'LanguageModel.php');
+        $setupData = SetupModel::getSetupData(1, $db);    
+        $getLanguageDataArray = array();
+        $getLanguageDataArray["where"] = " WHERE `Default` = 1";
+        $languageModel = new LanguageModel($db, $getLanguageDataArray);
+        $languageData = $languageModel->getLanguage();
         $_SESSION['setupData'] = json_decode($setupData[0]['SetupData'], true);
+        $_SESSION['setupData']['languageSign'] = $languageData[0]['LanguageSign'];
+    } else if (is_null($_SESSION['setupData']['languageSign'])) {
+        $_SESSION['setupData']['languageSign'] = 'hu_HU';
     }
     if (!isset($_REQUEST['event'])) {
         $_REQUEST['event'] = '';

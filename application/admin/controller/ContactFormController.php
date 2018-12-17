@@ -6,8 +6,8 @@ class ContactFormController /*extends FormController*/ {
     private $db;
 
     public function __construct($dataArray, $db) {
-        $this -> dataArray = $dataArray;
-        $this -> db = $db;
+        $this->dataArray = $dataArray;
+        $this->db = $db;
         if (!isset($this->dataArray[0]['event'])) {
             $this->dataArray['event'] = 'RenderContactForm';
         }
@@ -17,20 +17,20 @@ class ContactFormController /*extends FormController*/ {
     private function ContactUpdate() {
         $errors = $this->ValidateContactFormFull();
         if ($errors == '') {
-            $contactObj = new ContactModel($this->db, $_POST);
-            if ($_POST['cid_hidden'] > 0) {
+            $contactObj = new ContactModel($this->db, $this->dataArray[0]);
+            if ($this->dataArray[0]['cidHidden'] > 0) {
                 $contactData = $contactObj->updateContactInformation();
                 if (!isset($contactData['error'])) {
                     print json_encode($goodArray = array('good'=>1));
                 } else {
                     print json_encode($errorArray = array('error'=>$contactData['error']));
                 }
-            } else if ($_POST['cid_hidden'] == 0) {
-                $contact_data = $contactObj -> insertContactInformation($_POST);
+            } else if ($this->dataArray[0]['cidHidden'] == 0) {
+                $contactData = $contactObj->insertContactInformation($this->dataArray[0]);
                 if (!isset($contactData['error'])) {
                     print json_encode($goodArray = array('good'=>1));
                 } else {
-                    print json_encode($errorArray = array('error'=>$contact_data['error']));
+                    print json_encode($errorArray = array('error'=>$contactData['error']));
                 }                
             }
         } else {
@@ -41,7 +41,7 @@ class ContactFormController /*extends FormController*/ {
     private function RenderContactForm() {
         $contactLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/ContactForm.json'));
         $contactObj = new ContactModel($this->db);
-        $contactData = $contactObj -> GetContactInformation();
+        $contactData = $contactObj->GetContactInformation();
         include_once(ADMIN_VIEW_PATH . 'ContactFormView.php');
     }
 
@@ -60,18 +60,18 @@ class ContactFormController /*extends FormController*/ {
     private function ValidateContactFormFull() {
         include_once(CORE_PATH . 'Validator.php');
         $validateInfo = array();
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Name'], 'controllId'=>'Name');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Address'], 'controllId'=>'Address');
-        $validateInfo[] = array('function'=>'validatePhone', 'data'=>$_POST['Phone'], 'controllId'=>'Phone');
-        $validateInfo[] = array('function'=>'validatePhone', 'data'=>$_POST['Mobile'], 'controllId'=>'Mobile');
-        $validateInfo[] = array('function'=>'validatePhone', 'data'=>$_POST['Fax'], 'controllId'=>'Fax');
-        $validateInfo[] = array('function'=>'validateEmail', 'data'=>$_POST['TargetMail'], 'controllId'=>'TargetMail');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['SmtpPassword'], 'controllId'=>'SmtpPassword');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['SmtpServer'], 'controllId'=>'SmtpServer');
-        $validateInfo[] = array('function'=>'validateInt', 'data'=>$_POST['Port'], 'controllId'=>'Port');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['UserName'], 'controllId'=>'UserName');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Name'], 'controllId'=>'Name');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Address'], 'controllId'=>'Address');
+        $validateInfo[] = array('function'=>'validatePhone', 'data'=>$this->dataArray[0]['Phone'], 'controllId'=>'Phone');
+        $validateInfo[] = array('function'=>'validatePhone', 'data'=>$this->dataArray[0]['Mobile'], 'controllId'=>'Mobile');
+        $validateInfo[] = array('function'=>'validatePhone', 'data'=>$this->dataArray[0]['Fax'], 'controllId'=>'Fax');
+        $validateInfo[] = array('function'=>'validateEmail', 'data'=>$this->dataArray[0]['TargetMail'], 'controllId'=>'TargetMail');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['SmtpPassword'], 'controllId'=>'SmtpPassword');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['SmtpServer'], 'controllId'=>'SmtpServer');
+        $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['Port'], 'controllId'=>'Port');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['UserName'], 'controllId'=>'UserName');
         $validator = new mainValidator($validateInfo);
-        $errorArray = $validator -> validateCore();
+        $errorArray = $validator->validateCore();
         if (empty($errorArray)) {
             return '';
         } else if (!empty($errorArray)) {

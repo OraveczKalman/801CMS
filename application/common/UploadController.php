@@ -16,6 +16,7 @@ class UploadController {
         $uploadResult['unSuccesfulUpload'] = array();
         $i = 1;
         foreach ($_FILES[$this->dataArray[0]['fileArrayName']]["error"] as $key => $error) {
+            var_dump($_FILES);
             if ($error == UPLOAD_ERR_OK) {
                 $tmp_name = $_FILES[$this->dataArray[0]['fileArrayName']]["tmp_name"][$key];
                 $pth = pathinfo($_FILES[$this->dataArray[0]['fileArrayName']]["name"][$key]);
@@ -28,7 +29,8 @@ class UploadController {
                 chmod($this->dataArray[0]['uploadPath'] . $name, 0644);
                 array_push($uploadResult['successfulUpload'], array('fileName' => $name, 'extension' => $pth['extension']));
             } else {
-                array_push($uploadResult['unSuccessfulUpload'], $_FILES[$this->dataArray[0]['fileArrayName']]["name"][$key]);
+                $pth = pathinfo($_FILES[$this->dataArray[0]['fileArrayName']]["name"][$key]);
+                array_push($uploadResult['unSuccesfulUpload'], array('fileName' => $_FILES[$this->dataArray[0]['fileArrayName']]["name"][$key], 'extension' => $pth['extension']));
             }
             $i++;
         }

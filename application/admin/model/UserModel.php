@@ -80,6 +80,7 @@ class UserModel {
         if (!isset($_SESSION['admin']['dataArray']['UserId'])) {
             $_SESSION['admin']['dataArray']['UserId'] = 0;
         }
+        $this->db->beginTran();
         $newUserQuery = array();
         $newUserQuery['sql'] = "INSERT INTO user SET 
             Name=:Name, 
@@ -101,6 +102,11 @@ class UserModel {
         $newUserQuery["parameters"][6] = array("paramName"=>"News", "paramVal"=>$this->dataArray['News'], "paramType"=>PDO::PARAM_STR); 
         $newUserQuery["parameters"][7] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['dataArray']['UserId'], "paramType"=>PDO::PARAM_INT); 
         $result = $this->db->parameterInsert($newUserQuery);
+        if (!$result) {
+            $this->db->rollBack();
+        } else {
+            $this->db->commit();
+        }
         return $result;
     }
 

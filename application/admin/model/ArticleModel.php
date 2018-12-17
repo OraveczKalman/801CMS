@@ -47,62 +47,71 @@ class ArticleModel extends AncestorClass {
      * Function for insert or update articles depends on it's living or not before form submit
      */
     public function chapterAssorter() {
-        try
-        {
-            $data = array();
-            $insertChapterQueryStringValues = '';
-            $updateChapterQueryString = "";
-            foreach ($this->dataArray[0]['cikk'] as $szovegek) {
-                switch ($szovegek['chapterState']) {
-                    case 1 :
-                        if ($szovegek['Szoveg'] != '') {
-                            $insertChapterQuery = array();
-                            $insertChapterQuery['sql'] = "INSERT INTO text SET
-                                SuperiorId = :superiorId, 
-                                Type = :type, 
-                                Title = :title, 
-                                Text = :text, 
-                                Language = :language, 
-                                Created = NOW(), 
-                                CreatedBy = :createdBy, 
-                                Active = 1";
-                            $szovegek["Cim"] = "";
-                            $insertChapterQuery["parameters"][0] = array("paramName"=>"superiorId", "paramVal"=>$szovegek["FelettesId"], "paramType"=>PDO::PARAM_INT);
-                            $insertChapterQuery["parameters"][1] = array("paramName"=>"type", "paramVal"=>$szovegek["Tipus"], "paramType"=>PDO::PARAM_INT);
-                            $insertChapterQuery["parameters"][2] = array("paramName"=>"title", "paramVal"=>$szovegek["Cim"], "paramType"=>PDO::PARAM_STR);
-                            $insertChapterQuery["parameters"][3] = array("paramName"=>"text", "paramVal"=>$szovegek["Szoveg"], "paramType"=>PDO::PARAM_STR);
-                            $insertChapterQuery["parameters"][4] = array("paramName"=>"language", "paramVal"=>$szovegek["Nyelv"], "paramType"=>PDO::PARAM_STR);
-                            $insertChapterQuery["parameters"][5] = array("paramName"=>"createdBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
-                            $result = $this->db->parameterInsert($insertChapterQuery);
-                        }
-                        break;
-                    case 2 :
-                        $updateChapterQuery = array();
-                        $updateChapterQuery['sql'] = "UPDATE text SET 
-                            SuperiorId =:superiorId, 
-                            Type =:type, 
-                            Title =:title, 
-                            Text =:text, 
-                            Language =:language, 
-                            Modified = NOW(), 
-                            ModifiedBy =:modifiedBy 
-                            WHERE TextId =:textId";
+        $this->db->beginTran();
+        $data = array();
+        $insertChapterQueryStringValues = '';
+        $updateChapterQueryString = "";
+        $dbError = 0;
+        foreach ($this->dataArray[0]['cikk'] as $szovegek) {
+            switch ($szovegek['chapterState']) {
+                case 1 :
+                    if ($szovegek['Szoveg'] != '') {
+                        $insertChapterQuery = array();
+                        $insertChapterQuery['sql'] = "INSERT INTO text SET
+                            SuperiorId = :superiorId, 
+                            Type = :type, 
+                            Title = :title, 
+                            Text = :text, 
+                            Language = :language, 
+                            Created = NOW(), 
+                            CreatedBy = :createdBy, 
+                            Active = 1";
                         $szovegek["Cim"] = "";
-                        $updateChapterQuery["parameters"][0] = array("paramName"=>"textId", "paramVal"=>$szovegek["SzovegId"], "paramType"=>PDO::PARAM_INT);
-                        $updateChapterQuery["parameters"][1] = array("paramName"=>"superiorId", "paramVal"=>$szovegek["FelettesId"], "paramType"=>PDO::PARAM_INT);
-                        $updateChapterQuery["parameters"][2] = array("paramName"=>"type", "paramVal"=>$szovegek["Tipus"], "paramType"=>PDO::PARAM_INT);
-                        $updateChapterQuery["parameters"][3] = array("paramName"=>"title", "paramVal"=>$szovegek["Cim"], "paramType"=>PDO::PARAM_STR);
-                        $updateChapterQuery["parameters"][4] = array("paramName"=>"text", "paramVal"=>$szovegek["Szoveg"], "paramType"=>PDO::PARAM_STR);
-                        $updateChapterQuery["parameters"][5] = array("paramName"=>"language", "paramVal"=>$szovegek["Nyelv"], "paramType"=>PDO::PARAM_STR);
-                        $updateChapterQuery["parameters"][6] = array("paramName"=>"modifiedBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
-                        $result = $this->db->parameterUpdate($updateChapterQuery);
-                        break;
+                        $insertChapterQuery["parameters"][0] = array("paramName"=>"superiorId", "paramVal"=>$szovegek["FelettesId"], "paramType"=>PDO::PARAM_INT);
+                        $insertChapterQuery["parameters"][1] = array("paramName"=>"type", "paramVal"=>$szovegek["Tipus"], "paramType"=>PDO::PARAM_INT);
+                        $insertChapterQuery["parameters"][2] = array("paramName"=>"title", "paramVal"=>$szovegek["Cim"], "paramType"=>PDO::PARAM_STR);
+                        $insertChapterQuery["parameters"][3] = array("paramName"=>"text", "paramVal"=>$szovegek["Szoveg"], "paramType"=>PDO::PARAM_STR);
+                        $insertChapterQuery["parameters"][4] = array("paramName"=>"language", "paramVal"=>$szovegek["Nyelv"], "paramType"=>PDO::PARAM_STR);
+                        $insertChapterQuery["parameters"][5] = array("paramName"=>"createdBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+                        $result = $this->db->parameterInsert($insertChapterQuery);
+                        if (!$result) {
+                            $dbError = 1;
+                        }
+                    }
+                    break;
+                case 2 :
+                    $updateChapterQuery = array();
+                    $updateChapterQuery['sql'] = "UPDATE text SET 
+                        SuperiorId =:superiorId, 
+                        Type =:type, 
+                        Title =:title, 
+                        Text =:text, 
+                        Language =:language, 
+                        Modified = NOW(), 
+                        ModifiedBy =:modifiedBy 
+                        WHERE TextId =:textId";
+                    $szovegek["Cim"] = "";
+                    $updateChapterQuery["parameters"][0] = array("paramName"=>"textId", "paramVal"=>$szovegek["SzovegId"], "paramType"=>PDO::PARAM_INT);
+                    $updateChapterQuery["parameters"][1] = array("paramName"=>"superiorId", "paramVal"=>$szovegek["FelettesId"], "paramType"=>PDO::PARAM_INT);
+                    $updateChapterQuery["parameters"][2] = array("paramName"=>"type", "paramVal"=>$szovegek["Tipus"], "paramType"=>PDO::PARAM_INT);
+                    $updateChapterQuery["parameters"][3] = array("paramName"=>"title", "paramVal"=>$szovegek["Cim"], "paramType"=>PDO::PARAM_STR);
+                    $updateChapterQuery["parameters"][4] = array("paramName"=>"text", "paramVal"=>$szovegek["Szoveg"], "paramType"=>PDO::PARAM_STR);
+                    $updateChapterQuery["parameters"][5] = array("paramName"=>"language", "paramVal"=>$szovegek["Nyelv"], "paramType"=>PDO::PARAM_STR);
+                    $updateChapterQuery["parameters"][6] = array("paramName"=>"modifiedBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+                    $result = $this->db->parameterUpdate($updateChapterQuery);
+                    if (!$result) {
+                        $dbError = 1;
+                    }
+                    break;
                 }
             }
-            $data["good"] = $szovegek["FelettesId"];
-            print json_encode($data);            
-        } catch (PDOException $e) {
-            $this->db->logWriter($e->errorInfo);
-        }
+            if ($dbError == 1) {
+                $this->db->rollBack();
+                $data["error"] = "Db error";
+            } else {
+                $this->db->commit();
+                $data["good"] = $szovegek["FelettesId"];
+            }
+            print json_encode($data);
     }
 }

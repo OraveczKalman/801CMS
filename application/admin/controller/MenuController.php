@@ -88,13 +88,8 @@ class MenuController {
         
     private function newMenuForm() {
         include_once(DATABASE_PATH . 'LanguageModel.php');
-        $moduleDataArray = array();
-        $moduleDataArray['table'] = 'main_header';
-        $moduleDataArray['fields'] = 'main_header.MainHeaderId, lang_header.Title, lang_header.Link';
-        $moduleDataArray['joins'] = 'LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId';
-        $moduleDataArray['where'] = 'main_header.MainHeaderId NOT IN (SELECT MainHeaderId FROM lang_header)';
-        $menu = new MenuModel( $this->db, $moduleDataArray);
-        $moduleList = $menu->getMenu();
+        $menu = new MenuModel($this->db);
+        $moduleList = $menu->getModules();
         $languageDataArray = array('where'=>'WHERE Active=1');
         $languageModel = new LanguageModel($this->db, $languageDataArray);
         $languages = $languageModel->getLanguage();
@@ -133,7 +128,11 @@ class MenuController {
             $menuDataArray['Heading'] = $this->dataArray[0]['Cimsor'];
             $menuDataArray['Keywords'] = $this->dataArray[0]['Kulcsszavak'];
             $menuDataArray['Link'] = $this->dataArray[0]['Link'];
-            $menuDataArray['Target'] = $this->dataArray[0]['Target'];
+            if ($this->dataArray[0]['Target'] != '') {
+                $menuDataArray['Target'] = $this->dataArray[0]['Target'];
+            } else {
+                $menuDataArray['Target'] = null;
+            }
             if (isset($this->dataArray[0]['MainPage'])) {
                 $menuDataArray['MainPage'] = $this->dataArray[0]['MainPage'];
             } else if (!isset($this->dataArray[0]['MainPage'])) { 
@@ -150,7 +149,7 @@ class MenuController {
             } else if (!isset($this->dataArray[0]['User_In'])) {
                 $menuDataArray['UserIn'] = 0;
             }
-            $menuDataArray['AdditionalField'] = 'NULL';
+            $menuDataArray['AdditionalField'] = null;
             if (isset($this->dataArray[0]['Szerep'])) {
                 $menuDataArray['Role'] = $this->dataArray[0]['Szerep'];
                 switch ($menuDataArray['Role']) {

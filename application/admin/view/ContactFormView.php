@@ -7,8 +7,7 @@
             'trigger': 'manual'
         });     
 
-
-        $('#contact_form').ajaxForm({
+        $('#contactForm').ajaxForm({
             datatype: 'json',
             success: processError
         });
@@ -57,7 +56,7 @@
     function processError(data) {
         data = JSON.parse(data);
         if (typeof data.good !== "undefined") {
-            $('#MessageBox #MessageBody').html('<div style="text-align: center;"><?php print $contactLabels->labels->successLabel; ?></div>');
+            $('#MessageBox #MessageBody').html('<div style="text-align: center;"><?php print $contactLabels->labels->sucessLabel; ?></div>');
             $('#MessageBox').modal('show');
             setTimeout(function () {               
                 $('#MessageBox').modal('hide');
@@ -70,7 +69,7 @@
 <div class="row-fluid">
     <div class="col-sm-12">
         <h1><?php print $contactLabels->labels->headLabel; ?></h1>
-        <form id="contact_form" role="form" class="form-horizontal" method="post" action="admin/ContactForm">
+        <form id="contactForm" role="form" class="form-horizontal" method="post" action="admin/ContactForm">
             <div class="form-group">
                 <label for="Name" class="col-sm-2 control-label"><?php print $contactLabels->labels->name; ?>:</label>
                 <div class="col-sm-5"><input class="form-control" name="Name" id="Name" type="text" value="<?php if (!empty($contactData)) { print $contactData[0]['Name']; } ?>"></div>
@@ -113,8 +112,8 @@
             </div>
             <div class="form-group">
                 <input name="event" id="event" type="hidden" value="ContactUpdate" />
-                <input name="cid_hidden" id="cid_hidden" type="hidden" value="<?php if (empty($contactData)) { print 0; } else {print $contactData[0]['ContactId']; } ?>" />
-                <button name="send_form" id="send_form" class="btn btn-default" type="submit"><?php print $contactLabels->labels->send; ?></button>
+                <input name="cidHidden" id="cidHidden" type="hidden" value="<?php if (empty($contactData)) { print 0; } else { print $contactData[0]['ContactId']; } ?>" />
+                <button name="sendForm" id="sendForm" class="btn btn-default" type="button" onclick="javascript:$('#contactForm').submit();"><?php print $contactLabels->labels->send; ?></button>
             </div>
         </form>
     </div>

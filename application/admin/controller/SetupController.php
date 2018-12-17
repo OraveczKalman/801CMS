@@ -6,8 +6,8 @@ class SetupController {
     private $db;
 
     public function __construct($dataArray, $db) {
-        $this -> dataArray = $dataArray;
-        $this -> db = $db;
+        $this->dataArray = $dataArray;
+        $this->db = $db;
         if (!isset($this->dataArray[0]['event'])) {
             $this->dataArray['event'] = 'RenderSetupForm';
         }
