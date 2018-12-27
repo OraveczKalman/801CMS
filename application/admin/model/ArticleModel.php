@@ -44,7 +44,7 @@ class ArticleModel extends AncestorClass {
 
     /**
      * @author Oravecz Kálmán
-     * Function for insert or update articles depends on it's living or not before form submit
+     * Function for insert or update articles depends on it's exists or not before form submit
      */
     public function chapterAssorter() {
         $this->db->beginTran();
