@@ -124,7 +124,7 @@
 
             <div class="form_row">
                 <div class="form_label">
-                    <button type="button" class="btn btn-default" onclick="javascript: $('#articleForm').submit();" id="saveButton" name="saveButton">Mentés</button>
+                    <button type="button" class="btn btn-default" onclick="javascript: $('#articleForm').submit();" id="saveButton" name="saveButton"><?php print $articleFormObject->labels->save; ?></button>
                     <input type="hidden" name="currentArticleCount" id="currentArticleCount" value="<?php print $articleCount; ?>" />
                     <input type="hidden" name="MainHeaderId" id="MainHeaderId" value="<?php print $this->dataArray[0]['MainHeaderId']; ?>" />
                     <input type="hidden" name="event" id="event" value="updateArticle" />

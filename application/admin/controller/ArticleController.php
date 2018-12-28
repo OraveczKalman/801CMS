@@ -39,6 +39,7 @@ class ArticleController {
     }
     
     private function newArticleItemHead($articleCounter, $articleArray=null) {
+        $articleFormObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewArticleForm.json'));
         $counter = $articleCounter;
         if (is_null($articleArray)) {
             $articleCount = 0;
