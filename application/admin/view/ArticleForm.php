@@ -1,11 +1,11 @@
 <script type="text/javascript">
     var cikkNum = 0;
-    var actChapter = 'cikk0';
+    var actChapter = 'article0';
     var actStateHidden = 'chapterState0';
     var chaptersArray = new Array();
 
     $(document).ready(function() {
-        $('#cikkForm').submit(function () {
+        $('#articleForm').submit(function () {
             $(this).ajaxSubmit({
                 datatype:'json',
                 beforeSubmit: CKupdate(),
@@ -14,7 +14,7 @@
             return false;
         });
 
-        addNewEditor('cikk0', 0);
+        addNewEditor('article0', 0);
     });
 
     function processError(data) {
@@ -39,7 +39,8 @@
     }
 
     function insertAtCursor(insert) {
-        if (actChapter !== "cikk0") {
+        console.log(actChapter);
+        if (actChapter !== "article0") {
             insert = insert.trim();
             CKEDITOR.instances[actChapter].insertText(insert);
             if (parseInt($('#' + actStateHidden).val(), 10) === 0) {
@@ -82,16 +83,16 @@
 <h1><?php print $articleFormObject->labels->header; ?></h1>
 <div class="row-fluid">
     <div class="col-sm-10">
-        <form method="post" id="cikkForm" name="cikkForm" action="admin/Article">
+        <form method="post" id="articleForm" name="articleForm" action="admin/Article">
             <div>
                 <div><?php print $articleFormObject->labels->prologue; ?></div>
                 <div>
-                    <textarea name="cikk[0][Szoveg]" id="cikk0"><?php if (!empty($documentData['Bevezeto'])) { print $documentData['Bevezeto'][0]['Text']; } ?></textarea>
-                    <input type="hidden" id="cikkId0" name="cikk[0][SzovegId]" value="<?php if (!empty($documentData['Bevezeto'])) { print $documentData['Bevezeto'][0]['TextId']; } ?>" />
-                    <input type="hidden" id="tipus0" name="cikk[0][Tipus]" value="1" />
-                    <input type="hidden" id="nyelv0" name="cikk[0][Nyelv]" value="hu" />
-                    <input type="hidden" id="chapterState0" name="cikk[0][chapterState]" value="<?php if (empty($documentData['Bevezeto'])) { print 1; } else { print 0; } ?>" />
-                    <input type="hidden" id="felettes0" name="cikk[0][FelettesId]" value="<?php if (!empty($documentData['Bevezeto'])) { print $documentData['Bevezeto'][0]['SuperiorId']; } else { print $this->dataArray[0]['MainHeaderId']; } ?>" />
+                    <textarea name="article[0][Text]" id="article0"><?php if (!empty($documentData['Header'])) { print $documentData['Header'][0]['Text']; } ?></textarea>
+                    <input type="hidden" id="articleId0" name="article[0][TextId]" value="<?php if (!empty($documentData['Header'])) { print $documentData['Header'][0]['TextId']; } ?>" />
+                    <input type="hidden" id="type0" name="article[0][Type]" value="1" />
+                    <input type="hidden" id="language0" name="article[0][Language]" value="hu" />
+                    <input type="hidden" id="chapterState0" name="article[0][ChapterState]" value="<?php if (empty($documentData['Header'])) { print 1; } else { print 0; } ?>" />
+                    <input type="hidden" id="superior0" name="article[0][SuperiorId]" value="<?php if (!empty($documentData['Header'])) { print $documentData['Header'][0]['SuperiorId']; } else { print $this->dataArray[0]['MainHeaderId']; } ?>" />
                 </div>
             </div>
 
@@ -101,10 +102,10 @@
                         <a href="javascript: void(0);" onclick="javascript: addNewChapter('chaptersDiv', 'currentArticleCount');" role="tab"><?php print $articleFormObject->labels->addnewchapter; ?></a>
                     </li>
 <?php
-            $articleCount = count($documentData['Cikk']);
+            $articleCount = count($documentData['Article']);
             $counter = 0;
-            if (!empty($documentData['Cikk'])) {
-                $this->newArticleItemHead($counter, $documentData['Cikk']);
+            if (!empty($documentData['Article'])) {
+                $this->newArticleItemHead($counter, $documentData['Article']);
             } else {
                 $this->newArticleItemHead($counter);
             }
@@ -112,8 +113,8 @@
                 </ul>
                 <div class="tab-content" id="chaptersDiv">
 <?php
-            if (!empty($documentData['Cikk'])) {
-                $this->newArticleItem($counter, $documentData['Cikk']);
+            if (!empty($documentData['Article'])) {
+                $this->newArticleItem($counter, $documentData['Article']);
             } else {
                 $this->newArticleItem($counter);
             }
@@ -123,7 +124,7 @@
 
             <div class="form_row">
                 <div class="form_label">
-                    <button type="button" class="btn btn-default" onclick="javascript: $('#cikkForm').submit();" id="mentes" name="mentes">Mentés</button>
+                    <button type="button" class="btn btn-default" onclick="javascript: $('#articleForm').submit();" id="saveButton" name="saveButton">Mentés</button>
                     <input type="hidden" name="currentArticleCount" id="currentArticleCount" value="<?php print $articleCount; ?>" />
                     <input type="hidden" name="MainHeaderId" id="MainHeaderId" value="<?php print $this->dataArray[0]['MainHeaderId']; ?>" />
                     <input type="hidden" name="event" id="event" value="updateArticle" />

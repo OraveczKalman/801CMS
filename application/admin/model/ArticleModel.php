@@ -52,26 +52,26 @@ class ArticleModel extends AncestorClass {
         $insertChapterQueryStringValues = '';
         $updateChapterQueryString = "";
         $dbError = 0;
-        foreach ($this->dataArray[0]['cikk'] as $szovegek) {
-            switch ($szovegek['chapterState']) {
+        foreach ($this->dataArray[0]['article'] as $texts) {
+            switch ($texts['ChapterState']) {
                 case 1 :
-                    if ($szovegek['Szoveg'] != '') {
+                    if ($texts['Szoveg'] != '') {
                         $insertChapterQuery = array();
                         $insertChapterQuery['sql'] = "INSERT INTO text SET
-                            SuperiorId = :superiorId, 
-                            Type = :type, 
-                            Title = :title, 
-                            Text = :text, 
-                            Language = :language, 
-                            Created = NOW(), 
-                            CreatedBy = :createdBy, 
-                            Active = 1";
-                        $szovegek["Cim"] = "";
-                        $insertChapterQuery["parameters"][0] = array("paramName"=>"superiorId", "paramVal"=>$szovegek["FelettesId"], "paramType"=>PDO::PARAM_INT);
-                        $insertChapterQuery["parameters"][1] = array("paramName"=>"type", "paramVal"=>$szovegek["Tipus"], "paramType"=>PDO::PARAM_INT);
-                        $insertChapterQuery["parameters"][2] = array("paramName"=>"title", "paramVal"=>$szovegek["Cim"], "paramType"=>PDO::PARAM_STR);
-                        $insertChapterQuery["parameters"][3] = array("paramName"=>"text", "paramVal"=>$szovegek["Szoveg"], "paramType"=>PDO::PARAM_STR);
-                        $insertChapterQuery["parameters"][4] = array("paramName"=>"language", "paramVal"=>$szovegek["Nyelv"], "paramType"=>PDO::PARAM_STR);
+                            SuperiorId=:superiorId, 
+                            Type=:type, 
+                            Title=:title, 
+                            Text=:text, 
+                            Language=:language, 
+                            Created=NOW(), 
+                            CreatedBy=:createdBy, 
+                            Active=1";
+                        $texts["Title"] = "";
+                        $insertChapterQuery["parameters"][0] = array("paramName"=>"superiorId", "paramVal"=>$texts["SuperiorId"], "paramType"=>PDO::PARAM_INT);
+                        $insertChapterQuery["parameters"][1] = array("paramName"=>"type", "paramVal"=>$texts["Type"], "paramType"=>PDO::PARAM_INT);
+                        $insertChapterQuery["parameters"][2] = array("paramName"=>"title", "paramVal"=>$texts["Title"], "paramType"=>PDO::PARAM_STR);
+                        $insertChapterQuery["parameters"][3] = array("paramName"=>"text", "paramVal"=>$texts["Text"], "paramType"=>PDO::PARAM_STR);
+                        $insertChapterQuery["parameters"][4] = array("paramName"=>"language", "paramVal"=>$texts["Language"], "paramType"=>PDO::PARAM_STR);
                         $insertChapterQuery["parameters"][5] = array("paramName"=>"createdBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
                         $result = $this->db->parameterInsert($insertChapterQuery);
                         if (!$result) {
@@ -90,13 +90,13 @@ class ArticleModel extends AncestorClass {
                         Modified = NOW(), 
                         ModifiedBy =:modifiedBy 
                         WHERE TextId =:textId";
-                    $szovegek["Cim"] = "";
-                    $updateChapterQuery["parameters"][0] = array("paramName"=>"textId", "paramVal"=>$szovegek["SzovegId"], "paramType"=>PDO::PARAM_INT);
-                    $updateChapterQuery["parameters"][1] = array("paramName"=>"superiorId", "paramVal"=>$szovegek["FelettesId"], "paramType"=>PDO::PARAM_INT);
-                    $updateChapterQuery["parameters"][2] = array("paramName"=>"type", "paramVal"=>$szovegek["Tipus"], "paramType"=>PDO::PARAM_INT);
-                    $updateChapterQuery["parameters"][3] = array("paramName"=>"title", "paramVal"=>$szovegek["Cim"], "paramType"=>PDO::PARAM_STR);
-                    $updateChapterQuery["parameters"][4] = array("paramName"=>"text", "paramVal"=>$szovegek["Szoveg"], "paramType"=>PDO::PARAM_STR);
-                    $updateChapterQuery["parameters"][5] = array("paramName"=>"language", "paramVal"=>$szovegek["Nyelv"], "paramType"=>PDO::PARAM_STR);
+                    $texts["Title"] = "";
+                    $updateChapterQuery["parameters"][0] = array("paramName"=>"textId", "paramVal"=>$texts["TextId"], "paramType"=>PDO::PARAM_INT);
+                    $updateChapterQuery["parameters"][1] = array("paramName"=>"superiorId", "paramVal"=>$texts["SuperiorId"], "paramType"=>PDO::PARAM_INT);
+                    $updateChapterQuery["parameters"][2] = array("paramName"=>"type", "paramVal"=>$texts["Type"], "paramType"=>PDO::PARAM_INT);
+                    $updateChapterQuery["parameters"][3] = array("paramName"=>"title", "paramVal"=>$texts["Title"], "paramType"=>PDO::PARAM_STR);
+                    $updateChapterQuery["parameters"][4] = array("paramName"=>"text", "paramVal"=>$texts["Text"], "paramType"=>PDO::PARAM_STR);
+                    $updateChapterQuery["parameters"][5] = array("paramName"=>"language", "paramVal"=>$texts["Language"], "paramType"=>PDO::PARAM_STR);
                     $updateChapterQuery["parameters"][6] = array("paramName"=>"modifiedBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
                     $result = $this->db->parameterUpdate($updateChapterQuery);
                     if (!$result) {
@@ -110,7 +110,7 @@ class ArticleModel extends AncestorClass {
                 $data["error"] = "Db error";
             } else {
                 $this->db->commit();
-                $data["good"] = $szovegek["FelettesId"];
+                $data["good"] = $texts["SuperiorId"];
             }
             print json_encode($data);
     }

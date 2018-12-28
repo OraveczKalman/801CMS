@@ -20,16 +20,16 @@ class ArticleController {
 
     private function editArticleForm() {
         $articleFormObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewArticleForm.json'));
-        $bevezetoData = array();
-        $bevezetoData['MainHeaderId'] = $this->dataArray[0]['MainHeaderId'];
-        $bevezetoData['Role'] = 1;
+        $headData = array();
+        $headData['MainHeaderId'] = $this->dataArray[0]['MainHeaderId'];
+        $headData['Role'] = 1;
         $articleData = array();
         $articleData['MainHeaderId'] = $this->dataArray[0]['MainHeaderId'];
         $articleData['Role'] = 2;
-        $articleModel = new ArticleModel($this->db, $bevezetoData);
-        $documentData['Bevezeto'] = $articleModel->getDocumentArticles();
+        $articleModel = new ArticleModel($this->db, $headData);
+        $documentData['Header'] = $articleModel->getDocumentArticles();
         $articleModel->setDataArray($articleData);
-        $documentData['Cikk'] = $articleModel->getDocumentArticles();
+        $documentData['Article'] = $articleModel->getDocumentArticles();
         include_once(ADMIN_VIEW_PATH . 'ArticleForm.php');
     }
 
