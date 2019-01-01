@@ -245,7 +245,7 @@ class MenuModel {
             UserIn=:UserIn,
             Popup=:Popup,
             Commentable=:Commentable,
-            Module:=Module,
+            Module=:Module,
             Modified=NOW(),
             ModifiedBy=:UserId,
             Active=1 WHERE MainHeaderId=:MainHeaderId";
@@ -278,7 +278,7 @@ class MenuModel {
             Heading=:Heading,
             Keywords=:Keywords,
             Link=:Link,
-            Language:=Language,
+            Language=:Language,
             Modified=NOW(),
             ModifiedBy=:UserId,
             Active=1 WHERE LangHeaderId=:LangHeaderId";

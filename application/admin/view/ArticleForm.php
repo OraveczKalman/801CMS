@@ -23,8 +23,8 @@
             $('#MessageBox #MessageBody').html('<div style="text-align: center;">A mentés sikeres volt!</div>');
             $('#MessageBox').modal('show');
             setTimeout(function () {      
-                //$('#ArticleContainer').load('admin/Article', { event:'editArticleForm', MainHeaderId:data.good });
-                //loadInsertContainer(data.good);
+                $('#ArticleContainer').load('admin/Article', { event:'editArticleForm', MainHeaderId:data.good });
+                loadInsertContainer(data.good);
                 $('#MessageBox').modal('hide');
             }, 5000);
         } else if (typeof data.error !== "undefined") {

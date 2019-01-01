@@ -81,6 +81,9 @@ class Router {
                         $menuPoint[0]['param'] = $commandArray[1];
                     }
                     if (intval($menuPoint[0]['Role']) != 7) {
+                        include_once(SITE_MODEL_PATH . 'WidgetModel.php');
+                        $widgetModel = new WidgetModel($this->db);
+                        $menuPoint[0]['widgets'] = $widgetModel->getWidgets($menuPoint[0]['MainHeaderId']);
                         $address = $_SESSION['prefix'] .'://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
                         include_once(SITE_VIEW_PATH . 'MainLayout.php');
                     } else if (intval($menuPoint[0]['Role']) == 7) {

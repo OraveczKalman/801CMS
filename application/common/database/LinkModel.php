@@ -9,13 +9,14 @@ class LinkModel {
         if (!is_null($dataArray)) {
             $this->setDataArray = $dataArray;
         }
-        $this->getLinkQueryString = "SELECT main_header.*, lang_header.*, role.ControllerName, cimlap_kep.ProfilePicture
+        $this->getLinkQueryString = "SELECT main_header.*, lang_header.*, role.ControllerName, cimlap_kep.ProfilePicture, user.Name
             FROM main_header
             INNER JOIN role ON main_header.Role = role.RoleId 
             LEFT JOIN lang_header ON lang_header.MainHeaderId = main_header.MainHeaderId 
             LEFT JOIN (SELECT picture.ThumbName AS ProfilePicture, gallery_picture.MainHeaderId FROM picture LEFT JOIN gallery_picture 
             ON gallery_picture.PictureId = picture.PictureId WHERE gallery_picture.Cover=1) AS cimlap_kep 
-            ON cimlap_kep.MainHeaderId = main_header.MainHeaderId ";
+            ON cimlap_kep.MainHeaderId = main_header.MainHeaderId 
+            LEFT JOIN user ON user.UserId = main_header.CreatedBy ";
         $this->db = $db;
     }
 

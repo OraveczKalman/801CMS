@@ -68,7 +68,9 @@
     }
 	
     function loadInsertContainer(galleryId) {
-        $('#galleryInsertContainer').load('./admin/Gallery', { event:'GetInsertList', MainHeaderId:galleryId });
+        $.post('./admin/Gallery', {event:'GetInsertList', MainHeaderId:galleryId}, function(data) {
+            $('#galleryInsertContainer').html(data);
+        });
     }
 
     function cropForm(data) {

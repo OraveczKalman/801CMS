@@ -1,5 +1,5 @@
 <h1 class="mt-4 mb-3">
-    <small>Készítette: <a href="#">Készítő</a></small>
+    <small>Készítette: <a href="#"><?php print $this->dataArray[0]['Name']; ?></a></small>
 </h1>
 
 <ol class="breadcrumb">
@@ -9,7 +9,17 @@
 </ol>
     
 <div class="row">
+<?php
+    if (!empty($this->dataArray[0]['widgets'])) {
+?>
     <div class="col-lg-8">
+<?php
+    } else {
+?>
+    <div class="col-lg-12">
+<?php        
+    }
+?>
         <img class="img-fluid rounded" src="<?php print UPLOADED_PATH . "/media/" . $documentData["CoverPicture"]; ?>" alt="">
         <hr>
         <p>Posted on <?php if (!empty($documentData['Header'])) { print $documentData['Header'][0]['Created']; } ?></p>
@@ -36,7 +46,7 @@
 ?>
         <div id="sheet1" class="sheet">
 <?php
-        print $documentData['Body'][$i]['Text'];
+        print $documentData['Body'][0]['Text'];
 ?>
         </div>
 <?php        
@@ -56,6 +66,12 @@
             </div>
         </div>
     </div>
+<?php
+    if (!empty($this->dataArray[0]['widgets'])) {
+        for ($i=0; $i<=count($this->dataArray[0]['widgets'])-1; $i++) {
+            
+        }
+?>
     <div class="col-md-4">
         <div class="card mb-4">
             <h5 class="card-header">Search</h5>
@@ -90,4 +106,7 @@
             </div>
         </div>
     </div>
+<?php
+    }
+?>
 </div>

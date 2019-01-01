@@ -55,7 +55,7 @@ class ArticleModel extends AncestorClass {
         foreach ($this->dataArray[0]['article'] as $texts) {
             switch ($texts['ChapterState']) {
                 case 1 :
-                    if ($texts['Szoveg'] != '') {
+                    if ($texts['Text'] != '') {
                         $insertChapterQuery = array();
                         $insertChapterQuery['sql'] = "INSERT INTO text SET
                             SuperiorId=:superiorId, 
