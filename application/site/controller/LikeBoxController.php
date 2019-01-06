@@ -7,6 +7,9 @@ class LikeBoxController {
         if ($dataArray != null) {
             $this->dataArray = $dataArray;
         }
+        if (!isset($this->dataArray[0]['event'])) {
+            $this->dataArray[0]['event'] = 'RenderLikeBox';
+        }
         $this->db = $db;
         call_user_func(array($this, $this->dataArray[0]['event']));
     }

@@ -51,7 +51,7 @@ class DbCore extends AncestorClass {
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $result['error'] = $e -> errorInfo;
+            $result['error'] = $e->errorInfo;
             $this->logWriter($e->getMessage() . ': ' . $dataArray["sql"]);        
         }
         return $result;

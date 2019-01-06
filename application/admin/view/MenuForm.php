@@ -152,6 +152,9 @@
             <li role="presentation" class="active">
                 <a href="#menuContainer" role="tab" data-toggle="tab"><?php print $menuJson->labels->headLabel; ?></a>
             </li>
+            <li role="presentation">
+                <a href="#widgetContainer" role="tab" data-toggle="tab">Modulok</a>
+            </li>
 <?php
             if (isset($controllerCollection)) {
                 for ($i = 0; $i <= count($controllerCollection) - 1; $i++) {
@@ -241,22 +244,6 @@
                     <label for="User_In" class="col-sm-2 control-label"><?php print $menuJson->labels->loggedin; ?></label>
                     <div class="col-sm-10"><input type="checkbox" id="User_In" name="User_In" <?php if (isset($menuPointData) && $menuPointData[0]['UserIn'] == 1) { print "checked"; } ?> value="1"></div>
                 </div>
-                <div class="form-group">
-                    <label for="Module" class="col-sm-2 control-label"><?php print $menuJson->labels->modul; ?></label>
-                    <div class="col-sm-10">
-                        <select id="Module" name="Module" class="form-control">
-                            <option value=""><?php print $menuJson->targets->choose->label; ?></option>
-<?php
-                        //for ($i=0; $i<=count($moduleList)-1; $i++) {
-?>
-                            <option value="<?php //print $moduleList[$i]['Link']; ?>" <?php //if (isset($menuPointData) && $moduleList[$i]['Link'] == $menuPointData[0]['Module']) { print 'selected'; } ?>><?php //print $moduleList[$i]['Title']; ?></option>
-<?php
-                        //}
-?>
-                        </select>
-                    </div>
-                </div>
-
 <?php
                 if (isset($menuPointData)) {
                     switch ($menuPointData[0]['Role']) {
@@ -358,7 +345,13 @@
                 </div>
             </form>
         </div>
-
+        <div id="widgetContainer" role="tabpanel" class="tab-pane">
+<?php
+            include_once(ADMIN_CONTROLLER_PATH . 'WidgetController.php');
+            $widgetDataArray[] = array("mainHeaderId"=>$menuPointData[0]['MainHeaderId'], "event"=>"widgetList");
+            $widgetController = new WidgetController($widgetDataArray, $this->db);
+?>
+        </div>
 <?php
         if (isset($controllerCollection)) {
             for ($i=0; $i<=count($controllerCollection)-1; $i++) {
