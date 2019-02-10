@@ -34,8 +34,10 @@ class ArticleModel extends AncestorClass {
     public function getDocumentPicture($docId) {
         $result = array();
         $getDocumentPictureDataArray = array();
-        $getDocumentPictureDataArray["sql"] = 'SELECT picture.* FROM picture, gallery_picture WHERE gallery_picture.MainHeaderId=:mainHeaderId
-            AND gallery_picture.PictureId = picture.PictureId AND gallery_picture.Active = 1';
+        $getDocumentPictureDataArray["sql"] = "SELECT t1.*, t3.Text FROM picture t1 
+            LEFT JOIN gallery_picture t2 ON t2.PictureId = t1.PictureId
+            LEFT JOIN (SELECT SuperiorId, Text FROM text WHERE `Type` = 3) t3 ON t3.SuperiorId = t2.PictureId
+            WHERE t2.MainHeaderId=:mainHeaderId AND t2.Active = 1";
         $getDocumentPictureDataArray["parameters"][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$docId, "paramType"=>1);
         $result = $this->db->parameterSelect($getDocumentPictureDataArray);
         return $result;

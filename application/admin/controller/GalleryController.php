@@ -119,15 +119,15 @@ class GalleryController {
     
     private function SaveDescription() {
         $descriptionsArray = array();
-        $descriptionsArray[0]['cikk'] = array();
+        $descriptionsArray[0]['article'] = array();
         for ($i=0; $i<=count($this->dataArray[0]['descriptions'])-1; $i++) {
             $descriptions = array();
-            $descriptions['Szoveg'] = $this->dataArray[0]['descriptions'][$i]['Text'];
-            $descriptions['Tipus'] = 3;
-            $descriptions['Nyelv'] = 'hu';
-            $descriptions['FelettesId'] = $this->dataArray[0]['picId'];
-            $descriptions['chapterState'] = $this->dataArray[0]['descriptions'][$i]['descriptionState'];
-            array_push($descriptionsArray[0]['cikk'], $descriptions);
+            $descriptions['Text'] = $this->dataArray[0]['descriptions'][$i]['Text'];
+            $descriptions['Type'] = 3;
+            $descriptions['Language'] = 'hu';
+            $descriptions['SuperiorId'] = $this->dataArray[0]['picId'];
+            $descriptions['ChapterState'] = $this->dataArray[0]['descriptions'][$i]['descriptionState'];
+            array_push($descriptionsArray[0]['article'], $descriptions);
         }
         include_once(ADMIN_MODEL_PATH . 'ArticleModel.php');
         $captions = new ArticleModel($this->db, $descriptionsArray);

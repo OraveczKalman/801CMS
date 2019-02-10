@@ -51,6 +51,7 @@ class ArticleModel extends AncestorClass {
         $data = array();
         $insertChapterQueryStringValues = '';
         $updateChapterQueryString = "";
+        print_r($this->dataArray);
         $dbError = 0;
         foreach ($this->dataArray[0]['article'] as $texts) {
             switch ($texts['ChapterState']) {

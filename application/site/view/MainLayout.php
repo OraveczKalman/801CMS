@@ -18,6 +18,7 @@
         
         <link href="<?php print COMMON_CSS_PATH; ?>bootstrap.css" rel="stylesheet" type="text/css">
         <link href="<?php print SITE_CSS_PATH; ?>modern-business.css" rel="stylesheet" type="text/css">
+        <link href="<?php print SITE_CSS_PATH; ?>jquery.fancybox.min.css" rel="stylesheet" type="text/css">
         <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">-->
@@ -72,6 +73,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <script type="text/javascript" src="<?php print SITE_JS_PATH; ?>scripts.js"></script>
         <!--<script type="text/javascript" src="<?php //print SITE_JS_PATH; ?>clearbox.js"></script>-->
+        <script type="text/javascript" src="<?php print SITE_JS_PATH; ?>jquery.fancybox.min.js"></script>
         <script type="text/javascript">
             /*var _gaq = _gaq || [];
             _gaq.push(['_setAccount', 'UA-29326599-1']);

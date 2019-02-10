@@ -14,6 +14,7 @@
     define('SITE_JS_PATH', './application/site/js/');
     define('SITE_CSS_PATH', './resources/site/');
     define('SITE_IMAGE_PATH', './resources/img/');
+    define('SITE_RESOURCE_PATH', './resources/site/');
     define('ADMIN_JS_PATH', './application/admin/js/');
     define('ADMIN_CSS_PATH', './resources/admin/');
 
