@@ -14,6 +14,7 @@ class GalleryController {
     
     private function RenderGallery() {
         include_once(SITE_MODEL_PATH . 'GalleryModel.php');
+        $this->articleLabels = json_decode(file_get_contents(SITE_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/ArticleViewLabels.json'));
         $gallery = new GalleryModel($this->db, $this->dataArray[0]);
         $galleryObjects = $gallery -> getGalleryObjects();
         switch ($this->dataArray[0]['AdditionalField']) {

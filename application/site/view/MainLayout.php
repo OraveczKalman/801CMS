@@ -18,6 +18,7 @@
         
         <link href="<?php print COMMON_CSS_PATH; ?>bootstrap.css" rel="stylesheet" type="text/css">
         <link href="<?php print SITE_CSS_PATH; ?>modern-business.css" rel="stylesheet" type="text/css">
+        <link href="<?php print SITE_CSS_PATH; ?>grid-gallery.css" rel="stylesheet" type="text/css">
         <link href="<?php print SITE_CSS_PATH; ?>jquery.fancybox.min.css" rel="stylesheet" type="text/css">
         <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">

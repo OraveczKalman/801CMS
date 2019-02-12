@@ -37,8 +37,7 @@ class MenuController {
         $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Kulcsszavak'], 'controllId'=>'Kulcsszavak');
         $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Link'], 'controllId'=>'Link');
         $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Target'], 'controllId'=>'Target');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Nyelv'], 'controllId'=>'Nyelv');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Module'], 'controllId'=>'Module');       
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Nyelv'], 'controllId'=>'Nyelv');      
         $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['Szerep'], 'controllId'=>'Szerep');
         $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['ParentId'], 'controllId'=>'ParentId');
         $validateInfo[] = array('function'=>'validateInt', 'data'=>$this->dataArray[0]['MoreFlag'], 'controllId'=>'MoreFlag');
@@ -169,12 +168,7 @@ class MenuController {
             }
             $menuDataArray['ParentId'] = $this->dataArray[0]['ParentId'];
             $menuDataArray['MainNode'] = $this->dataArray[0]['ParentNode'];
-            $menuDataArray['MoreFlag'] = $this->dataArray[0]['MoreFlag'];
-            if ($this->dataArray[0]['Module'] != '') {
-                $menuDataArray['Module'] = $this->dataArray[0]['Module'];
-            } else if ($this->dataArray[0]['Module'] == '') {
-                $menuDataArray['Module'] = null;
-            }          
+            $menuDataArray['MoreFlag'] = $this->dataArray[0]['MoreFlag'];       
 
             $menuDataArray['Counter'] = 0;
             $menuDataArray['Popup'] = 0;
@@ -216,16 +210,12 @@ class MenuController {
 
     private function editMenuForm() {
         include_once(DATABASE_PATH . 'LanguageModel.php');
-        $moduleDataArray = array();
-        $moduleDataArray['table'] = 'main_header';
-        $moduleDataArray['fields'] = 'lang_header.Title, lang_header.Link';
-        $moduleDataArray['joins'] = 'LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId';
-        $moduleDataArray['where'] = 'main_header.MainHeaderId NOT IN (SELECT MainHeaderId FROM lang_header)';
         $languageDataArray = array('where'=>'WHERE Active=1');
         $languageModel = new LanguageModel($this->db, $languageDataArray);
         $languages = $languageModel->getLanguage();
         $menu = new MenuModel($this->db);      
         $menuPointData = $menu->getMenu($this->dataArray[0]['menuObject']['menuId']);
+        var_dump($this->dataArray[0]['menuObject']);
         $menu->setDataArray($moduleDataArray);
         $moduleList = $menu->getModules();        
         switch ($menuPointData[0]['Role']) {

@@ -1,0 +1,14 @@
+[2019-02-10 19:53:12]SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'MainHeaderId' cannot be null: INSERT INTO lang_header SET
+            MainHeaderId=:mainHeaderId,
+            ParentId=:parentId,
+            Rank=:rank,
+            Caption=:caption,
+            Title=:title,
+            Heading=:heading,
+            Keywords=:keywords,
+            Link=:link,
+            Language=:language,
+            Counter=:counter,
+            Created=NOW(),
+            CreatedBy=:createdBy,
+            Active = 1

@@ -56,7 +56,7 @@ class MenuModel {
 
     public function getMenu($menuId) {
         $getMenuDataArray['sql'] = "SELECT * FROM main_header 
-            LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId WHERE main_header.MainHeaderId = 1";
+            LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId WHERE main_header.MainHeaderId=:mainHeaderId";
         $getMenuDataArray['parameters'][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$menuId, "paramType"=>1);
         $getMenuQuery = $this->db->parameterSelect($getMenuDataArray);
         return $getMenuQuery;
@@ -95,7 +95,6 @@ class MenuModel {
         $mainHeaderDataArray['UserIn'] = $this->dataArray['UserIn'];
         $mainHeaderDataArray['Popup'] = $this->dataArray['Popup'];
         $mainHeaderDataArray['Commentable'] = $this->dataArray['Commentable'];
-        $mainHeaderDataArray['Module'] = $this->dataArray['Module'];
         $mainHeaderData = $this->insertMainHeader($mainHeaderDataArray);
         //var_dump($mainHeaderData);
         if (!isset($mainHeaderData['error'])) {
@@ -129,7 +128,6 @@ class MenuModel {
         $insertMainHeaderQuery['sql'] = "INSERT INTO main_header SET
             AdditionalField=:AdditionalField,
             Target=:Target,
-            Module=:Module,
             Role=:Role,
             MainPage=:MainPage,
             MainNode=:MainNode,
@@ -157,12 +155,7 @@ class MenuModel {
         $insertMainHeaderQuery['parameters'][6] = array("paramName"=>"UserIn", "paramVal"=>$dataArray['UserIn'], "paramType"=>PDO::PARAM_INT);
         $insertMainHeaderQuery['parameters'][7] = array("paramName"=>"Popup", "paramVal"=>$dataArray['Popup'], "paramType"=>PDO::PARAM_INT);
         $insertMainHeaderQuery['parameters'][8] = array("paramName"=>"Commentable", "paramVal"=>$dataArray['Commentable'], "paramType"=>PDO::PARAM_INT);
-        if (!is_null($dataArray['Module'])) {
-            $insertMainHeaderQuery['parameters'][9] = array("paramName"=>"Module", "paramVal"=>$dataArray['Module'], "paramType"=>PDO::PARAM_STR);
-        } else {
-            $insertMainHeaderQuery['parameters'][9] = array("paramName"=>"Module", "paramVal"=>null, "paramType"=>PDO::PARAM_STR);
-        }
-        $insertMainHeaderQuery['parameters'][10] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+        $insertMainHeaderQuery['parameters'][9] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
 
         $insertMainHeaderResult = $this->db->parameterInsert($insertMainHeaderQuery);
         return $insertMainHeaderResult;
@@ -210,7 +203,6 @@ class MenuModel {
         $mainHeaderDataArray['UserIn'] = $this->dataArray['UserIn'];
         $mainHeaderDataArray['Popup'] = $this->dataArray['Popup'];
         $mainHeaderDataArray['Commentable'] = $this->dataArray['Commentable'];
-        $mainHeaderDataArray['Module'] = $this->dataArray['Module'];
         $mainHeaderDataArray['MainHeaderId'] = $this->dataArray['MainHeaderId'];
         $mainHeaderData = $this->updateMainHeader($mainHeaderDataArray);
         if (!isset($mainHeaderData['error'])) {
@@ -245,7 +237,6 @@ class MenuModel {
             UserIn=:UserIn,
             Popup=:Popup,
             Commentable=:Commentable,
-            Module=:Module,
             Modified=NOW(),
             ModifiedBy=:UserId,
             Active=1 WHERE MainHeaderId=:MainHeaderId";
@@ -259,7 +250,6 @@ class MenuModel {
         $updateMainHeaderQuery['parameters'][6] = array("paramName"=>"UserIn", "paramVal"=>$dataArray['UserIn'], "paramType"=>PDO::PARAM_INT);
         $updateMainHeaderQuery['parameters'][7] = array("paramName"=>"Popup", "paramVal"=>$dataArray['Popup'], "paramType"=>PDO::PARAM_INT);
         $updateMainHeaderQuery['parameters'][8] = array("paramName"=>"Commentable", "paramVal"=>$dataArray['Commentable'], "paramType"=>PDO::PARAM_INT);
-        $updateMainHeaderQuery['parameters'][9] = array("paramName"=>"Module", "paramVal"=>$dataArray['Module'], "paramType"=>PDO::PARAM_STR);
         $updateMainHeaderQuery['parameters'][10] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
         $updateMainHeaderQuery['parameters'][11] = array("paramName"=>"MainHeaderId", "paramVal"=>$dataArray['MainHeaderId'], "paramType"=>PDO::PARAM_INT);
         

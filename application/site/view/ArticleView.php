@@ -1,10 +1,10 @@
 <h1 class="mt-4 mb-3">
-    <small>Készítette: <a href="#"><?php print $this->dataArray[0]['Name']; ?></a></small>
+    <small><?php print $this->articleLabels->labels->authorLabel; ?>: <a href="#"><?php print $this->dataArray[0]['Name']; ?></a></small>
 </h1>
 
 <ol class="breadcrumb">
     <li class="breadcrumb-item">
-        <a href="#">Home</a>
+        <a href="#"><?php print $this->articleLabels->labels->breadCrumbHomeLabel; ?></a>
     </li>
 </ol>
     
@@ -22,7 +22,7 @@
 ?>
         <img class="img-fluid rounded" src="<?php print UPLOADED_PATH . "/media/" . $documentData["CoverPicture"]; ?>" alt="">
         <hr>    
-        <p>Posted on <?php if (!empty($documentData['Header'])) { print $documentData['Header'][0]['Created']; } ?></p>
+        <p><?php print $this->articleLabels->labels->postedOnLabel; ?> <?php if (!empty($documentData['Header'])) { print $documentData['Header'][0]['Created']; } ?></p>
         <hr>
 <?php
     $displayText = "";

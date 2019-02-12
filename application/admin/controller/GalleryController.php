@@ -52,7 +52,6 @@ class GalleryController {
     }
 
     private function FileUpload() {
-        var_dump('xxx');
         $uploadDataArray = array();
         $uploadDataArray[0]['fileArrayName'] = 'media';
         $uploadDataArray[0]['uploadPath'] = UPLOADED_MEDIA_PATH;
@@ -63,7 +62,6 @@ class GalleryController {
 
         $fileData = array();
         $fileData['images'] = $uploadedFiles['successfulUpload'];
-        var_dump($fileData);
         $fileData['MainHeaderId'] = $_POST['MainHeaderId'];
         $fileData['mediaType'] = $_POST['mediaTypeHidden'];
         if (!empty($fileData['images'])) {

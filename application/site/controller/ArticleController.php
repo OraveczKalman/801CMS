@@ -5,6 +5,7 @@ class ArticleController {
     private $dataArray;
     private $mediaData;
     private $db;
+    private $articleLabels;
 
     public function __construct($docData, $db) {
         $this->dataArray = $docData;
@@ -14,6 +15,7 @@ class ArticleController {
     }
     
     public function renderDocument() {
+        $this->articleLabels = json_decode(file_get_contents(SITE_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/ArticleViewLabels.json'));
         $this->mediaData = $this->docModel->getDocumentPicture($this->dataArray[0]['MainHeaderId']);
         $documentData = $this->getDocumentData();
         include_once(SITE_VIEW_PATH . 'ArticleView.php');
@@ -34,7 +36,7 @@ class ArticleController {
             }
             return $documentData;
         } else if(empty($documentData)) {
-            return 'A kért dokumentum nem található!';
+            return $this->articleLabels->labels->notFoundLabel;
         }
     }
 
