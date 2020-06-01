@@ -15,17 +15,14 @@ class IndexController {
     private function RenderIndex() {
         include_once(DATABASE_PATH . 'LinkModel.php');
         $menu = new LinkModel($this->db);
-        $indexPoints = $menu->getRole(array('table' => 'main_header',
-            'fields' => 'main_header.*, role.ControllerName',
-            'joins' => 'INNER JOIN role ON main_header.Role = role.RoleId ' .
-                'LEFT JOIN rank ON rank.MainHeaderId = main_header.MainHeaderId ',
-            'where' => 'main_header.MainPage = 1'));
-        for ($i=0; $i<=count($indexPoints)-1; $i++) {
+        $indexPoints = $menu->getRole();
+        //var_dump($indexPoints);
+        /*for ($i=0; $i<=count($indexPoints)-1; $i++) {
             $controllerName = $indexPoints[$i]['ControllerName'] . 'Controller';
             include_once(SITE_CONTROLLER_PATH . $controllerName . '.php');
             $dataArray = array();
             $dataArray[0] = $indexPoints[$i];
             $controllerRout = new $controllerName($dataArray, $this->db);
-        }
+        }*/
     }
 }

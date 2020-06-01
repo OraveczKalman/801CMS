@@ -1,6 +1,8 @@
-<div class="row-fluid">
-    <div class="col-sm-12">
-        <h1>Oldal szerkesztése</h1>
+<div class="card shadow mb-12">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Oldal szerkesztése</h6>
+    </div>
+    <div class="card-body">
 <?php
         for ($i=0; $i<=$_SESSION['setupData']['mainMenus']-1; $i++) {
 ?>
@@ -22,9 +24,9 @@
                             <a data-toggle="collapse" data-parent="#subAccordion<?php print $i . $j; ?>" href="#subCollapse<?php print $i . $j; ?>">
                                 <?php print $menuItems[$i][$j]['Caption']; ?>
                             </a>
-                            <a href="javascript: void(0);" onclick="javascript: loadEditMenuForm({ menuId:<?php print $menuItems[$i][$j]['MainHeaderId']; ?>, parentId:<?php print $i; ?>, parentNode:<?php print $i; ?> });"><i class="fa fa-pencil"></i></a>
+                            <a href="javascript: void(0);" onclick="javascript: loadEditMenuForm({ menuId:<?php print $menuItems[$i][$j]['MainHeaderId']; ?>, parentId:<?php print $i; ?>, parentNode:<?php print $i; ?> });"><i class="fa fa-pencil-alt"></i></a>
                             <a href="javascript: void(0);" onclick="javascript: deleteMenu({ menuId:<?php print $menuItems[$i][$j]['MainHeaderId']; ?> });"><i class="fa fa-eraser"></i></a>
-                            <a href="javascript: void(0);" onclick="javascript: loadNewMenuForm({ parentId:<?php print $menuItems[$i][$j]['MainHeaderId']; ?>, parentNode:<?php print $i; ?> })"><i class="fa fa-plus"></i></a>
+                            <a href="javascript: void(0);" onclick="javascript: loadNewMenuForm({ parentId:<?php print $menuItems[$i][$j]['MainHeaderId']; ?>, parentNode:<?php print $i; ?>, parentRole:<?php print $menuItems[$i][$j]['Role']; ?> })"><i class="fa fa-plus"></i></a>
                         </div>
                         <div style="margin-left:10px;" class="collapse" id="subCollapse<?php print $i . $j; ?>">
 <?php
@@ -33,7 +35,7 @@
 ?>
                             <div>
                                 <?php print $menuItems[$i][$j]['subItems'][$k]['Caption']; ?>
-                                <a href="javascript: void(0);" onclick="javascript: loadEditMenuForm({ menuId:<?php print $menuItems[$i][$j]['subItems'][$k]['MainHeaderId']; ?>, parentId:<?php print $i; ?>, parentNode:<?php print $i; ?> });"><i class="fa fa-pencil"></i></a>
+                                <a href="javascript: void(0);" onclick="javascript: loadEditMenuForm({ menuId:<?php print $menuItems[$i][$j]['subItems'][$k]['MainHeaderId']; ?>, parentId:<?php print $i; ?>, parentNode:<?php print $i; ?> });"><i class="fa fa-pencil-alt"></i></a>
                                 <a href="javascript: void(0);" onclick="javascript: deleteMenu({ menuId:<?php print $menuItems[$i][$j]['subItems'][$k]['MainHeaderId']; ?> });"><i class="fa fa-eraser"></i></a>
                             </div>
 <?php
@@ -66,6 +68,14 @@
 <?php
         }
 ?>
+    </div>
+</div>
+
+<div class="card shadow mb-12" style="margin-top: 1rem;">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Oldal szerkesztése</h6>
+    </div>
+    <div class="card-body">
         <div class="panel-group" id="ModuleContainer">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -75,11 +85,6 @@
                     </h4>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="row-fluid">
-    <div class="col-sm-12">
+        </div>        
     </div>
 </div>

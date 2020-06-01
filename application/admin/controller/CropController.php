@@ -1,5 +1,5 @@
 <?php 
-include_once(ADMIN_MODEL_PATH . 'GalleryModel.php');
+include_once(MODEL_PATH . 'GalleryModel.php');
 
 class CropController {
     private $dataArray;
@@ -15,14 +15,14 @@ class CropController {
     }
 
     private function RenderCropForm() {
-        list($origWidth, $origHeight, $type, $attr) = getimagesize($this -> dataArray[0]['fileName']);
-        $ratio = $this -> dataArray[0]['targW'] / $this -> dataArray[0]['targH'];
+        list($origWidth, $origHeight, $type, $attr) = getimagesize(PATH_LEVEL_UP1 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']);
+        $ratio = $this -> dataArray[0]['targW'] / $this->dataArray[0]['targH'];
         include_once(ADMIN_VIEW_PATH . "CropForm.php");		
     }
 
     private function ImageCrop() {
-        $size = getimagesize($this -> dataArray[0]['fileName']);
-        list($orig_width, $orig_height, $type, $attr) = getimagesize($this -> dataArray[0]['fileName']);
+        $size = getimagesize(PATH_LEVEL_UP1 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']);
+        list($orig_width, $orig_height, $type, $attr) = getimagesize(PATH_LEVEL_UP1 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']);
         $mime = image_type_to_mime_type($type);
 
         $img_name_array = explode('/', $this -> dataArray[0]['fileName']);
@@ -33,7 +33,7 @@ class CropController {
                 $fileInfo = pathinfo($this -> dataArray[0]['thumbFileName']);
                 $fileInfoArray = explode('_', $fileInfo['filename']);
                 $basename = $fileInfoArray[0] . '_' . $fileInfoArray[1] . '_' . $f_idopont . '_' . $fileInfoArray[3] . '.' . $fileInfo['extension'];
-                $filename = './' . $img_name_array[1] . '/' . $img_name_array[2] . '/' . $img_name_array[3] . '/' . $basename;
+                $filename = PATH_LEVEL_UP1 . "resources/uploaded/media/" . $basename;
                 $pictureInfo['thumbKepnev'] = $basename;
                 $pictureInfo['picId'] = $this -> dataArray[0]['picId'];
                 $pic = new GalleryModel($this->db, $pictureInfo);
@@ -61,12 +61,12 @@ class CropController {
         switch ($mime) {
             case "image/pjpeg" :
             case "image/jpeg" :
-                $src = imagecreatefromjpeg($this -> dataArray[0]['fileName']);
+                $src = imagecreatefromjpeg(PATH_LEVEL_UP1 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']);
                 imagecopyresampled($tmp, $src, 0, 0, $this -> dataArray[0]['x'], $this -> dataArray[0]['y'], $this -> dataArray[0]['targW'], $this -> dataArray[0]['targH'], $this -> dataArray[0]['w'], $this -> dataArray[0]['h']);
                 imagejpeg($tmp, $filename, 100);
                 imagedestroy($tmp);
                 imagedestroy($src);
-                print '<img class="img-thumbnail" src="' . $filename . '" />';
+                print $this->dataArray[0]['MainHeaderId'];
                 break;
             case "image/gif" :
                 $img_name_array = explode('/', $this -> dataArray[0]['fileName']);
@@ -75,7 +75,7 @@ class CropController {
                 imagegif($tmp, $this -> dataArray[0]['thumbFileName'], 0);
                 imagedestroy($src);
                 imagedestroy($tmp);
-                print '<img class="img-thumbnail" src="' . $filename . '" />';
+                print $this->dataArray[0]['MainHeaderId'];
                 break;
             case "image/png" :
                 $img_name_array = explode('/', $this -> dataArray[0]['fileName']);
@@ -84,7 +84,7 @@ class CropController {
                 imagepng($tmp, $this -> dataArray[0]['thumbFileName'], 0);
                 imagedestroy($src);
                 imagedestroy($tmp);
-                print  '<img class="img-thumbnail" src="' . $filename . '" />';
+                print $this->dataArray[0]['MainHeaderId'];
                 break;
         }
     }

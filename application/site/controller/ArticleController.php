@@ -1,5 +1,5 @@
 <?php
-include_once(SITE_MODEL_PATH . '/ArticleModel.php');
+include_once(MODEL_PATH . '/ArticleModel.php');
 
 class ArticleController {
     private $dataArray;
@@ -16,15 +16,34 @@ class ArticleController {
     
     public function renderDocument() {
         $this->articleLabels = json_decode(file_get_contents(SITE_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/ArticleViewLabels.json'));
-        $this->mediaData = $this->docModel->getDocumentPicture($this->dataArray[0]['MainHeaderId']);
+        $documentPictureDataArray = array(
+            "MainHeaderId"=>$this->dataArray[0]["MainHeaderId"]
+        );
+        $this->docModel->setDataArray($documentPictureDataArray);
+        $this->mediaData = $this->docModel->getDocumentPicture();
         $documentData = $this->getDocumentData();
+        //var_dump($documentData);
         include_once(SITE_VIEW_PATH . 'ArticleView.php');
     }
     
     private function getDocumentData() {
-        $documentData['CoverPicture'] = $this->docModel->getCoverPicture($this->dataArray[0]['MainHeaderId']);
-        $documentData['Header'] = $this->docModel->getDocumentArticles($this->dataArray[0]['MainHeaderId'], 1);
-        $documentData['Body'] = $this->docModel->getDocumentArticles($this->dataArray[0]['MainHeaderId'], 2);
+        $coverPictureDataArray = array(
+            "MainHeaderId"=>$this->dataArray[0]['MainHeaderId']
+        );
+        $this->docModel->setDataArray($coverPictureDataArray);
+        $documentData['CoverPicture'] = $this->docModel->getCoverPicture();
+        $headerDataArray = array(
+            "MainHeaderId"=>$this->dataArray[0]['MainHeaderId'],
+            "Role"=>1
+        );
+        $this->docModel->setDataArray($headerDataArray);
+        $documentData['Header'] = $this->docModel->getDocumentArticles();
+        $bodyDataArray = array(
+            "MainHeaderId"=>$this->dataArray[0]['MainHeaderId'],
+            "Role"=>2
+        );
+        $this->docModel->setDataArray($bodyDataArray);
+        $documentData['Body'] = $this->docModel->getDocumentArticles();
         if (!empty($documentData)) {
             if (!empty($documentData['Header'])) {
                 $documentData['Header'][0]['Szoveg'] = $this->mediaChanger($documentData['Header'][0]['Text']);
@@ -44,9 +63,9 @@ class ArticleController {
         foreach ($this->mediaData as $mediaData2) {
             switch ($mediaData2['MediaType']) {
                 case 1 :
-                    $textData = str_replace('#kep_bal_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="kep_bal">', $textData);
-                    $textData = str_replace('#kep_jobb_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="kep_jobb">', $textData);
-                    $textData = str_replace('#kep_kozep_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="kep_kozep">', $textData);
+                    $textData = str_replace('#kep_bal_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="img-fluid rounded">', $textData);
+                    $textData = str_replace('#kep_jobb_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="img-fluid rounded">', $textData);
+                    $textData = str_replace('#kep_kozep_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="img-fluid rounded">', $textData);
                     break;
                 case 2 :
                     include_once(CORE_PATH . '/YoutubeClass.php');

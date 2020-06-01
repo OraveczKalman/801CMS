@@ -1,2 +1,4 @@
 /resources/logs/
 /nbproject/private/
+/application/common/logs/
+/resources/uploaded/

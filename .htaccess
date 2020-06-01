@@ -1,11 +1,11 @@
 Options +FollowSymLinks
-# IndexIgnore */*
+IndexIgnore */*
 # Turn on the RewriteEngine
-Redirect 404 /favicon.ico
+# Redirect 404 /favicon.ico
 RewriteEngine On
 RewriteBase /
 DirectoryIndex index.php
 #  Rules
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . index.php
+RewriteRule ^ index.php [L]

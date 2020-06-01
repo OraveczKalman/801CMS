@@ -14,7 +14,7 @@ class LoginController {
     }
     
     private function Login() {
-        include_once(ADMIN_MODEL_PATH . 'UserModel.php');
+        include_once(MODEL_PATH . 'UserModel.php');
         $errorArray = array();
 
         if ($_POST['UserName'] == '') {
@@ -35,6 +35,7 @@ class LoginController {
             } else {
                 $_SESSION['admin']['userData'] = $enteredUserData[0];
                 $_SESSION['admin']['userData']['lang'] = 'Hu';
+                header("Location: ../admin/MenuTree");
             }
         } else if (!empty($errorArray)) {
             print json_encode($errorArray);

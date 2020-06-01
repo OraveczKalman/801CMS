@@ -13,13 +13,18 @@ class NewsCoverController {
     private $db;
 
     public function __construct($db, $docData=null) {
+        var_dump('xxx');
         $this -> docData = $docData;
         $this -> db = $db;
         $this -> renderNewsCover();
     }
 
     private function renderNewsCover() {
+        print "<pre>";
+        print_r($_SESSION);
+        print "</pre>";
         include_once(SITE_CONTROLLER_PATH . '/NewsController.php');
+        //include_once(SITE_RESOURCE_PATH . 'lang/' . )
         $newsCovers = new NewsCoverModel($this->db, $this->docData);
         $newsCoverData = $newsCovers -> getNewsStreams();
         $newsStreams = array();

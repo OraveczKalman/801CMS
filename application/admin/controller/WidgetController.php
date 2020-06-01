@@ -1,5 +1,5 @@
 <?php
-include_once(ADMIN_MODEL_PATH . 'WidgetModel.php');
+include_once(MODEL_PATH . 'WidgetModel.php');
 
 class WidgetController {
     private $dataArray;

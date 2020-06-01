@@ -40,7 +40,13 @@ class ImageHandling {
         return $this->pictureProperties['uploadedFiles'];
     }
 
-    private function editImages($source_pic, $destination_pic, $ext, $t_width, $t_height, $width, $height) {
+    private function editImages($source_pic, $destination_pic, $ext, $width, $height, $t_width=null, $t_height=null) {
+        if (is_null($t_height)) {
+            $t_height = $height;
+        }
+        if (is_null($t_width)) {
+            $t_width = $width;
+        }
         $meret_big = $this->ratio($t_width, $t_height, $width, $height);
         $tmp=imagecreatetruecolor($meret_big[0], $meret_big[1]);
        

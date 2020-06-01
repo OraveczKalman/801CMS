@@ -1,5 +1,5 @@
 <?php
-include_once(DATABASE_PATH . 'LanguageModel.php');
+include_once(MODEL_PATH . 'LanguageModel.php');
 
 class LanguageFormController /*extends FormController*/ {
     private $dataArray;
@@ -9,16 +9,16 @@ class LanguageFormController /*extends FormController*/ {
         $this -> dataArray = $dataArray;
         $this -> db = $db;
         if (!isset($this->dataArray[0]['event'])) {
-            $this->dataArray[0]['event'] = 'RenderLanguageForm';
+            $this->dataArray[0]['event'] = 'RenderLanguageList';
         }
         call_user_func(array($this, $this->dataArray[0]['event']));
     }
 
     private function LanguageInsert() {
-        $errors = $this->ValidateLanguageFormFull();
+        $errors = $this->ValidateFormFull();
         if ($errors == '') {
-            $languageObj = new LanguageModel($this->db, $_POST);
-            $languageData = $languageObj ->newLanguage();
+            $languageObj = new LanguageModel($this->db, $this->dataArray[0]);
+            $languageData = $languageObj->newLanguage();
             if (!isset($languageData['error'])) {
                 print json_encode($goodArray = array('good'=>1));
             } else {
@@ -29,11 +29,16 @@ class LanguageFormController /*extends FormController*/ {
         }
     }
 
-    private function RenderLanguageForm() {
+    private function RenderLanguageList() {
         $languageLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/LanguageForm.json'));
-        $languageDataArray = array("where"=>" WHERE Active=1");
+        $languageDataArray = array("where"=>" Active=1");
         $languageModel = new LanguageModel($this->db, $languageDataArray);
         $languageList = $languageModel->getLanguage();
+        include_once(ADMIN_VIEW_PATH . 'LanguageListView.php');
+    }
+    
+    private function RenderLanguageForm() {
+        $languageLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/LanguageForm.json'));
         include_once(ADMIN_VIEW_PATH . 'LanguageFormView.php');
     }
     
@@ -78,11 +83,11 @@ class LanguageFormController /*extends FormController*/ {
         }
     }
 
-    private function ValidateLanguageFormFull() {
+    private function ValidateFormFull() {
         include_once(CORE_PATH . 'Validator.php');
         $validateInfo = array();
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['Language'], 'controllId'=>'Language');
-        $validateInfo[] = array('function'=>'validateText', 'data'=>$_POST['LanguageSign'], 'controllId'=>'LanguageSign');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Language'], 'controllId'=>'Language');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['LanguageSign'], 'controllId'=>'LanguageSign');
         $validator = new mainValidator($validateInfo);
         $errorArray = $validator -> validateCore();
         if (empty($errorArray)) {
@@ -90,5 +95,10 @@ class LanguageFormController /*extends FormController*/ {
         } else if (!empty($errorArray)) {
             return json_encode($errorArray);
         }
+    }
+    
+    public function GetFooter() {
+        $languageLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/LanguageForm.json'));
+        include_once(ADMIN_VIEW_PATH . "footers/LanguageFormFooter.php");
     }
 }

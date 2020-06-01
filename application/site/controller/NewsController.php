@@ -2,25 +2,27 @@
 include_once(SITE_MODEL_PATH . '/NewsModel.php');
 
 class NewsController {
-    private $newsData;
+    private $dataArray;
     private $db;
 
-    public function __construct($newsData, $db) {
-        $this->newsData = $newsData;
+    public function __construct($dataArray, $db) {
+        $this->dataArray = $dataArray;
         $this->db = $db;
-        if (!isset($this->newsData[0]['event'])) {
-            $this->newsData[0]['event'] = 'newsPageSwitch';
-            $this->newsData[0]['fullReload'] = 1;
+        if (!isset($this->dataArray[0]['event'])) {
+            $this->dataArray[0]['event'] = 'NewsPageSwitch';
+            $this->dataArray[0]['fullReload'] = 1;
         }
-        call_user_func(array($this, $this->newsData[0]['event']));
+        call_user_func(array($this, $this->dataArray[0]['event']));
     }
 
-    private function newsPageSwitch() {
-        if (!isset($this->newsData[0]['page'])) {
-            $this->newsData[0]['page'] = 0;
+    private function NewsPageSwitch() {
+        if (!isset($this->dataArray[0]['page'])) {
+            $this->dataArray[0]['page'] = 0;
         }
-        $this->newsData[0]['limit'] = $_SESSION['setupData']['newsCount'];
-        $news = new NewsModel($this->db, $this->newsData);
-        $news->getNewsData();
+        $this->dataArray[0]['limit'] = $_SESSION['setupData']['newsCount'];
+        $news = new NewsModel($this->db, $this->dataArray);
+        $newsData = $news->getNewsData();
+        $blogLang = json_decode(file_get_contents('./' . SITE_RESOURCE_PATH . 'lang/' . $_SESSION["setupData"]["languageSign"] . "/BlogViewLabels.json"));
+        include_once('./' . SITE_VIEW_PATH . '/NewsTemplate.php');
     }
 }

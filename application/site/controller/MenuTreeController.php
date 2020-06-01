@@ -1,5 +1,5 @@
 <?php
-include_once(SITE_MODEL_PATH . '/MenuModel.php');
+include_once(MODEL_PATH . '/MenuModel.php');
 
 class MenuTreeController {
     private $dataArray;
@@ -16,8 +16,7 @@ class MenuTreeController {
         $menuItems = array();
         $menuDataArray[0]['level'] = $this->dataArray[0]['mainPointId'];
         $menu = new MenuModel($this->db, $menuDataArray);
-        $menuItems = $menu->GenerateMenuTree();
-        //var_dump($menuItems);
+        $menuItems = $menu->GenerateMenuTreeSite();
         include_once(SITE_VIEW_PATH . 'MenuTreeViewHorizontal.php');
     }
 }

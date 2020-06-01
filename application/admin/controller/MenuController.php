@@ -1,5 +1,5 @@
 <?php
-include_once(ADMIN_MODEL_PATH . 'MenuModel.php');
+include_once(MODEL_PATH . 'MenuModel.php');
 
 class MenuController {
     private $dataArray;
@@ -21,7 +21,7 @@ class MenuController {
     
     private function GetMenuRoleData() {
         $roleDataArray = array();
-        $roleDataArray['where'] = $this->dataArray[0]['MenuRoleWhere'];
+        $roleDataArray['roleId'] = $this->dataArray[0]['MenuRole'];
 
         $menu = new MenuModel($this->db, $roleDataArray);
         $menu_roles = $menu->getMenuRoles();
@@ -86,30 +86,30 @@ class MenuController {
     }
         
     private function newMenuForm() {
-        include_once(DATABASE_PATH . 'LanguageModel.php');
+        include_once(MODEL_PATH . 'LanguageModel.php');
         $menu = new MenuModel($this->db);
         $moduleList = $menu->getModules();
-        $languageDataArray = array('where'=>'WHERE Active=1');
+        $languageDataArray = array('where'=>' Active=1');
         $languageModel = new LanguageModel($this->db, $languageDataArray);
         $languages = $languageModel->getLanguage();
-        if (!isset($this->dataArray[0]['ParentRole'])) {
-            $this->dataArray[0]['ParentRole'] = 0;
+        if (!isset($this->dataArray[0]['menuObject']['parentRole'])) {
+            $this->dataArray[0]['menuObject']['parentRole'] = 0;
         }
         if (!isset($_REQUEST['ParentId'])) {
             $_REQUEST['ParentId'] = 0;
-        }     
-        switch ($this->dataArray[0]['ParentRole']) {
+        }
+        switch ($this->dataArray[0]['menuObject']['parentRole']) {
             case 2:
-                $this->dataArray[0]['MenuRoleWhere'] = 'WHERE role.RoleId = 3';
+                $this->dataArray[0]['MenuRole'] = 3;
                 break;
             case 5:
-                $this->dataArray[0]['MenuRoleWhere'] = 'WHERE role.RoleId = 4';
+                $this->dataArray[0]['MenuRole'] = 4;
                 break;
             case 15:
-                $this->dataArray[0]['MenuRoleWhere'] = 'WHERE role.RoleId = 3';
+                $this->dataArray[0]['MenuRole'] = 3;
                 break;
             default:
-                $this->dataArray[0]['MenuRoleWhere'] = '';
+                $this->dataArray[0]['MenuRole'] = null;
                 break;
         }
 
@@ -178,23 +178,36 @@ class MenuController {
             $menu = new MenuModel($this->db, $menuDataArray);
             $menuData = $menu->insertMenu();
             if (isset($menuData['lastInsert'])) {
-                if ($menuDataArray['Role'] == 7) {
-                    include_once(CORE_PATH . 'UploadController.php');
-                    include_once(ADMIN_MODEL_PATH . 'GalleryModel.php');
-                    $uploadDataArray = array();
-                    $uploadDataArray[0]['fileArrayName'] = 'Feltoltendo';
-                    $uploadDataArray[0]['uploadPath'] = UPLOADED_MEDIA_PATH;
-                    $uploadDataArray[0]['rename'] = 0;
-                    $uploadObject = new UploadController($uploadDataArray);
-                    $uploadedFiles = $uploadObject->uploadFiles();
-                    if (!empty($uploadedFiles['successfulUpload'])) {
-                        $uploadInsertArray = array();
-                        $uploadInsertArray['MainHeaderId'] = $menuData['lastInsert'];
-                        $uploadInsertArray['mediaType'] = 5;
-                        $uploadInsertArray['images'][0]['fileName'] = $uploadedFiles['successfulUpload'][0]['fileName'];
-                        $uploadInsertObject = new GalleryModel($this->db, $uploadInsertArray);
-                        $uploadInsert = $uploadInsertObject->insertGalleryImages();
-                    }
+                switch ($menuDataArray['Role']) {
+                    case 3:
+                        include_once(MODEL_PATH . "ArticleModel.php");
+                        $newArticleDataArray = array();
+                        $newArticleDataArray[0]["SuperiorId"] = $menuData["lastInsert"];
+                        $newArticleDataArray[0]["Type"] = 1;
+                        $newArticleDataArray[0]["Title"] = "";
+                        $newArticleDataArray[0]["Text"] = "";
+                        $newArticleDataArray[0]["Language"] = $menuDataArray['Language'];
+                        $articleModel = new ArticleModel($this->db, $newArticleDataArray);
+                        $articleResult = $articleModel->insertArticle();
+                        break;
+                    case 7:
+                        include_once(CORE_PATH . 'UploadController.php');
+                        include_once(MODEL_PATH . 'GalleryModel.php');
+                        $uploadDataArray = array();
+                        $uploadDataArray[0]['fileArrayName'] = 'Feltoltendo';
+                        $uploadDataArray[0]['uploadPath'] = UPLOADED_MEDIA_PATH;
+                        $uploadDataArray[0]['rename'] = 0;
+                        $uploadObject = new UploadController($uploadDataArray);
+                        $uploadedFiles = $uploadObject->uploadFiles();
+                        if (!empty($uploadedFiles['successfulUpload'])) {
+                            $uploadInsertArray = array();
+                            $uploadInsertArray['MainHeaderId'] = $menuData['lastInsert'];
+                            $uploadInsertArray['mediaType'] = 5;
+                            $uploadInsertArray['images'][0]['fileName'] = $uploadedFiles['successfulUpload'][0]['fileName'];
+                            $uploadInsertObject = new GalleryModel($this->db, $uploadInsertArray);
+                            $uploadInsert = $uploadInsertObject->insertGalleryImages();
+                        }
+                        break;
                 }
                 $retArray = array();
                 $retArray['good']['menuId'] = $menuData['lastInsert'];
@@ -209,14 +222,12 @@ class MenuController {
     }
 
     private function editMenuForm() {
-        include_once(DATABASE_PATH . 'LanguageModel.php');
-        $languageDataArray = array('where'=>'WHERE Active=1');
+        include_once(MODEL_PATH . 'LanguageModel.php');
+        $languageDataArray = array('where'=>' Active=1');
         $languageModel = new LanguageModel($this->db, $languageDataArray);
         $languages = $languageModel->getLanguage();
         $menu = new MenuModel($this->db);      
         $menuPointData = $menu->getMenu($this->dataArray[0]['menuObject']['menuId']);
-        var_dump($this->dataArray[0]['menuObject']);
-        $menu->setDataArray($moduleDataArray);
         $moduleList = $menu->getModules();        
         switch ($menuPointData[0]['Role']) {
             case 3 :
@@ -232,7 +243,7 @@ class MenuController {
                 $controllerCollection[0] = 'Gallery';
                 break;
             case 7 :
-                include_once(ADMIN_MODEL_PATH . 'GalleryModel.php');
+                include_once(MODEL_PATH . 'GalleryModel.php');
                 $fileDataArray = array();
                 $fileDataArray['table'] = 'gallery_picture';
                 $fileDataArray['fields'] = 'picture.PictureId, picture.Name';
@@ -294,11 +305,6 @@ class MenuController {
             $menuDataArray['ParentId'] = $this->dataArray[0]['ParentId'];
             $menuDataArray['MainNode'] = $this->dataArray[0]['ParentNode'];
             $menuDataArray['MoreFlag'] = $this->dataArray[0]['MoreFlag'];
-            if ($this->dataArray[0]['Module'] != '') {
-                $menuDataArray['Module'] = $this->dataArray[0]['Module'];
-            } else if ($this->dataArray[0]['Module'] == '') {
-                $menuDataArray['Module'] = null;
-            }
             $menuDataArray['Popup'] = $this->dataArray[0]['popupHidden'];
             $menuDataArray['Active'] = 1;
             $menuDataArray['MainHeaderId'] = $this->dataArray[0]['MainHeaderId'];
@@ -309,7 +315,7 @@ class MenuController {
             if ($menuData == true) {
                 if ($menuDataArray['Role'] == 7 && !empty($_FILES)) {
                     include_once(CORE_PATH . 'UploadController.php');
-                    include_once(ADMIN_MODEL_PATH . 'GalleryModel.php');
+                    include_once(MODEL_PATH . 'GalleryModel.php');
                     $oldFileData = explode('|', $this->dataArray[0]['oldFile']);
                     $deleteDataArray = array();
                     $deleteDataArray['MainHeaderId'] = $this->dataArray[0]['MainHeaderId'];
@@ -349,19 +355,19 @@ class MenuController {
     public function deleteMenu() {
         //var_dump('xxx');
         $mainHeaderInfo = array();
-        $mainHeaderInfo['table'] = 'main_header';
+
         $mainHeaderInfo['fields'] = array('Active' => 0);
-        $mainHeaderInfo['where'] = 'MainHeaderId = ' . $this->dataArray[0]['menuObject']['menuId'];
+        $mainHeaderInfo['MainHeaderId'] = $this->dataArray[0]['menuObject']['menuId'];
         $menu = new MenuModel($this->db, $mainHeaderInfo);
-        $menuDelete = $menu->updateMainHeaderField();
-        if (!isset($menuDelete['error'])) {
+        $menuDelete = $menu->deleteMenu();
+        /*if (!isset($menuDelete['error'])) {
             $langHeaderInfo = array();
             $langHeaderInfo['table'] = 'lang_header';
             $langHeaderInfo['fields'] = array('Active' => 0);
             $langHeaderInfo['where'] = 'MainHeaderId = ' . $this->dataArray[0]['menuObject']['menuId'];
             $menu->setDataArray($langHeaderInfo);
-            $langDelete = $menu->updateLangHeaderField();            
-        }
+            $langDelete = $menu->deleteLangHeader();            
+        }*/
     }
 
     public function rearrangeMenu() {

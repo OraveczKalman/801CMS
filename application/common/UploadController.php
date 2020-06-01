@@ -16,7 +16,6 @@ class UploadController {
         $uploadResult['unSuccesfulUpload'] = array();
         $i = 1;
         foreach ($_FILES[$this->dataArray[0]['fileArrayName']]["error"] as $key => $error) {
-            var_dump($_FILES);
             if ($error == UPLOAD_ERR_OK) {
                 $tmp_name = $_FILES[$this->dataArray[0]['fileArrayName']]["tmp_name"][$key];
                 $pth = pathinfo($_FILES[$this->dataArray[0]['fileArrayName']]["name"][$key]);

@@ -8,17 +8,20 @@ if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 } else {
     $_SESSION['prefix'] = 'http';
 }
-//var_dump($_SESSION);
+
 include_once('./application/common/PathConfig.php');
 $db=null;
+
 if (file_exists(CORE_PATH . "DbConfig.json")) {
     $databaseConfig[0] = json_decode(file_get_contents(CORE_PATH . "DbConfig.json"), true);
     include_once(CORE_PATH . "DbCore.php"); 
     $db = new DbCore($databaseConfig[0]);
     if (!isset($_SESSION['setupData'])) {
-        include_once(DATABASE_PATH . 'SetupModel.php');
-        include_once(DATABASE_PATH . 'LanguageModel.php');
-        $setupData = SetupModel::getSetupData(1, $db);    
+        include_once(MODEL_PATH . 'SetupModel.php');
+        include_once(MODEL_PATH . 'LanguageModel.php');
+        $getSetupDataArray = array("setupId"=>1);
+        $setupModel = new SetupModel($db, $getSetupDataArray);
+        $setupData = $setupModel->getSetupData();
         $getLanguageDataArray = array();
         $getLanguageDataArray["where"] = " WHERE `Default` = 1";
         $languageModel = new LanguageModel($db, $getLanguageDataArray);

@@ -16,5 +16,7 @@ class NewsCollectionController {
         $this -> newsData['limit'] = 5;
         $news = new NewsModel($this->db, $this->newsData);
         $news -> getNewsData();
+
+        include_once('./' . SITE_VIEW_PATH . '/NewsTemplate.php');
     }
 }

@@ -1,5 +1,5 @@
 <?php
-include_once(ADMIN_MODEL_PATH . 'SetupFormModel.php');
+include_once(MODEL_PATH . 'SetupFormModel.php');
 
 class SetupController {
     private $dataArray;
@@ -9,7 +9,7 @@ class SetupController {
         $this->dataArray = $dataArray;
         $this->db = $db;
         if (!isset($this->dataArray[0]['event'])) {
-            $this->dataArray['event'] = 'RenderSetupForm';
+            $this->dataArray[0]['event'] = 'RenderSetupForm';
         }
         call_user_func(array($this, $this->dataArray[0]['event']));
     }
@@ -112,5 +112,10 @@ class SetupController {
         $validator = new mainValidator($validateInfo);
         $errorArray = $validator -> validateCore();
         print json_encode($errorArray);
+    }
+    
+    public function GetFooter() {
+        $setupLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/SetupForm.json'));
+        include_once(ADMIN_VIEW_PATH . "footers/SetupFormFooter.php");
     }
 }

@@ -1,5 +1,5 @@
 <?php
-include_once(ADMIN_MODEL_PATH . 'ContactModel.php');
+include_once(MODEL_PATH . 'ContactModel.php');
 
 class ContactFormController /*extends FormController*/ {
     private $dataArray;
@@ -9,7 +9,7 @@ class ContactFormController /*extends FormController*/ {
         $this->dataArray = $dataArray;
         $this->db = $db;
         if (!isset($this->dataArray[0]['event'])) {
-            $this->dataArray['event'] = 'RenderContactForm';
+            $this->dataArray[0]['event'] = 'RenderContactForm';
         }
         call_user_func(array($this, $this->dataArray[0]['event']));
     }
@@ -77,5 +77,10 @@ class ContactFormController /*extends FormController*/ {
         } else if (!empty($errorArray)) {
             return json_encode($errorArray);
         }
+    }
+    
+    public function getFooter() {
+        $contactLabels = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/ContactForm.json'));
+        include_once(ADMIN_VIEW_PATH . "footers/ContactFormFooter.php");
     }
 }

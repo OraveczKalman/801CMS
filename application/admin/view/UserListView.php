@@ -1,31 +1,16 @@
-<script type="text/javascript">
-    function deleteUser(userId, active) {
-        $.post('admin/User', { event:'deleteUser', userid: userId, active: active }, function (data) {
-            if (active == 0) {
-                $('#deleteDiv' + userId).html('<a href="javascript: void(0);" onclick="javascript: deleteUser(' + userId + ', 1);">Visszaállítás</a>');
-            } else if (active == 1) {
-                $('#deleteDiv' + userId).html('<a href="javascript: void(0);" onclick="javascript: deleteUser(' + userId + ', 0);">Törlés</a>');
-            }
-        });
-    }
-
-    function editUser(userId) {
-        $('#page-wrapper').load('admin/User', { event:'EditUserForm', userId: userId }, function (data) {
-
-        });
-    }
-</script>
-<div class="row-fluid">
-    <div class="col-sm-12">
-        <h1>Felhasználók</h1>
+<div class="card shadow mb-12">
+    <div class="card-header py-3 form-inline">
+        <h6 class="m-0 font-weight-bold text-primary" style="padding-right:1rem;">Felhasználók</h6>
+        <button class="btn btn-primary" onclick="javascript: addNewUser();">Új felhasználó</button>
+    </div>
+    <div class="card-body">
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>Név</th>
                 <th>Felhasználónév</th>
-                <th>Jelszó</th>
-                <th>Jelszó emlékeztető</th>
-                <th>Jogosultság</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
             </tr>
             </thead>
             <tbody>
@@ -35,15 +20,6 @@
                 <tr>
                     <td><?php print $users2['Name']; ?></td>
                     <td><?php print $users2['UserName']; ?></td>
-                    <td><?php print $users2['Password']; ?></td>
-                    <td><?php print $users2['Pwdr']; ?></td>
-                    <td>
-                        <select class="form-control" id="right">
-                            <option value="3" <?php if ($users2['RightId'] == 3) { print "selected"; } ?>>Root</option>
-                            <option value="4" <?php if ($users2['RightId'] == 4) { print "selected"; } ?>>Admin</option>
-                            <option value="5" <?php if ($users2['RightId'] == 5) { print "selected"; } ?>>User</option>
-                        </select>
-                    </td>
                     <td>
                         <a href="javascript: void(0);" onclick="javascript: editUser(<?php print $users2['UserId']; ?>);">Szerkesztés</a>
                     </td>
@@ -65,6 +41,6 @@
             }
 ?>
             </tbody>
-        </table>
+        </table>        
     </div>
 </div>

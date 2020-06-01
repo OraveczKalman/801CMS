@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE HTML>
-<html>
+<html lang="<?php print $lang; ?>">
     <head>
         <meta charset="utf-8"/>
         <meta name="keywords" content="<?php if (isset($menuPoint[0]['Kulcsszavak'])) { print $menuPoint[0]['Kulcsszavak']; } ?>"/>

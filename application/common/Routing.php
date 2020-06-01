@@ -12,10 +12,9 @@ class Router {
     }
 
     private function mainRouter() {
-        include_once(DATABASE_PATH . 'LinkModel.php');
+        include_once(MODEL_PATH . 'LinkModel.php');
         $requestURI = explode('/', $this->uri);
         $scriptName = explode('/', $this->script);
-
         for ($i = 0; $i < sizeof($scriptName); $i++) {
             if ($requestURI[$i] == $scriptName[$i]) {
                 unset($requestURI[$i]);
@@ -50,6 +49,7 @@ class Router {
     }
     
     private function siteRouter($commandArray) {
+        $lang = substr($_SESSION["setupData"]["languageSign"], 3, 2);
         if (count($commandArray) > 1) {
             $cmd = implode('/', $commandArray);
         } else {
@@ -63,6 +63,7 @@ class Router {
                 $menuPointDataArray["active"] = 1;
                 $menu->setDataArray($menuPointDataArray);
                 $menuPoint = $menu->getRoleMain();
+                //var_dump($menuPoint);
             } else {
                 $menuPointDataArray = array();
                 $menuPointDataArray["cmd"] = $cmd;
@@ -81,9 +82,9 @@ class Router {
                         $menuPoint[0]['param'] = $commandArray[1];
                     }
                     if (intval($menuPoint[0]['Role']) != 7) {
-                        include_once(SITE_MODEL_PATH . 'WidgetModel.php');
+                        include_once(MODEL_PATH . 'WidgetModel.php');
                         $widgetModel = new WidgetModel($this->db);
-                        $menuPoint[0]['widgets'] = $widgetModel->getWidgets($menuPoint[0]['MainHeaderId']);
+                        $menuPoint[0]['widgets'] = $widgetModel->getAllWidgets($menuPoint[0]['MainHeaderId']);
                         $address = $_SESSION['prefix'] .'://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
                         include_once(SITE_VIEW_PATH . 'MainLayout.php');
                     } else if (intval($menuPoint[0]['Role']) == 7) {
@@ -99,7 +100,8 @@ class Router {
     }
 
     private function adminRouter($commandArray) {
-        include_once(ADMIN_MODEL_PATH . "UserModel.php");
+        //var_dump($commandArray);
+        include_once(MODEL_PATH . "UserModel.php");
         $userDataArray = array();
         $userDataArray[0]["where"] = " RightId = 1";
         $userModel = new UserModel($this->db, $userDataArray);
@@ -118,11 +120,19 @@ class Router {
                 }
                 if (!isset($controllerName)) {
                     $adminMainMenu = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/'. $_SESSION['setupData']['languageSign'] . '/NewAdminMainMenu.json'));
+                    $controllerName = "MenuTreeController";
+                    $footerName = "MenuTreeFooter";
                     include_once(ADMIN_VIEW_PATH . 'MainLayout.php');
                 } else if (isset($controllerName)) {
-                    include_once(ADMIN_CONTROLLER_PATH . $controllerName . '.php');
                     $menuPoint[0] = $_POST;
-                    $controllerRout = new $controllerName($menuPoint, $this->db);
+                    if (!isset($menuPoint[0]["event"])) {
+                        $adminMainMenu = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/'. $_SESSION['setupData']['languageSign'] . '/NewAdminMainMenu.json'));
+                        $footerName = ucfirst($commandArray[1]). 'Footer';
+                        include_once(ADMIN_VIEW_PATH . 'MainLayout.php');
+                    } else {
+                        include_once(ADMIN_CONTROLLER_PATH . $controllerName . '.php');
+                        $controllerRout = new $controllerName($menuPoint, $this->db);
+                    }
                 }
             }
         } else {

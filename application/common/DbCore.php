@@ -29,8 +29,31 @@ class DbCore extends AncestorClass {
 
     /**
      * 
-     * Deprecated and deleted function selectQueryBuilder
+     * Function selectQueryBuilder
      */
+    public function selectQueryBuilder($dataArray) {
+        $dataArray['sql'] = "SELECT " . $dataArray["fields"] . " FROM " . $dataArray["tableName"];
+        if (isset($dataArray["joins"])) {
+            for ($i=0; $i<=count($dataArray["joins"])-1; $i++) {
+                $dataArray['sql'] .= " " . $dataArray["joins"][$i];
+            }
+        }
+        if (isset($dataArray["where"])) {
+            $dataArray['sql'] .= " WHERE " . $dataArray["where"];
+        }
+        if (isset($dataArray["group"])) {
+            $dataArray['sql'] .= " GROUP BY " . $dataArray["group"];
+        }
+        if (isset($dataArray["having"])) {
+            $dataArray['sql'] .= " HAVING " . $dataArray["having"];
+        }
+        if (isset($dataArray["order"])) {
+            $dataArray['sql'] .= " ORDER BY " . $dataArray["order"];
+        }
+        $result = $this->parameterSelect($dataArray);
+        return $result;
+    }
+    
     
     /**
      * 
@@ -41,7 +64,7 @@ class DbCore extends AncestorClass {
      * @return type
      */
     public function parameterSelect($dataArray) {
-        try {
+        try {          
             $stmt = $this->dbLink->prepare($dataArray["sql"]);
             if (isset($dataArray['parameters'])) {
                 for ($i=0; $i<=count($dataArray["parameters"])-1; $i++) {
@@ -77,9 +100,14 @@ class DbCore extends AncestorClass {
     }
 
     /**
-     * 
-     * Deprecated and deleted function insertQueryBuilder
+     * insertQueryBuilder
      */    
+    public function insertQueryBuilder($dataArray) {
+        $dataArray["sql"] = "INSERT INTO " . $dataArray["tableName"] . " SET " . $dataArray["fields"];
+        $result = $this->parameterInsert($dataArray);
+        return $result;
+    }
+    
     
     /**
      * @param type $dataArray
@@ -101,18 +129,17 @@ class DbCore extends AncestorClass {
                 }
                 
                 $stmt->execute();
-                
                 $result['lastInsert'] = $this->dbLink->lastInsertId();
                 return $result;
             } else {
                 $result['error'] = "No parameters given for insert.";
                 $this->logWriter($result['error'] . ': ' . $dataArray['sql']);
-                return false;
+                return $result;
             }
         } catch(PDOException $e) {
             $result['error'] = $e->errorInfo;
             $this->logWriter($e->getMessage() . ': ' . $dataArray['sql']);
-            return false;
+            return $result;
         }
     }
     
@@ -143,9 +170,19 @@ class DbCore extends AncestorClass {
     }
 
     /**
-     * 
      * Deprecated and deleted function updateQueryBuilder
      */
+    public function updateQueryBuilder($dataArray) {
+        $dataArray['sql'] = "UPDATE " . $dataArray["tableName"] . " SET " . $dataArray["fields"];
+        if (isset($dataArray["where"])) {
+            $dataArray['sql'] .= " WHERE " . $dataArray['where'];
+        }
+        if (isset($dataArray["having"])) {
+            $dataArray['sql'] .= " HAVING " . $dataArray['having'];
+        }
+        $result = $this->parameterUpdate($dataArray);
+        return $result;
+    } 
 
     /**
      * 

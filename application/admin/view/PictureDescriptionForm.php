@@ -4,9 +4,9 @@
             success: processError
         });
         
-        $('#saveButton').on('click', function () {
+        /*$('#saveButton').click(function () {
             $('#pictureDescriptionForm').submit();
-        });
+        });*/
     });
     
     function descriptionStateChange(where) {
@@ -16,20 +16,20 @@
     }
     
     function processError(data) {
-        if (data == '') {
-            $('#modalContainer').modal('hide');
+        data = JSON.parse(data);
+        //alert(data.good);
+        if (typeof data.good !== 'undefined') {
+            $('#formModal').modal('hide');
         }
     }
 </script>
 
-<div class="modal-dialog">
-    <form id="pictureDescriptionForm" method="post" action="./admin/Gallery">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Képaláírások</h4>
-            </div>
-            <div class="modal-body">
+<form id="pictureDescriptionForm" method="post" action="Gallery">
+    <div class="modal-header">
+        <h5 class="modal-title">Képaláírások</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <div class="modal-body">
 <?php
     $counter = 0;
     if (!empty($captions)) {
@@ -38,12 +38,10 @@
         $this->newDescription($counter);
     }
 ?>
-            </div>
-            <div class="modal-footer">
-                <input type="hidden" id="event" name="event" value="SaveDescription" />
-                <input type="hidden" id="picId" name="picId" value="<?php print $this->dataArray[0]['pictureId']; ?>" />
-                <button type="button" id="saveButton" name="saveButton" class="btn btn-default">Mentés</button>				
-            </div>
-        </div>
-    </form>
-</div>
+    </div>
+    <div class="modal-footer">
+        <input type="hidden" id="event" name="event" value="SaveDescription" />
+        <input type="hidden" id="picId" name="picId" value="<?php print $this->dataArray[0]['pictureId']; ?>" />
+        <button type="button" id="saveButton" name="saveButton" onclick="javascript:$('#pictureDescriptionForm').submit();" class="btn btn-primary">Mentés</button>				
+    </div>
+</form>

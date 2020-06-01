@@ -19,7 +19,7 @@
     }
 </script>
 
-<form id="widgetForm" method="post" action="./admin/Widget">
+<form id="widgetForm" method="post" action="../admin/Widget">
 <?php
 for ($i=0; $i<=count($widgetList)-1; $i++) {
 ?>

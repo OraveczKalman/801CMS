@@ -5,31 +5,31 @@
         });
 
         $("#Felirat").on('blur', function() {
-            sendOneField('validateText', 'admin/Menu', $('#Felirat').val(), 'Felirat');
+            sendOneField('validateText', 'Menu', $('#Felirat').val(), 'Felirat');
         });
 
         $("#Cim").on('blur', function() {
-            sendOneField('validateText', 'admin/Menu', $('#Cim').val(), 'Cim');
+            sendOneField('validateText', 'Menu', $('#Cim').val(), 'Cim');
         });
 
         $("#Cimsor").on('blur', function() {
-            sendOneField('validateText', 'admin/Menu', $('#Cimsor').val(), 'Cimsor');
+            sendOneField('validateText', 'Menu', $('#Cimsor').val(), 'Cimsor');
         });
 
         $("#Kulcsszavak").on('blur', function() {
-            sendOneField('validateText', 'admin/Menu', $('#Kulcsszavak').val(), 'Kulcsszavak');
+            sendOneField('validateText', 'Menu', $('#Kulcsszavak').val(), 'Kulcsszavak');
         });
 
         $("#Link").on('blur', function() {
-            sendOneField('validateText', 'admin/Menu', $('#Link').val(), 'Link');
+            sendOneField('validateText', 'Menu', $('#Link').val(), 'Link');
         });
 
         $("#Target").on('blur', function() {
-            sendOneField('validateText', 'admin/Menu', $('#Target').val(), 'Target');
+            sendOneField('validateText', 'Menu', $('#Target').val(), 'Target');
         });
 
         $("#MainPage").on('blur', function() {
-            sendOneField('validateInt', 'admin/Menu', $('#MainPage').val(), 'MainPage');
+            sendOneField('validateInt', 'Menu', $('#MainPage').val(), 'MainPage');
         });
 
         $("#Nyelv").on('blur', function() {
@@ -37,15 +37,14 @@
         });
 
         $("#Kommentezheto").on('blur', function() {
-            sendOneField('validateInt', 'admin/Menu', $('#Kommentezheto').val(), 'Kommentezheto');
+            sendOneField('validateInt', 'Menu', $('#Kommentezheto').val(), 'Kommentezheto');
         });
 
         $("#Szerep").on('blur', function() {
-            sendOneField('validateInt', 'admin/Menu', $('#Szerep').val(), 'Szerep');
+            sendOneField('validateInt', 'Menu', $('#Szerep').val(), 'Szerep');
         });
         
         $('#Szerep').on('change', function() {
-            alert($('#Szerep option:selected').val());
             var additionalHtml = '';
             switch (parseInt($('#Szerep option:selected').val(), 10)) {
                 case 4 :
@@ -116,18 +115,19 @@
         if (typeof data.good !== "undefined") {
             $('#MessageBox #MessageBody').html('<div style="text-align: center;">A mentés sikeres volt!</div>');
             $('#MessageBox').modal('show');
-            setTimeout(function () {               
-                $('#MessageBox').modal('hide');
-                switch (parseInt(data.good.role,10)) {
+            setTimeout(function () {
+                //alert("yyy");
+                /*switch (parseInt(data.good.role,10)) {
                     case 3 :
                     case 4 :
                         loadEditMenuForm({ menuId:data.good.menuId, parentId:data.good.parentId, parentNode:data.good.parentNode });
                         break;
                     default :
-                        loadPage('./admin/MenuTree', 'RenderMenuItems');
+                        loadPage('MenuTree', 'RenderMenuItems');
                         break;
-                }
-            }, 5000);
+                }*/
+                $('#MessageBox').modal('hide');
+            }, 2000);
         } else if (typeof data.error !== "undefined") {
             showErrors(data.error);
         }
@@ -146,34 +146,35 @@
     }
 ?>
 </script>
-<div class="row-fluid">
-    <div class="col-sm-12">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#menuContainer" role="tab" data-toggle="tab"><?php print $menuJson->labels->headLabel; ?></a>
+<div class="card shadow mb-12">
+    <div class="card-header py-3 form-inline">
+        <h6 class="m-0 font-weight-bold text-primary" style="padding-right:1rem;">Menüadatok</h6>
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" href="#menuContainer" role="tab" data-toggle="pill"><?php print $menuJson->labels->headLabel; ?></a>
             </li>
-            <li role="presentation">
-                <a href="#widgetContainer" role="tab" data-toggle="tab">Modulok</a>
+            <li class="nav-item">
+                <a class="nav-link" href="#widgetContainer" role="tab" data-toggle="pill">Modulok</a>
             </li>
 <?php
             if (isset($controllerCollection)) {
                 for ($i = 0; $i <= count($controllerCollection) - 1; $i++) {
 ?>
-            <li role="presentation">
-                <a href="#<?php print $controllerCollection[$i]; ?>Container" role="tab" data-toggle="tab">
+            <li class="nav-item">
+                <a class="nav-link" href="#<?php print $controllerCollection[$i]; ?>Container" role="tab" data-toggle="pill">
                     <?php print $controllerCollection[$i]; ?>
                 </a>
             </li>
 <?php
                 }
             }
-?>
+?>               
         </ul>
+    </div>
+    <div class="card-body">
         <div class="tab-content">
         <div id="menuContainer" role="tabpanel" class="tab-pane active">
-            <h1>Menüadatok</h1>
-
-            <form class="form-horizontal" enctype="multipart/form-data" role="form" id="MenuForm" method="post" action="./admin/Menu">
+            <form class="form-horizontal" enctype="multipart/form-data" role="form" id="MenuForm" method="post" action="Menu">
 
                 <div class="form-group">
                     <label for="Felirat" class="col-sm-2 control-label"><?php print $menuJson->labels->caption; ?></label>
@@ -325,7 +326,7 @@
 ?>
                 <div id="additionalWrapper" style="display:none;"></div>
                 <div>
-                    <button type="button" class="btn btn-default" onclick="javascript: $('#MenuForm').submit();" name="feltoltes" id="feltoltes"><?php if (!isset($menuPointData)) { print $menuJson->labels->upload; } else if (isset($menuPointData)) { print $menuJson->labels->update; }?></button>
+                    <button type="button" class="btn btn-primary" onclick="javascript: $('#MenuForm').submit();" name="feltoltes" id="feltoltes"><?php if (!isset($menuPointData)) { print $menuJson->labels->upload; } else if (isset($menuPointData)) { print $menuJson->labels->update; }?></button>
                     <input type="hidden" name="ParentId" id="ParentId" value="<?php if (isset($menuPointData)) { print $menuPointData[0]['ParentId']; } else if (!isset($menuPointData)) { print $_POST['menuObject']['parentId']; } ?>" />
                     <input type="hidden" name="ParentNode" id="ParentNode" value="<?php if (isset($menuPointData)) { print $menuPointData[0]['MainNode']; } else if (!isset($menuPointData)) { print $_POST['menuObject']['parentNode']; } ?>" />
                     <input type="hidden" name="MoreFlag" id="MoreFlag" value="0" />
@@ -368,6 +369,10 @@
             }
         }
 ?>
-        </div>
+        </div>        
     </div>
 </div>
+<!--<div class="row-fluid">
+    <div class="col-sm-12">
+    </div>
+</div>-->

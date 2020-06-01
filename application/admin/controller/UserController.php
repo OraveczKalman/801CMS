@@ -1,5 +1,5 @@
 <?php
-include_once(ADMIN_MODEL_PATH . 'UserModel.php');
+include_once(MODEL_PATH . 'UserModel.php');
 
 class UserController {
     private $dataArray;
@@ -9,12 +9,12 @@ class UserController {
         $this -> dataArray = $dataArray;
         $this -> db = $db;
         if (!isset($this->dataArray[0]['event'])) {
-            $this->dataArray[0]['event'] = "newUserForm";
+            $this->dataArray[0]['event'] = "UserList";
         }
         call_user_func(array($this, $this->dataArray[0]['event']));
     }
 
-    private function newUserForm() {
+    private function NewUserForm() {
         $userDataArray = array();
         $userDataArray['where'] = " WHERE userRightId > 1";
         $user = new UserModel($this->db, $userDataArray);
@@ -127,5 +127,10 @@ class UserController {
         $validator = new mainValidator($validateInfo);
         $errorArray = $validator -> validateCore();
         print json_encode($errorArray);
+    }
+    
+    public function GetFooter() {
+        $labelObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewUserForm.json'));
+        include_once(ADMIN_VIEW_PATH . "footers/UserFooter.php");
     }
 }

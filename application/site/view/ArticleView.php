@@ -20,10 +20,10 @@
 <?php        
     }
 ?>
-        <img class="img-fluid rounded" src="<?php print UPLOADED_PATH . "/media/" . $documentData["CoverPicture"]; ?>" alt="">
         <hr>    
         <p><?php print $this->articleLabels->labels->postedOnLabel; ?> <?php if (!empty($documentData['Header'])) { print $documentData['Header'][0]['Created']; } ?></p>
         <hr>
+        <p class="lead"><?php print $documentData['Header'][0]['Text']; ?></p>
 <?php
     $displayText = "";
     if (count($documentData['Body']) > 1) {
@@ -59,7 +59,7 @@
 ?>
             <div class="col-lg-3 col-md-4 col-xs-6 thumb">
                 <a class="thumbnail" data-fancybox="gallery" <?php if (!is_null($this->mediaData[$i]["Text"])) { ?>data-caption="<?php print $this->mediaData[$i]["Text"]; ?>"<?php } ?> href="<?php print UPLOADED_MEDIA_PATH . $this->mediaData[$i]['Name']; ?>">
-                    <img class="img-responsive" src="<?php print UPLOADED_MEDIA_PATH . $this->mediaData[$i]['ThumbName']; ?>" />
+                    <img alt="<?php print $i; ?>" class="img-fluid rounded" src="<?php print UPLOADED_MEDIA_PATH . $this->mediaData[$i]['ThumbName']; ?>" />
                     
 <?php
             if (!is_null($this->mediaData[$i]["Text"])) {

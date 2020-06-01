@@ -1,5 +1,5 @@
 <?php
-include_once(ADMIN_MODEL_PATH . 'ArticleModel.php');
+include_once(MODEL_PATH . 'ArticleModel.php');
 
 class ArticleController {
     private $dataArray;
@@ -18,6 +18,19 @@ class ArticleController {
         }
     }
 
+    private function RenderNewArticleForm() {
+        include_once(ADMIN_VIEW_PATH . "ArticleEditor.php");
+    }
+    
+    private function RenderEditArticleForm() {
+        $getArticleDataArray = array();
+        $getArticleDataArray['textId'] = $this->dataArray[0]['chapterId'];
+        $articleModel = new ArticleModel($this->db, $getArticleDataArray);
+        $chapterData = $articleModel->getArticle();
+        //var_dump($chapterData);
+        include_once(ADMIN_VIEW_PATH . "ArticleEditor.php");
+    }
+    
     private function editArticleForm() {
         $articleFormObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewArticleForm.json'));
         $headData = array();
@@ -33,6 +46,26 @@ class ArticleController {
         include_once(ADMIN_VIEW_PATH . 'ArticleForm.php');
     }
 
+    private function ChapterInsert() {
+        $errors = $this->ValidateChapterFormFull();
+        if (empty($errors)) {
+            $articleModel = new ArticleModel($this->db, $this->dataArray);
+            $articleModel->insertArticle();
+        } else {
+            print $errors;
+        }
+    }
+    
+    private function ChapterUpdate() {
+        $errors = $this->ValidateChapterFormFull();
+        if (empty($errors)) {
+            $articleModel = new ArticleModel($this->db, $this->dataArray);
+            $articleModel->updateArticle();
+        } else {
+            print $errors;
+        }
+    }
+    
     private function updateArticle() {
         $articleModel = new ArticleModel($this->db, $this->dataArray);
         $articleModel->chapterAssorter();
@@ -59,5 +92,19 @@ class ArticleController {
             $articleCount = count($articleArray)-1;
         }
         include_once(ADMIN_VIEW_PATH . 'ArticleItem.php');
+    }
+    
+    private function ValidateChapterFormFull() {
+        include_once(CORE_PATH . 'Validator.php');
+        $validateInfo = array();
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Title'], 'controllId'=>'Title');
+        $validateInfo[] = array('function'=>'validateText', 'data'=>$this->dataArray[0]['Text'], 'controllId'=>'Text');
+        $validator = new mainValidator($validateInfo);
+        $errorArray = $validator->validateCore();
+        if (empty($errorArray)) {
+            return '';
+        } else if (!empty($errorArray)) {
+            return json_encode($errorArray);
+        }
     }
 }

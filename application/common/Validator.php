@@ -178,7 +178,7 @@ class mainValidator {
 
     private function validateText($dataArray) {
         $errorArray = array();
-        if (!preg_match('/^[0-9a-zA-Z' . $this->accented_chars . '\*\!\�%_,;:@<>\(\)\&\ \+\-\,\.\'\"\/\\\\]+$/mi', $dataArray['data'])) {
+        if (!preg_match('/^[0-9a-zA-Z' . $this->accented_chars . '\*\!\#%_,;:@<>\(\)\&\ \+\-\,\.\'\"\/\\\\]+$/mi', $dataArray['data'])) {
             $errorArray['controllId'] = $dataArray['controllId'];
             $errorArray['message'] = 'Nem megfelelő érték!';
             return $errorArray;

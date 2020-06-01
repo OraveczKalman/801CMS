@@ -5,4 +5,3 @@ class LogoutController {
         include_once(ADMIN_VIEW_PATH . 'LogoutView.php');
     }
 }
-
