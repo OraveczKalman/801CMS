@@ -28,6 +28,19 @@ class WidgetModel {
             return $result;
         }
     }
+
+    public function getMenuPointWidgets() {
+        $getAllWidgetsQuery = array(
+            'tableName'=>'widget',
+            'fields'=>'*',
+            'where'=>'MainHeaderId = ' . $this->dataArray['MainHeaderId']);
+        $result = $this->db->selectQueryBuilder($getAllWidgetsQuery);
+        if (isset($result['error'])) {
+            return false;
+        } else {
+            return $result;
+        }
+    }
     
     public function bindWidgetsToMenuPoint() {
         $this->db->beginTran();

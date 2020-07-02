@@ -23,7 +23,7 @@ class MenuTreeController {
         for ($i=0; $i<=$_SESSION['setupData']['mainMenus']-1; $i++) {
             $this->dataArray[0]['level'] = $i;
             $menu = new MenuModel($this->db, $menuDataArray);
-            $menuItems[$i] = $menu->GenerateMenuTree(0,$i, $languageList);
+            $menuItems[$i] = $menu->GenerateMenuTree(0, $i, $languageList);
         }
         include_once(ADMIN_VIEW_PATH . 'MenuTreeView.php');
     }

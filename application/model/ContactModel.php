@@ -24,9 +24,12 @@ class ContactModel {
      * Function for get present contact information on site
      */
     public function GetContactInformation() {
-        $getInformationQueryString = "SELECT * FROM contact_form";
-        $getInformationQuery = $this->db->selectQuery($getInformationQueryString);
-        return $getInformationQuery;
+        $getInformationQuery = array(
+            'fields'=>'*',
+            'tableName'=>'contact_form'
+        );
+        $result = $this->db->selectQueryBuilder($getInformationQuery);
+        return $result;
     }
 
     /**
@@ -37,21 +40,21 @@ class ContactModel {
      */
     public function InsertContactInformation() {
         $this->db->beginTran();
-        $insertContactQuery = array();
-        $insertContactQuery['sql'] = "INSERT INTO contact_form SET
-            Name=:name,
-            Address=:address,
-            Phone=:phone,
-            Fax=:fax,
-            Mobile=:mobile,
-            TargetMail=:targetMail,
-            SmtpPassword=:smtpPassword,
-            SmtpServer=:smtpServer,
-            Port=:port,
-            UserName=:userName,
-            Created=NOW(),
-            CreatedBy=:userId,
-            Active=1";
+        $insertContactQuery = array(
+            'tableName'=>'contact_form',
+            'fields'=>'Name=:name,
+                Address=:address,
+                Phone=:phone,
+                Fax=:fax,
+                Mobile=:mobile,
+                TargetMail=:targetMail,
+                SmtpPassword=:smtpPassword,
+                SmtpServer=:smtpServer,
+                Port=:port,
+                UserName=:userName,
+                Created=NOW(),
+                CreatedBy=:userId,
+                Active=1');
         if ($this->dataArray["Name"] != "") {
             $insertContactQuery["parameters"][0] = array("paramName"=>"name", "paramVal"=>$this->dataArray['Name'], "paramType"=>PDO::PARAM_STR);
         } else {
@@ -103,7 +106,7 @@ class ContactModel {
             $insertContactQuery["parameters"][9] = array("paramName"=>"userName", "paramVal"=>null, "paramType"=>PDO::PARAM_NULL);
         }
         $insertContactQuery["parameters"][10] = array("paramName"=>"userId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
-        $result = $this->db->parameterInsert($insertContactQuery);
+        $result = $this->db->insertQueryBuilder($insertContactQuery);
         if (!$result) {
             $this->db->rollBack();
         } else {
@@ -120,22 +123,22 @@ class ContactModel {
      */
     public function UpdateContactInformation() {
         $this->db->beginTran();
-        $updateContactQuery = array();
-        $updateContactQuery["sql"] = "UPDATE contact_form SET
-            Name=:name,
-            Address=:address,
-            Phone=:phone,
-            Fax=:fax,
-            Mobile=:mobile,
-            TargetMail=:targetMail,
-            SmtpPassword=:smtpPassword,
-            SmtpServer=:smtpServer,
-            Port=:port,
-            UserName=:userName,
-            Modified=NOW(),
-            ModifiedBy=:userId,
-            Active = 1 
-            WHERE ContactId=:contactId";
+        $updateContactQuery = array(
+            "tableName"=>"contact_form",
+            "fields"=>"Name=:name,
+                Address=:address,
+                Phone=:phone,
+                Fax=:fax,
+                Mobile=:mobile,
+                TargetMail=:targetMail,
+                SmtpPassword=:smtpPassword,
+                SmtpServer=:smtpServer,
+                Port=:port,
+                UserName=:userName,
+                Modified=NOW(),
+                ModifiedBy=:userId,
+                Active = 1", 
+            "where"=>"ContactId=:contactId");
         if ($this->dataArray["Name"] != "") {
             $updateContactQuery["parameters"][0] = array("paramName"=>"name", "paramVal"=>$this->dataArray['Name'], "paramType"=>PDO::PARAM_STR);
         } else {
@@ -188,7 +191,7 @@ class ContactModel {
         }
         $updateContactQuery["parameters"][10] = array("paramName"=>"userId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
         $updateContactQuery["parameters"][11] = array("paramName"=>"contactId", "paramVal"=>$this->dataArray['cidHidden'], "paramType"=>PDO::PARAM_INT);
-        $result = $this->db->parameterUpdate($updateContactQuery);
+        $result = $this->db->updateQueryBuilder($updateContactQuery);
         if (!$result) {
             $this->db->rollBack();
         } else {

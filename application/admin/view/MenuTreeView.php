@@ -17,7 +17,7 @@
                     <div class="panel-collapse collapse in" id="collapse<?php print $i; ?>">
 <?php
             for ($j=0; $j<=count($menuItems[$i])-1; $j++) {
-                if ($menuItems[$i][$j]['Role'] == 1 || $menuItems[$i][$j]['Role'] == 2 || $menuItems[$i][$j]['Role'] == 5 || $menuItems[$i][$j]['Role'] == 21) {
+                if ($menuItems[$i][$j]['Role'] == 1) {
 ?>
                     <div id="subAccordion<?php print $i . $j; ?>">
                         <div>

@@ -75,13 +75,13 @@ class MenuController {
 
     private function getArtistData() {
         $artist = new Artist_Model(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
-        $artistData = $artist -> getArtistsMenu(array('where' => 'menu_artist.Menu_Id = ' . $this->dataArray['getVars']['menu_id'] . ' AND menu_artist.Active = 1'));
+        $artistData = $artist->getArtistsMenu(array('where' => 'menu_artist.Menu_Id = ' . $this->dataArray['getVars']['menu_id'] . ' AND menu_artist.Active = 1'));
         return $artistData;       
     }
     
     private function getGenreData() {
         $genre = new Genre_Model(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
-        $genreData = $genre -> getGenresMenu(array('where' => 'menu_genre.Menu_Id = ' . $this->dataArray['getVars']['menu_id'] . ' AND menu_artist.Active = 1'));
+        $genreData = $genre->getGenresMenu(array('where' => 'menu_genre.Menu_Id = ' . $this->dataArray['getVars']['menu_id'] . ' AND menu_artist.Active = 1'));
         return $genreData;
     }
         
@@ -179,7 +179,7 @@ class MenuController {
             $menuData = $menu->insertMenu();
             if (isset($menuData['lastInsert'])) {
                 switch ($menuDataArray['Role']) {
-                    case 3:
+                    case 2:
                         include_once(MODEL_PATH . "ArticleModel.php");
                         $newArticleDataArray = array();
                         $newArticleDataArray[0]["SuperiorId"] = $menuData["lastInsert"];
@@ -190,7 +190,7 @@ class MenuController {
                         $articleModel = new ArticleModel($this->db, $newArticleDataArray);
                         $articleResult = $articleModel->insertArticle();
                         break;
-                    case 7:
+                    case 5:
                         include_once(CORE_PATH . 'UploadController.php');
                         include_once(MODEL_PATH . 'GalleryModel.php');
                         $uploadDataArray = array();
@@ -230,19 +230,19 @@ class MenuController {
         $menuPointData = $menu->getMenu($this->dataArray[0]['menuObject']['menuId']);
         $moduleList = $menu->getModules();        
         switch ($menuPointData[0]['Role']) {
-            case 3 :
+            case 2 :
                 include_once(ADMIN_CONTROLLER_PATH . 'ArticleController.php');
                 include_once(ADMIN_CONTROLLER_PATH . 'GalleryController.php');
                 $controllerCollection = array();
                 $controllerCollection[0] = 'Article';
                 $controllerCollection[1] = 'Gallery';
                 break;
-            case 4 :
+            case 3 :
                 include_once(ADMIN_CONTROLLER_PATH . 'GalleryController.php');
                 $controllerCollection = array();
                 $controllerCollection[0] = 'Gallery';
                 break;
-            case 7 :
+            case 5 :
                 include_once(MODEL_PATH . 'GalleryModel.php');
                 $fileDataArray = array();
                 $fileDataArray['table'] = 'gallery_picture';
@@ -288,10 +288,10 @@ class MenuController {
             if (isset($this->dataArray[0]['Szerep'])) {
                 $menuDataArray['Role'] = $this->dataArray[0]['Szerep'];
                 switch ($menuDataArray['Role']) {
-                    case 4:
+                    case 3:
                         $menuDataArray['AdditionalField'] = $this->dataArray[0]['GalleryType'];
                         break;
-                    case 6:
+                    case 4:
                         $tableJson = '{';
                         $tableJson .= '"Tabellakod":"' . $this->dataArray[0]['Tabellakod'] . '",';
                         $tableJson .= '"Csapatszam":"' . $this->dataArray[0]['Csapatszam'] . '",';

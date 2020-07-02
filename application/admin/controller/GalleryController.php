@@ -165,8 +165,9 @@ class GalleryController {
     }
     
     private function GetInsertList() {
+        $this->dataArray[0]["MainHeaderId"] = 0;
         $gallery = new GalleryModel($this->db, $this->dataArray);
-        $galleryObjects = $gallery -> getGalleryData();
+        $galleryObjects = $gallery->getGalleryData();
         include_once(ADMIN_VIEW_PATH . 'ArticlePictureList.php');	
     }
     
