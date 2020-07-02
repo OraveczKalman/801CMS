@@ -100,7 +100,7 @@ class DbCore extends AncestorClass {
     }
 
     /**
-     * insertQueryBuilder
+     * Query builder for insert queries
      */    
     public function insertQueryBuilder($dataArray) {
         $dataArray["sql"] = "INSERT INTO " . $dataArray["tableName"] . " SET " . $dataArray["fields"];
@@ -170,7 +170,7 @@ class DbCore extends AncestorClass {
     }
 
     /**
-     * Deprecated and deleted function updateQueryBuilder
+     * Query builder for update queries
      */
     public function updateQueryBuilder($dataArray) {
         $dataArray['sql'] = "UPDATE " . $dataArray["tableName"] . " SET " . $dataArray["fields"];
@@ -184,6 +184,18 @@ class DbCore extends AncestorClass {
         return $result;
     } 
 
+    /**
+     * Query builder for Delete queries
+     */
+    public function deleteQueryBuilder($dataArray) {
+        $dataArray['sql'] = "DELETE FROM " . $dataArray["tableName"];
+        if (isset($dataArray["where"])) {
+            $dataArray['sql'] .= " WHERE " . $dataArray['where'];
+        }
+        $result = $this->parameterUpdate($dataArray);
+        return $result;
+    }    
+    
     /**
      * 
      * @param type $dataArray
