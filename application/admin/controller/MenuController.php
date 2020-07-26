@@ -228,6 +228,7 @@ class MenuController {
         $languages = $languageModel->getLanguage();
         $menu = new MenuModel($this->db);      
         $menuPointData = $menu->getMenu($this->dataArray[0]['menuObject']['menuId']);
+        var_dump($menuPointData);
         $moduleList = $menu->getModules();        
         switch ($menuPointData[0]['Role']) {
             case 2 :

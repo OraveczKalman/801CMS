@@ -23,7 +23,7 @@ if (file_exists(CORE_PATH . "DbConfig.json")) {
         $setupModel = new SetupModel($db, $getSetupDataArray);
         $setupData = $setupModel->getSetupData();
         $getLanguageDataArray = array();
-        $getLanguageDataArray["where"] = " WHERE `Default` = 1";
+        $getLanguageDataArray["where"] = " `Default` = 1";
         $languageModel = new LanguageModel($db, $getLanguageDataArray);
         $languageData = $languageModel->getLanguage();
         $_SESSION['setupData'] = json_decode($setupData[0]['SetupData'], true);

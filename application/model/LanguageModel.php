@@ -112,16 +112,22 @@ class LanguageModel {
      */
     public function deleteLanguage() {
         //var_dump($this->dataArray);
-        $deleteLanguageQueryString = "UPDATE `language` SET Modified = NOW(),
-            ModifiedBy = " . $_SESSION['admin']['userData']['UserId'] . ", 
-            Active = 0 " . $this->dataArray['where'];
-        //var_dump($deleteLanguageQueryString);
-        $deleteLanguageQuery = $this->db->updateQuery($deleteLanguageQueryString);
+        $deleteLanguageQuery = array(
+            "tableName"=>"`language`",
+            "fields"=>"Modified = NOW(), 
+                ModifiedBy = " . $_SESSION["admin"]["userData"]["UserId"] . ",
+                Active = 0",
+            "where"=>" WHERE languageId:=languageId",
+            "parameters"=>array(
+                array("paramName"=>"languageId", "paramVal"=>$this->dataArray["languageId"], "paramType"=>PDO::PARAM_INT)
+            )
+        );
+        $result = $this->db->updateQueryBuilder($deleteLanguageQuery);
 
-        if (!isset($deleteLanguageQuery['error'])) {
+        if (!isset($result['error'])) {
             return 0;
         } else {
-            return $deleteLanguageQuery;
+            return $result;
         }
     }
 }

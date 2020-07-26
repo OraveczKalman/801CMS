@@ -32,8 +32,15 @@ class LinkModel {
     }
     
     public function getRole() {
-        $getRoleQueryString = "SELECT main_header.*, role.ControllerName FROM main_header INNER JOIN role ON main_header.Role = role.RoleId WHERE main_header.MainPage = 1";
-        $role = $this->db->selectQuery($getRoleQueryString);
+        $getRoleQuery = array(
+            "tableName"=>"main_header t1",
+            "fields"=>"t1.*, t2.ControllerName",
+            "joins"=>array(
+                array("INNER JOIN role t2 ON t1.Role = t2.RoleId")
+            ),
+            "where"=>"main_header.MainPage = 1"
+        );        
+        $role = $this->db->selectQueryBuilder($getRoleQuery);
         return $role;
     }
     

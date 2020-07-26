@@ -89,6 +89,7 @@ class DbCore extends AncestorClass {
      */
     public function selectQuery($sql) { //SELECT típusú lekérdezések függvénye
         try {
+            //var_dump($sql);
             $stmt = $this->dbLink->prepare($sql);
             $stmt = $this->dbLink->query($sql);
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

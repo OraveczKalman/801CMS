@@ -25,8 +25,7 @@ class LoginController {
         }
 
         if (empty($errorArray)) {
-            $userData = array();
-            $userData[] = array('where' => "UserName = '" . $_POST['UserName'] . "' AND Password = SHA2('" . $_POST['Password'] . "', 512)");
+            $userData = array('where' => "UserName = '" . $_POST['UserName'] . "' AND Password = SHA2('" . $_POST['Password'] . "', 512)");
             $user = new UserModel($this->db, $userData);
             $enteredUserData = $user->getUser();
             if (empty($enteredUserData)) {

@@ -44,7 +44,7 @@ class LanguageFormController /*extends FormController*/ {
     
     private function DeleteLanguage() {
         $deleteLanguageDataArray = array();
-        $deleteLanguageDataArray['where'] = " WHERE LanguageId = " . $this->dataArray[0]['languageId'];
+        $deleteLanguageDataArray['languageId'] = $this->dataArray[0]['languageId'];
         $languageModel = new LanguageModel($this->db, $deleteLanguageDataArray);
         $languageData = $languageModel->deleteLanguage();
         if ($languageData != 0) {

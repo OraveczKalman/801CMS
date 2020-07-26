@@ -61,6 +61,23 @@ class ArticleModel {
         $result = $this->db->selectQueryBuilder($getDocumentPictureDataArray);
         return $result;
     }
+
+    public function getDocumentPictureSite() {
+        $getDocumentPictureDataArray = array(
+            "fields"=>"t1.*, t3.Text",
+            "tableName"=>"picture t1",
+            "joins"=>array(
+                "LEFT JOIN gallery_picture t2 ON t2.PictureId = t1.PictureId ",
+                "LEFT JOIN (SELECT SuperiorId, Text FROM text WHERE `Type` = 3) t3 ON t3.SuperiorId = t2.PictureId "),
+            "where"=>" t2.MainHeaderId=:mainHeaderId AND t2.Active = 1",
+            "parameters"=>array(
+                array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["MainHeaderId"], "paramType"=>1)
+            ),
+            "from"=>"documentPicture"
+        );
+        $result = $this->db->selectQueryBuilder($getDocumentPictureDataArray);
+        return $result;
+    }
     
     public function getCoverPicture() {
         $getCoverDataArray = array(

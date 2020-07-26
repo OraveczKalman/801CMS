@@ -19,7 +19,6 @@ class SetupModel {
     }
     
     public function getSetupData() {
-        var_dump($this->dataArray);
         $getSetupDataArray = array("fields"=>"*",
             "tableName"=>"setupdata",
             "where"=>" SetupId=:setupId",

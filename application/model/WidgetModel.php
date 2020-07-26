@@ -70,7 +70,7 @@ class WidgetModel {
                 array("paramName"=>"widgetId", "paramVal"=>(int)$widgetId, "paramType"=>PDO::PARAM_INT)
             )
         );
-        $result = $this->db->parameterInsert($insertMenuPointWidget);
+        $result = $this->db->insertQueryBuilder($insertMenuPointWidget);
         return $result;
     }
     
@@ -83,7 +83,7 @@ class WidgetModel {
                 array("paramName"=>"widgetId", "paramVal"=>(int)$widgetId, "paramType"=>PDO::PARAM_INT)
             )
         );
-        $result = $this->db->parameterInsert($deleteMenuPointWidget);
+        $result = $this->db->insertQueryBuilder($deleteMenuPointWidget);
         return $result;
     }
 }

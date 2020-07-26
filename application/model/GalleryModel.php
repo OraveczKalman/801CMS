@@ -370,18 +370,28 @@ class GalleryModel {
     public function makeCoverImage() {
         $this->db->beginTran();
         $fullResult = true;
-        $resetCoverImageQuery = array();
-        $resetCoverImageQuery['sql'] = "UPDATE gallery_picture SET cover=0 WHERE MainHeaderId=:mainHeaderId";
-        $resetCoverImageQuery['parameters'][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["gallery"], "paramType"=>PDO::PARAM_INT);
-        $resetCoverImageResult = $this->db->parameterUpdate($resetCoverImageQuery);
+        $resetCoverImageQuery = array(
+            "tableName"=>"gallery_picture",
+            "fields"=>"cover=0",
+            "where"=>"MainHeaderId=:mainHeaderId",
+            "parameters"=>array(
+                array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["gallery"], "paramType"=>PDO::PARAM_INT)
+            )
+        );
+        $resetCoverImageResult = $this->db->updateQueryBuilder($resetCoverImageQuery);
         if (!$resetCoverImageResult) { 
             $fullResult = false;
         } else {
-            $updateCoverImageQuery = array();
-            $updateCoverImageQuery['sql'] = "UPDATE gallery_picture SET cover=1 WHERE MainHeaderId=:mainHeaderId AND PictureId=:mediaId";
-            $updateCoverImageQuery['parameters'][0] = array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["gallery"], "paramType"=>PDO::PARAM_INT);
-            $updateCoverImageQuery['parameters'][1] = array("paramName"=>"mediaId", "paramVal"=>$this->dataArray["mediaId"], "paramType"=>PDO::PARAM_INT);           
-            $updateCoverImageResult = $this->db->parameterUpdate($updateCoverImageQuery);
+            $updateCoverImageQuery = array(
+                "tableName"=>"gallery_picture",
+                "fields"=>"cover=1",
+                "where"=>"MainHeaderId=:mainHeaderId AND PictureId=:mediaId",
+                "parameters"=>array(
+                    array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["gallery"], "paramType"=>PDO::PARAM_INT),
+                    array("paramName"=>"mediaId", "paramVal"=>$this->dataArray["mediaId"], "paramType"=>PDO::PARAM_INT)
+                )
+            );
+            $updateCoverImageResult = $this->db->updateQueryBuilder($updateCoverImageQuery);
             if (!$updateCoverImageResult) {
                 $fullResult = false;
             }

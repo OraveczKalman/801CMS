@@ -105,8 +105,7 @@ class Router {
     private function adminRouter($commandArray) {
         //var_dump($commandArray);
         include_once(MODEL_PATH . "UserModel.php");
-        $userDataArray = array();
-        $userDataArray[0]["where"] = " RightId = 1";
+        $userDataArray = array("where"=>" RightId = 1");
         $userModel = new UserModel($this->db, $userDataArray);
         $userRightCount = $userModel->getUserCount();
         if ($userRightCount[0]["userIdCount"] > 0) {

@@ -34,8 +34,8 @@ class UserController {
 
     private function EditUserForm() {
         $labelObject = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/NewUserForm.json'));
-        $this->dataArray[0]['where'] = 'UserId = ' . $_POST['userId'];
-        $user = new UserModel($this->db, $this->dataArray);
+        $userDataArray = array("where"=>"UserId = " . $this->dataArray[0]['userId']);
+        $user = new UserModel($this->db, $userDataArray);
         $userData = $user->getUser();
         include_once(ADMIN_VIEW_PATH . 'UserFormView.php');
     }
