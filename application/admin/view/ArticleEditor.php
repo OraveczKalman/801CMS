@@ -35,8 +35,26 @@
         CKEDITOR.replace(where);
     }
     
-    function insertAtCursor(insert) {
-        insert = insert.trim();
+    function insertAtCursor(insertId, typeId, direction) {
+        var insert = "";
+        switch (parseInt(typeId, 10)) {
+            case 1 :
+                insert += "#kep_" + direction + "_" + insertId + "#";
+                break;
+            case 2 :
+                insert += "#youtube_" + direction + "_" + insertId + "#";
+                break;
+            case 3 :
+                insert += "#video_" + direction + "_" + insertId + "#";
+                break;
+            case 4 :
+                insert += "#zene_" + direction + "_" + insertId + "#";
+                break;
+        }
+        $("#pictureHidden").val($("#pictureHidden").val() + "," + insertId);
+        while ($("#pictureHidden").val().charAt(0) === ",") {
+            $("#pictureHidden").val($("#pictureHidden").val().slice(1));
+        }
         CKEDITOR.instances['Chapter'].insertText(insert);
     }
     
@@ -74,6 +92,7 @@
     <input form="chapterForm" type="hidden" id="superior" name="SuperiorId" value="<?php print $this->dataArray[0]["MainHeaderId"]; ?>" />
     <input form="chapterForm" type="hidden" id="language" name="Language" value="hu" />
     <input form="chapterForm" type="hidden" id="type" name="Type" value="<?php if (!isset($chapterData)) { print "2"; } else { print $chapterData[0]["Type"]; } ?>" />
+    <input form="chapterForm" type="hidden" id="pictureHidden" name="pictureHidden" value="" />
 <?php
     if (isset($chapterData)) {
 ?>

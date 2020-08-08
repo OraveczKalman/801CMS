@@ -34,7 +34,7 @@ class NewsModel {
             "joins"=>array(
                 "LEFT JOIN lang_header ON main_header.MainHeaderId = lang_header.MainHeaderId ",
                 "LEFT JOIN text ON main_header.MainHeaderId = text.SuperiorId ",
-                "LEFT JOIN (SELECT picture.Name AS ProfilePicture, gallery_picture.MainHeaderId FROM picture LEFT JOIN gallery_picture ON gallery_picture.PictureId = picture.PictureId WHERE gallery_picture.Cover=1) AS cimlap_Kep ON cimlap_Kep.MainHeaderId = main_header.MainHeaderId"
+                "LEFT JOIN (SELECT picture.Name AS ProfilePicture, gallery_picture.LangHeaderId FROM picture LEFT JOIN gallery_picture ON gallery_picture.PictureId = picture.PictureId WHERE gallery_picture.Cover=1) AS cimlap_Kep ON cimlap_Kep.LangHeaderId = lang_header.LangHeaderId"
             ),
             "where"=>" lang_header.ParentId=:parentId AND lang_header.Language=:lang AND text.Type = 1 AND main_header.`Active` = 1 ORDER BY Created DESC LIMIT :page, :limit",
             "parameters"=>array(

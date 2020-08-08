@@ -59,6 +59,18 @@ class ArticleController {
     private function ChapterUpdate() {
         $errors = $this->ValidateChapterFormFull();
         if (empty($errors)) {
+            //var_dump($this->dataArray);
+            include_once(MODEL_PATH . "GalleryModel.php");
+            $galleryModel = new GalleryModel($this->db);
+            $pictureIds = explode(",", $this->dataArray[0]["pictureHidden"]);
+            for ($i=0; $i<=count($pictureIds)-1; $i++) {
+                $newPictureDataArray = array(
+                    "MainHeaderId"=>$this->dataArray[0]["SuperiorId"],
+                    "pictureId"=>$pictureIds[$i]
+                );
+                $galleryModel->setDataArray($newPictureDataArray);
+                $insertNewPictureResult = $galleryModel->insertGalleryLink();
+            }
             $articleModel = new ArticleModel($this->db, $this->dataArray);
             $articleModel->updateArticle();
         } else {

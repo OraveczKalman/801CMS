@@ -99,13 +99,7 @@ class MenuController {
             $_REQUEST['ParentId'] = 0;
         }
         switch ($this->dataArray[0]['menuObject']['parentRole']) {
-            case 2:
-                $this->dataArray[0]['MenuRole'] = 3;
-                break;
-            case 5:
-                $this->dataArray[0]['MenuRole'] = 4;
-                break;
-            case 15:
+            case 1:
                 $this->dataArray[0]['MenuRole'] = 3;
                 break;
             default:
@@ -179,7 +173,7 @@ class MenuController {
             $menuData = $menu->insertMenu();
             if (isset($menuData['lastInsert'])) {
                 switch ($menuDataArray['Role']) {
-                    case 2:
+                    case 3:
                         include_once(MODEL_PATH . "ArticleModel.php");
                         $newArticleDataArray = array();
                         $newArticleDataArray[0]["SuperiorId"] = $menuData["lastInsert"];
@@ -228,17 +222,17 @@ class MenuController {
         $languages = $languageModel->getLanguage();
         $menu = new MenuModel($this->db);      
         $menuPointData = $menu->getMenu($this->dataArray[0]['menuObject']['menuId']);
-        var_dump($menuPointData);
+        //var_dump($menuPointData);
         $moduleList = $menu->getModules();        
         switch ($menuPointData[0]['Role']) {
-            case 2 :
+            case 3 :
                 include_once(ADMIN_CONTROLLER_PATH . 'ArticleController.php');
                 include_once(ADMIN_CONTROLLER_PATH . 'GalleryController.php');
                 $controllerCollection = array();
                 $controllerCollection[0] = 'Article';
                 $controllerCollection[1] = 'Gallery';
                 break;
-            case 3 :
+            case 4 :
                 include_once(ADMIN_CONTROLLER_PATH . 'GalleryController.php');
                 $controllerCollection = array();
                 $controllerCollection[0] = 'Gallery';

@@ -33,7 +33,7 @@ class WidgetModel {
         $getAllWidgetsQuery = array(
             'tableName'=>'widget',
             'fields'=>'*',
-            'where'=>'MainHeaderId = ' . $this->dataArray['MainHeaderId']);
+            'where'=>'LangHeaderId = ' . $this->dataArray['MainHeaderId']);
         $result = $this->db->selectQueryBuilder($getAllWidgetsQuery);
         if (isset($result['error'])) {
             return false;
@@ -42,11 +42,20 @@ class WidgetModel {
         }
     }
     
+    public function getWidgetPlaces() {
+        $query = array(
+            "tableName"=>"widget_containers",
+            "fields"=>"*"
+        );
+        $result = $this->db->selectQueryBuilder($query);
+        return $result;
+    }
+    
     public function bindWidgetsToMenuPoint() {
         $this->db->beginTran();
         $error = false;
         for ($i=0; $i<=count($this->dataArray['widget'])-1; $i++) {
-            $bindResult = $this->insertMenuPointWidget($this->dataArray['MainHeaderId'], $this->dataArray['widget'][$i]);
+            $bindResult = $this->insertMenuPointWidget($this->dataArray['MainHeaderId'], $this->dataArray['widget'][$i], $this->dataArray['widgetPlace'][$i]);
             if ($bindResult == false) {
                 $error = true;
             }
@@ -59,15 +68,17 @@ class WidgetModel {
         return $error;
     }
     
-    private function insertMenuPointWidget($mainHeaderId, $widgetId) {
+    private function insertMenuPointWidget($mainHeaderId, $widgetId, $widgetContainerId) {
         $insertMenuPointWidget = array(
             'tableName'=>'main_header_widget',
             'fields'=>'
-                MainHeaderId=:mainHeaderId,
-                WidgetId=:widgetId',
+                LangHeaderId=:mainHeaderId,
+                WidgetId=:widgetId,
+                WidgetContainerId=:widgetContainerId',
             'parameters'=>array(
                 array("paramName"=>"mainHeaderId", "paramVal"=>(int)$mainHeaderId, "paramType"=>PDO::PARAM_INT),
-                array("paramName"=>"widgetId", "paramVal"=>(int)$widgetId, "paramType"=>PDO::PARAM_INT)
+                array("paramName"=>"widgetId", "paramVal"=>(int)$widgetId, "paramType"=>PDO::PARAM_INT),
+                array("paramName"=>"widgetContainerId", "paramVal"=>(int)$widgetContainerId, "paramType"=>PDO::PARAM_INT)
             )
         );
         $result = $this->db->insertQueryBuilder($insertMenuPointWidget);
@@ -77,7 +88,7 @@ class WidgetModel {
     public function deleteMenuPointWidget($mainHeaderId, $widgetId) {
         $deleteMenuPointWidget = array(
             'tableName'=>'main_header_widget',
-            'where'=>' MainHeaderId=:mainHeaderId AND WidgetId=:widgetId',
+            'where'=>' LangHeaderId=:mainHeaderId AND WidgetId=:widgetId',
             'parameters'=>array(
                 array("paramName"=>"mainHeaderId", "paramVal"=>(int)$mainHeaderId, "paramType"=>PDO::PARAM_INT),
                 array("paramName"=>"widgetId", "paramVal"=>(int)$widgetId, "paramType"=>PDO::PARAM_INT)

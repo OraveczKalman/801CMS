@@ -1,5 +1,5 @@
 <?php
-include_once(SITE_MODEL_PATH . '/NewsModel.php');
+include_once(MODEL_PATH . '/NewsModel.php');
 
 class NewsCollectionController {
     private $newsData;

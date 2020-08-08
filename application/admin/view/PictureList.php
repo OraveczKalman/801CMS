@@ -6,11 +6,11 @@ foreach ($galleryObjects as $galleryPicture) {
         <img class="card-img-top" src="<?php print PATH_LEVEL_UP2 . $galleryPicture['kep_nev']; ?>">
         <div class="card-body">
             <?php print $galleryPicture['kep_nev_big']; ?>
-            <button type="button" class="btn btn-primary" id="deleteImage<?php print $i; ?>" name="deleteImage<?php print $i; ?>" onclick="javascript: deletePicture(<?php print $galleryPicture['PictureId']; ?>, <?php print $galleryPicture['MainHeaderId']; ?>);"><?php print $pictureListLabels->labels->delete; ?></button>
+            <button type="button" class="btn btn-primary" id="deleteImage<?php print $i; ?>" name="deleteImage<?php print $i; ?>" onclick="javascript: deletePicture(<?php print $galleryPicture['PictureId']; ?>, <?php print $galleryPicture['LangHeaderId']; ?>);"><?php print $pictureListLabels->labels->delete; ?></button>
 <?php
             if ($galleryPicture['MediaType'] == 1) {
 ?>
-            <button type="button" class="btn btn-primary" onclick="javascript: cropForm( { fileName:'<?php print $galleryPicture['kep_nev_big']; ?>', thumbFileName:'<?php print $galleryPicture['kep_nev']; ?>', reloadTag:'pic<?php print $i; ?>', picId:<?php print $galleryPicture['PictureId']; ?>, galleryId:<?php print $galleryPicture['MainHeaderId']; ?>, targW:<?php print $_SESSION['setupData']['galleryHeader']['width']; ?>, targH:<?php print $_SESSION['setupData']['galleryHeader']['height']; ?>, galleryReload:1, mode:0 });"><?php print $pictureListLabels->labels->cropThumbnail; ?></button>
+            <button type="button" class="btn btn-primary" onclick="javascript: cropForm( { fileName:'<?php print $galleryPicture['kep_nev_big']; ?>', thumbFileName:'<?php print $galleryPicture['kep_nev']; ?>', reloadTag:'pic<?php print $i; ?>', picId:<?php print $galleryPicture['PictureId']; ?>, galleryId:<?php print $galleryPicture['LangHeaderId']; ?>, targW:<?php print $_SESSION['setupData']['galleryHeader']['width']; ?>, targH:<?php print $_SESSION['setupData']['galleryHeader']['height']; ?>, galleryReload:1, mode:0 });"><?php print $pictureListLabels->labels->cropThumbnail; ?></button>
 <?php
             }
 ?>

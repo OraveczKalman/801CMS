@@ -18,6 +18,11 @@ class WidgetController {
     private function widgetList() {
         $widgetModel = new WidgetModel($this->db);
         $widgetList = $widgetModel->getAllWidgets();
+        $widgetPlaces = $widgetModel->getWidgetPlaces();
+        $widgetPlaceOptions = "";
+        for ($i=0; $i<=count($widgetPlaces)-1; $i++) {
+            $widgetPlaceOptions .= '<option value="' . $widgetPlaces[$i]["WidgetContainerId"] . '">' . $widgetPlaces[$i]["WidgetContainerName"] . '</option>'; 
+        }
         include_once(ADMIN_VIEW_PATH . 'WidgetList.php');
     }
     

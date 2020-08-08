@@ -1,7 +1,7 @@
 <ul class="nav navbar-nav ml-auto">
 <?php
     for ($i=0; $i<=count($menuItems)-1; $i++) {
-        if ($menuItems[$i]['Role'] != 1) {
+        if ($menuItems[$i]['Role'] != 2) {
 ?>
     <li class="nav-item">
         <a class="nav-link" href="<?php print $menuItems[$i]["Link"]; ?>"><?php print $menuItems[$i]["Caption"]; ?></a>

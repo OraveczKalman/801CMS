@@ -42,7 +42,7 @@ class MenuModel {
         $dataArray['parentId'] = 0;
         $menuItems = $this->getMenuItemsSite($dataArray);
         for ($i=0; $i<=count($menuItems)-1; $i++) {
-            if ($menuItems[$i]['Role'] == 1) {
+            if ($menuItems[$i]['Role'] == 2) {
                 $subDataArray = array();
                 $subDataArray['parentNode'] = $this->dataArray['level'];
                 $subDataArray['parentId'] =  $menuItems[$i]['MainHeaderId'];

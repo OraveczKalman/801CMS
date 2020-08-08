@@ -15,9 +15,9 @@ class LinkModel {
             "joins"=>array(
                 "INNER JOIN role ON main_header.Role = role.RoleId", 
                 "LEFT JOIN lang_header ON lang_header.MainHeaderId = main_header.MainHeaderId", 
-                "LEFT JOIN (SELECT picture.ThumbName AS ProfilePicture, gallery_picture.MainHeaderId FROM picture LEFT JOIN gallery_picture 
+                "LEFT JOIN (SELECT picture.ThumbName AS ProfilePicture, gallery_picture.LangHeaderId FROM picture LEFT JOIN gallery_picture 
                     ON gallery_picture.PictureId = picture.PictureId WHERE gallery_picture.Cover=1) AS cimlap_kep 
-                    ON cimlap_kep.MainHeaderId = main_header.MainHeaderId", 
+                    ON cimlap_kep.LangHeaderId = lang_header.LangHeaderId", 
                 "LEFT JOIN user ON user.UserId = main_header.CreatedBy ")
             );
         $this->db = $db;

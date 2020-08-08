@@ -25,6 +25,12 @@ for ($i=0; $i<=count($widgetList)-1; $i++) {
 ?>
     <div>
         <input type="checkbox" value="<?php print $widgetList[$i]["WidgetId"]; ?>" name="widget[]" id="widget<?php print $i; ?>"><?php print $widgetList[$i]['ControllerName']; ?>
+        <select class="form-control" id="widgetPlace<?php print $i; ?>" name="widgetPlace[]">
+            <option value="">Válassz!</option>
+<?php
+    print $widgetPlaceOptions;
+?>
+        </select>
     </div>
 <?php
 }

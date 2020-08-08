@@ -35,30 +35,30 @@ class GalleryModel {
             switch ($galleryPictures[$i]['MediaType']) {
                 case 1 :
                     $galleryPictures[$i]['buttons'] = '<div class="btn-group" role="group">
-                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(\'#kep_bal_' . $galleryPictures[$i]['PictureId'] . '#\');">B</button>
-                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(\'#kep_kozep_' . $galleryPictures[$i]['PictureId'] . '#\');">K</button>
-                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(\'#kep_jobb_' . $galleryPictures[$i]['PictureId'] . '#\');">J</button>
+                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(' . $galleryPictures[$i]['PictureId'] . ', ' . $galleryPictures[$i]['MediaType'] . ', \'bal\');">B</button>
+                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(' . $galleryPictures[$i]['PictureId'] . ', ' . $galleryPictures[$i]['MediaType'] . ', \'kozep\');">K</button>
+                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(' . $galleryPictures[$i]['PictureId'] . ', ' . $galleryPictures[$i]['MediaType'] . ', \'jobb\');">J</button>
                     </div>';
                     //$galleryPictures[$i]['kep_nev_big'] = UPLOADED_MEDIA_PATH . $galleryPictures[$i]['kep_nev_big'];
                     $galleryPictures[$i]['kep_nev'] = UPLOADED_MEDIA_PATH . $galleryPictures[$i]['kep_nev'];
                     break;
                 case 2 :
                     $galleryPictures[$i]['buttons'] = '<div class="btn-group" role="group">
-                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(\'#youtube_' . $galleryPictures[$i]['PictureId'] . '#\');">Youtube</button>
+                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(' . $galleryPictures[$i]['PictureId'] . ', ' . $galleryPictures[$i]['MediaType'] . ');">Youtube</button>
                     </div>';
                     break;
                 case 3 :
                     $galleryPictures[$i]['buttons'] = '<div class="btn-group" role="group">
-                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(\'#video_' . $galleryPictures[$i]['PictureId'] . '#\');">Video</button>
+                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(' . $galleryPictures[$i]['PictureId'] . ', ' . $galleryPictures[$i]['MediaType'] . ');">Video</button>
                     </div>';
                     $galleryPictures[$i]['kep_nev_big'] = dirname(UPLOADED_PATH, 3) . '/' . $galleryPictures[$i]['kep_nev_big'];
                     $galleryPictures[$i]['kep_nev'] = dirname(UPLOADED_PATH, 3) . '/' . $galleryPictures[$i]['kep_nev'];
                     break;
                 case 4 :
                     $galleryPictures[$i]['buttons'] = '<div class="btn-group" role="group">
-                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(\'#zene_bal_' . $galleryPictures[$i]['PictureId'] . '#\');">B</button>
-                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(\'#zene_kozep_' . $galleryPictures[$i]['PictureId'] . '#\');">K</button>
-                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(\'#zene_jobb_' . $galleryPictures[$i]['PictureId'] . '#\');">J</button>
+                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(' . $galleryPictures[$i]['PictureId'] . ', ' . $galleryPictures[$i]['MediaType'] . ', \'bal\');">B</button>
+                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(' . $galleryPictures[$i]['PictureId'] . ', ' . $galleryPictures[$i]['MediaType'] . ', \'kozep\');">K</button>
+                        <button class="btn btn-primary" type="button" onclick="javascript: insertAtCursor(' . $galleryPictures[$i]['PictureId'] . ', ' . $galleryPictures[$i]['MediaType'] . ', \'jobb\');">J</button>
                     </div>';
                     $galleryPictures[$i]['kep_nev_big'] = dirname(UPLOADED_PATH, 3) . '/' . UPLOADED_MEDIA_PATH . $galleryPictures[$i]['kep_nev_big'];
                     $galleryPictures[$i]['kep_nev'] = dirname(UPLOADED_PATH, 3) . '/' . UPLOADED_MEDIA_PATH . $galleryPictures[$i]['kep_nev'];
@@ -96,12 +96,11 @@ class GalleryModel {
             "fields"=>"picture.PictureId, picture.Name AS kep_nev_big, 
                 picture.ThumbName AS kep_nev, 
                 picture.MediaType, 
-                (SELECT main_header.Role FROM main_header WHERE gallery_picture.MainHeaderId = main_header.MainHeaderId) AS Szerep, 
-                gallery_picture.MainHeaderId, gallery_picture.Rank",
+                gallery_picture.LangHeaderId, gallery_picture.Rank",
             "joins"=>array(
                 "INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId"
             ),
-            "where"=>"gallery_picture.MainHeaderId = :menuId AND gallery_picture.Active = 1",
+            "where"=>"gallery_picture.LangHeaderId = :menuId AND gallery_picture.Active = 1",
             "order"=>"gallery_picture.Rank ASC",
             "parameters"=>array(
                 array('paramName'=>'menuId', 'paramVal'=>$menuId, 'paramType'=>PDO::PARAM_INT)
@@ -116,18 +115,17 @@ class GalleryModel {
             $whereString = ' main_header.AdditionalField=:additionalField AND gallery_picture.Active = 1 ';
             $parameterArray = array("paramName"=>"additionalField", "paramVal"=>$this->dataArray['AdditionalField'], "paramType"=>1);
         } else {
-            $whereString = ' gallery_picture.MainHeaderId=:mainHeaderId AND gallery_picture.Active = 1 ';
+            $whereString = ' gallery_picture.LangHeaderId=:mainHeaderId AND gallery_picture.Active = 1 ';
             $parameterArray = array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray['MainHeaderId'], "paramType"=>1);
         }
         $getGalleryObjectQuery = array(
             'fields'=>'picture.PictureId, picture.Name AS kep_nev_big,
                 picture.ThumbName AS kep_nev, picture.MediaType,
-                (SELECT main_header.Role FROM main_header WHERE gallery_picture.MainHeaderId = main_header.MainHeaderId) AS Szerep,
-                gallery_picture.MainHeaderId, gallery_picture.Rank',
+                gallery_picture.LangHeaderId, gallery_picture.Rank',
             'tableName'=>'gallery_picture',
             'joins'=>array(
                 'INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId',
-                'INNER JOIN main_header ON main_header.MainHeaderId = gallery_picture.MainHeaderId'
+                'INNER JOIN lang_header ON lang_header.LangHeaderId = gallery_picture.LangHeaderId'
             ),
             'where'=>$whereString,
             'order'=>' gallery_picture.Rank ASC',
@@ -143,8 +141,7 @@ class GalleryModel {
             "fields"=>"picture.PictureId, picture.Name AS kep_nev_big, 
                 picture.ThumbName AS kep_nev, 
                 picture.MediaType, 
-                (SELECT main_header.Role FROM main_header WHERE gallery_picture.MainHeaderId = main_header.MainHeaderId) AS Szerep, 
-                gallery_picture.MainHeaderId, gallery_picture.Rank", 
+                gallery_picture.LangHeaderId, gallery_picture.Rank", 
             "tableName"=>"gallery_picture", 
             "joins"=>array("INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId "),
             "where"=>" gallery_picture.Active = 1 ", 
@@ -173,7 +170,7 @@ class GalleryModel {
         $result = $this->db->selectQueryBuilder($getGalleryObjectTextQuery);
         return $result;
     }
-
+    
     /**
      * @author Oravecz Kálmán
      * Insert element to gallery
@@ -216,7 +213,7 @@ class GalleryModel {
             } else {
                 $insertGalTopicQuery = array(
                     "tableName"=>"gallery_picture", 
-                    "fields"=>"MainHeaderId = :mainHeaderId,
+                    "fields"=>"LangHeaderId =:mainHeaderId,
                         PictureId = :pictureId,
                         `Rank` = 0,
                         Active = 1",
@@ -239,6 +236,32 @@ class GalleryModel {
         return $fullResult;
     }
 
+    public function insertGalleryLink() {
+        $this->db->beginTran();
+        $fullResult = true;
+        $insertGalleryLinkQuery = array(
+            "tableName"=>"gallery_picture", 
+            "fields"=>"LangHeaderId =:mainHeaderId,
+                PictureId = :pictureId,
+                `Rank` = 0,
+                Active = 1",
+            "parameters"=>array(
+                array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray['MainHeaderId'], "paramType"=>PDO::PARAM_INT),
+                array("paramName"=>"pictureId", "paramVal"=>$this->dataArray['pictureId'], "paramType"=>PDO::PARAM_INT)
+            )
+        );
+        $result = $this->db->insertQueryBuilder($insertGalleryLinkQuery);
+        if (!$result) {
+            $fullResult = false;
+        }       
+        if (!$fullResult) {
+            $this->db->rollBack();
+        } else {
+            $this->db->commit();
+        }
+        return $fullResult;
+    }
+    
     public function getGalleryCovers($parent) {
         $getGalleryCoversQuery = array(
             "tableName"=>"menu",
@@ -285,7 +308,7 @@ class GalleryModel {
         $fullResult = true;
         $deleteGalleryPictureQuery = array(
             "tableName"=>"gallery_picture",
-            "where"=>" MainHeaderId=:mainHeaderId AND PictureId=:pictureId",
+            "where"=>" LangHeaderId=:mainHeaderId AND PictureId=:pictureId",
             "parameters"=>array(
                 array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["MainHeaderId"], "paramType"=>PDO::PARAM_INT),
                 array("paramName"=>"pictureId", "paramVal"=>$this->dataArray["PictureId"], "paramType"=>PDO::PARAM_INT)
@@ -373,7 +396,7 @@ class GalleryModel {
         $resetCoverImageQuery = array(
             "tableName"=>"gallery_picture",
             "fields"=>"cover=0",
-            "where"=>"MainHeaderId=:mainHeaderId",
+            "where"=>"LangHeaderId=:mainHeaderId",
             "parameters"=>array(
                 array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["gallery"], "paramType"=>PDO::PARAM_INT)
             )
@@ -385,7 +408,7 @@ class GalleryModel {
             $updateCoverImageQuery = array(
                 "tableName"=>"gallery_picture",
                 "fields"=>"cover=1",
-                "where"=>"MainHeaderId=:mainHeaderId AND PictureId=:mediaId",
+                "where"=>"LangHeaderId=:mainHeaderId AND PictureId=:mediaId",
                 "parameters"=>array(
                     array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["gallery"], "paramType"=>PDO::PARAM_INT),
                     array("paramName"=>"mediaId", "paramVal"=>$this->dataArray["mediaId"], "paramType"=>PDO::PARAM_INT)

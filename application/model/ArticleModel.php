@@ -52,7 +52,7 @@ class ArticleModel {
             "joins"=>array(
                 "LEFT JOIN gallery_picture t2 ON t2.PictureId = t1.PictureId ",
                 "LEFT JOIN (SELECT SuperiorId, Text FROM text WHERE `Type` = 3) t3 ON t3.SuperiorId = t2.PictureId "),
-            "where"=>" t2.MainHeaderId=:mainHeaderId AND t2.Active = 1",
+            "where"=>" t2.LangHeaderId=:mainHeaderId AND t2.Active = 1",
             "parameters"=>array(
                 array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["MainHeaderId"], "paramType"=>1)
             ),
@@ -69,7 +69,7 @@ class ArticleModel {
             "joins"=>array(
                 "LEFT JOIN gallery_picture t2 ON t2.PictureId = t1.PictureId ",
                 "LEFT JOIN (SELECT SuperiorId, Text FROM text WHERE `Type` = 3) t3 ON t3.SuperiorId = t2.PictureId "),
-            "where"=>" t2.MainHeaderId=:mainHeaderId AND t2.Active = 1",
+            "where"=>" t2.LangHeaderId=:mainHeaderId AND t2.Active = 1",
             "parameters"=>array(
                 array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["MainHeaderId"], "paramType"=>1)
             ),
@@ -86,7 +86,7 @@ class ArticleModel {
             "joins"=>array(
                 "LEFT JOIN picture t2 ON t1.PictureId = t2.PictureId"
             ),
-            "where"=>" t1.MainHeaderId=:mainHeaderId AND t1.Cover = 1",
+            "where"=>" t1.LangHeaderId=:mainHeaderId AND t1.Cover = 1",
             "parameters"=>array(
                 array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray["MainHeaderId"], "paramType"=>1)
             )
@@ -150,12 +150,10 @@ class ArticleModel {
         }
         if ($dbError == 1) {
             $this->db->rollBack();
-            $data["error"] = "Db error";
         } else {
             $this->db->commit();
-            $data["good"] = $this->dataArray[0]["SuperiorId"];
         }
-        print json_encode($data);
+        return $result;
     }
     
     /**
