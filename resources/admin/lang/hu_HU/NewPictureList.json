@@ -1,7 +1,7 @@
 {
     "labels":{
         "delete":"Törlés",
-        "cropThumbnail":"Bélyegkép vágása",
+        "imageData":"Kép adatai",
         "captions":"Képaláírások",
         "cover":"Címlap"
     }
