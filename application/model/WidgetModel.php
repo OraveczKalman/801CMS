@@ -31,9 +31,13 @@ class WidgetModel {
 
     public function getMenuPointWidgets() {
         $getAllWidgetsQuery = array(
-            'tableName'=>'widget',
+            'tableName'=>'main_header_widget t1',
             'fields'=>'*',
-            'where'=>'LangHeaderId = ' . $this->dataArray['MainHeaderId']);
+            'joins'=>array(
+                "LEFT JOIN widget t2 ON t1.WidgetId = t2.WidgetId",
+                "LEFT JOIN widget_containers t3 ON t3.WidgetContainerId = t1.WidgetContainerId"
+            ),
+            'where'=>'t1.LangHeaderId = ' . $this->dataArray['MainHeaderId']);
         $result = $this->db->selectQueryBuilder($getAllWidgetsQuery);
         if (isset($result['error'])) {
             return false;

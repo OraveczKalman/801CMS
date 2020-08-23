@@ -3,7 +3,7 @@ class GalleryController {
     private $dataArray;
     private $db;
     
-    public function __construct($dataArray, $db) {
+    public function __construct($db, $dataArray=null) {
         $this -> dataArray = $dataArray;
         if (!isset($this->dataArray[0]['event'])) {
             $this->dataArray[0]['event'] = 'RenderGallery';
@@ -33,6 +33,14 @@ class GalleryController {
                     $galleryObjects[$i]['GalleryTexts'] = $gallery->getGalleryObjectText();
                 }
                 include_once(SITE_VIEW_PATH . 'SliderView.php');               
+                break;
+            case 3 :
+                //var_dump($galleryObjects);
+                if (!empty($galleryObjects)) {
+                    include_once(SITE_VIEW_PATH . 'GalleryWidgetView.php');
+                } else {
+                    print '<p>Feltöltés alatt!</p>';
+                }
                 break;
         }
     }

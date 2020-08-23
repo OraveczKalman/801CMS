@@ -21,14 +21,14 @@
 
 <form id="widgetForm" method="post" action="../admin/Widget">
 <?php
-for ($i=0; $i<=count($widgetList)-1; $i++) {
+for ($i=0; $i<=count($widgetsArray)-1; $i++) {
 ?>
     <div>
-        <input type="checkbox" value="<?php print $widgetList[$i]["WidgetId"]; ?>" name="widget[]" id="widget<?php print $i; ?>"><?php print $widgetList[$i]['ControllerName']; ?>
+        <input type="checkbox" <?php print $widgetsArray[$i]["checked"]; ?> value="<?php print $widgetsArray[$i]["widgetId"]; ?>" name="widget[]" id="widget<?php print $i; ?>"><?php print $widgetsArray[$i]['controllerName']; ?>
         <select class="form-control" id="widgetPlace<?php print $i; ?>" name="widgetPlace[]">
             <option value="">Válassz!</option>
 <?php
-    print $widgetPlaceOptions;
+            print $widgetsArray[$i]["widgetPlaceOptions"];
 ?>
         </select>
     </div>

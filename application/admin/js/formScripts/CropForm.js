@@ -45,3 +45,36 @@ function showPreview(coords) {
         marginTop: '-'+ Math.round(ry*coords.y)+'px'
     });
 }
+
+function makeCimlap(mediaDescription) {
+    console.log(mediaDescription.mediaType);
+    switch (mediaDescription.mediaType) {
+        case 1 :
+            $.post('../admin/Gallery', { 
+                event:'makeCover',
+                mediaId: mediaDescription.mediaId,
+                mediaName: mediaDescription.media,
+                gallery: mediaDescription.galleryId
+            }, function (data) {
+                $("#lgFormModal").modal('hide');
+            });
+            break;
+        case 2 :
+            $.post('../admin/Gallery', { 
+                event:'makeCover',
+                mediaId: mediaDescription.mediaId,
+                mediaName: mediaDescription.media,
+                gallery: mediaDescription.galleryId
+            }, function (data) {
+                $("#lgFormModal").modal('hide');
+            });
+            break;
+    }
+}
+
+function deletePicture(pictureId, galleryId) {
+    $.post("../admin/Gallery", { event: 'DeletePicture', PictureId: pictureId, MainHeaderId:galleryId }, function () {
+        loadGallery(galleryId);
+        $("#lgFormModal").modal('hide');
+    });
+}

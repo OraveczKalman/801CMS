@@ -17,15 +17,24 @@
     </div>
     <div class="modal-body">
         <div class="row">
-            <div class="col-sm-8" style="background-color:#FF00FF;">
+            <div class="col-sm-8">
                 <img class="img-fluid" src="<?php print PATH_LEVEL_UP2 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']; ?>" id="cropbox" alt="cropbox" />
             </div>
-            <div class="col-sm-4" style="background-color:#FFFF00;">
+            <div class="col-sm-4">
                 <div class="row">
                     File név: <?php print $this->dataArray[0]['fileName']; ?>
                 </div>
                 <div class="row">
                     File típusa: <?php print $origWidth . " x " . $origHeight . " pixel"; ?>
+                </div>
+                <div class="row">
+                    <button type="submit" id="submit" name="submit" class="btn btn-primary col-md-12 mb-sm-2">Kép vágása</button>	    
+                </div>
+                <div class="row">
+                    <button type="button" id="deleteImage" name="deleteImage" class="btn btn-primary col-md-12 mb-sm-2" onclick="javascript: deletePicture(<?php print $this->dataArray[0]['picId']; ?>, <?php print $this->dataArray[0]['galleryId']; ?>);">Törlés</button>	    
+                </div>
+                <div class="row">
+                    <button type="button" id="coverImage" name="coverImage" class="btn btn-primary col-md-12 mb-sm-2" onclick="javascript: makeCimlap({ media:'<?php print $this->dataArray[0]['fileName']; ?>', mediaType:1, mediaId:<?php print $this->dataArray[0]['picId']; ?>, galleryId:<?php print $this->dataArray[0]['galleryId']; ?> });">Címlap</button>
                 </div>
             </div>
         </div>
@@ -43,9 +52,6 @@
         <input type="hidden" id="targH" name="targH" value="<?php print $this->dataArray[0]['targH']; ?>" />
         <input type="hidden" id="ratio" name="ratio" value="<?php print $ratio; ?>" />
         <input type="hidden" id="fileName" name="fileName" value="<?php print $this->dataArray[0]['fileName']; ?>" />
-        <input type="hidden" id="thumbFileName" name="thumbFileName" value="<?php print $this->dataArray[0]['thumbFileName']; ?>" />
-        <button type="submit" id="submit" name="submit" class="btn btn-primary">Crop Image!</button>				
+        <input type="hidden" id="thumbFileName" name="thumbFileName" value="<?php print $this->dataArray[0]['thumbFileName']; ?>" />				
     </div>
 </form>
-
-<!---->

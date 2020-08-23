@@ -50,37 +50,6 @@
             </div>
 <?php        
     }
-    if (!empty($this->mediaData)) {
-?>
-        <div class="row">
-            <div class="row">
-<?php
-        for ($i=0; $i<=count($this->mediaData)-1; $i++) {
-?>
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" data-fancybox="gallery" <?php if (!is_null($this->mediaData[$i]["Text"])) { ?>data-caption="<?php print $this->mediaData[$i]["Text"]; ?>"<?php } ?> href="<?php print UPLOADED_MEDIA_PATH . $this->mediaData[$i]['Name']; ?>">
-                    <img alt="<?php print $i; ?>" class="img-fluid rounded" src="<?php print UPLOADED_MEDIA_PATH . $this->mediaData[$i]['ThumbName']; ?>" />
-                    
-<?php
-            if (!is_null($this->mediaData[$i]["Text"])) {
-?>
-                    <div class="text-right">
-                        <small class="text-muted"><?php print $this->mediaData[$i]["Text"]; ?></small>
-                    </div>
-<?php
-            }
-?>                  
-                </a>
-            </div>
-
-            
-<?php
-        }
-?>
-            </div>
-        </div>
-<?php
-    }
 ?>
     </div>
 <?php
@@ -89,9 +58,11 @@
     <div class="col-lg-4">
 <?php
         for ($i=0; $i<=count($this->dataArray[0]['widgets'])-1; $i++) {
-            include_once(SITE_CONTROLLER_PATH . $this->dataArray[0]['widgets'][$i]['ControllerName'] . 'Controller.php');
-            $widgetName = $this->dataArray[0]['widgets'][$i]['ControllerName'] . 'Controller';
-            $widgetRout = new $widgetName($this->db);
+            if ($this->dataArray[0]['widgets'][$i]['WidgetContainerName'] == 'WidgetContainer1') {
+                include_once(SITE_CONTROLLER_PATH . $this->dataArray[0]['widgets'][$i]['ControllerName'] . 'Controller.php');
+                $widgetName = $this->dataArray[0]['widgets'][$i]['ControllerName'] . 'Controller';
+                $widgetRout = new $widgetName($this->db, $this->dataArray);
+            }
         }
 ?>
     </div>

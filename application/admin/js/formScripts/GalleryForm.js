@@ -36,19 +36,6 @@ function cropForm(data) {
         $('#lgModalContainer').html(data);	
     });
     $("#lgFormModal").modal();
-}    
-
-function deletePictures(pictNumber) {
-    var submitval = '';
-    var gallery_val = $('#galleryHidden').val();
-    for (i = 0; i <= pict_number; i++) {
-        if ($('#image_id' + i).attr('checked') === 'checked') {
-            submitval += $('#picId' + i).val() + '|';
-        }
-    }
-    $.post("../admin/Gallery", { event:'PictureDelete', val: submitval, g_val: gallery_val}, function (data) {
-        $('#galleryImagesDiv').html(data);
-    });
 }
 
 function select_filler(select_id, min_value, max_value) {
@@ -68,36 +55,6 @@ function descriptionForm(data) {
     );
 
     $('#formModal').modal('show');
-}
-
-function makeCimlap(mediaDescription) {
-    console.log(mediaDescription.mediaType);
-    switch (mediaDescription.mediaType) {
-        case 1 :
-            $.post('../admin/Gallery', { 
-                event:'makeCover',
-                mediaId: mediaDescription.mediaId,
-                mediaName: mediaDescription.media,
-                gallery: mediaDescription.galleryId
-            }, function (data) {
-            });
-            break;
-        case 2 :
-            $.post('../admin/Gallery', { 
-                event:'makeCover',
-                mediaId: mediaDescription.mediaId,
-                mediaName: mediaDescription.media,
-                gallery: mediaDescription.galleryId
-            }, function (data) {
-            });
-            break;
-    }
-}
-
-function deletePicture(pictureId, galleryId) {
-    $.post("../admin/Gallery", { event: 'DeletePicture', PictureId: pictureId, MainHeaderId:galleryId }, function () {
-        loadGallery(galleryId);
-    });
 }
 
 function loadPictureUploadForm(galleryId) {

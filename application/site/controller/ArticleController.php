@@ -7,7 +7,7 @@ class ArticleController {
     private $db;
     private $articleLabels;
 
-    public function __construct($docData, $db) {
+    public function __construct($db, $docData=null) {
         $this->dataArray = $docData;
         $this->db = $db;
         $this->docModel = new ArticleModel($this->db, $this->dataArray);

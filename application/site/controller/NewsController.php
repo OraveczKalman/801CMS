@@ -5,7 +5,7 @@ class NewsController {
     private $dataArray;
     private $db;
 
-    public function __construct($dataArray, $db) {
+    public function __construct($db, $dataArray=null) {
         $this->dataArray = $dataArray;
         $this->db = $db;
         if (!isset($this->dataArray[0]['event'])) {
