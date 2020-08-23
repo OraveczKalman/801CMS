@@ -29,7 +29,7 @@ if (file_exists(CORE_PATH . "DbConfig.json")) {
         $_SESSION['setupData'] = json_decode($setupData[0]['SetupData'], true);
         $_SESSION['setupData']['languageSign'] = $languageData[0]['LanguageSign'];
     } else if (is_null($_SESSION['setupData']['languageSign'])) {
-        $_SESSION['setupData']['languageSign'] = 'hu_HU';
+        $_SESSION['setupData']['languageSign'] = 'HU_hu';
     }
     if (!isset($_REQUEST['event'])) {
         $_REQUEST['event'] = '';
