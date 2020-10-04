@@ -23,6 +23,9 @@
         if (typeof data.good !== "undefined") {
             $('#MessageContainer').html('<div class="alert alert-success" role="alert">A mentés sikeres volt!</div>');
             $('#MessageContainer').css('display', 'block');
+            if (typeof data.good.new !== "undefined") {
+                $("#ArticleContainer").load("Article", { "event":"editArticleForm", "MainHeaderId":data.good.MainHeaderId });
+            }
             setTimeout(function () {      
                 $('#lgFormModal').modal('hide');
             }, 3000);

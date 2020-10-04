@@ -116,16 +116,9 @@
             $('#MessageBox #MessageBody').html('<div style="text-align: center;">A mentés sikeres volt!</div>');
             $('#MessageBox').modal('show');
             setTimeout(function () {
-                //alert("yyy");
-                /*switch (parseInt(data.good.role,10)) {
-                    case 3 :
-                    case 4 :
-                        loadEditMenuForm({ menuId:data.good.menuId, parentId:data.good.parentId, parentNode:data.good.parentNode });
-                        break;
-                    default :
-                        loadPage('MenuTree', 'RenderMenuItems');
-                        break;
-                }*/
+                if (typeof data.good.new !== "undefined") {
+                    loadEditMenuForm({ menuId:data.good.menuId, parentId:data.good.parentId, parentNode:data.good.parentNode });
+                }
                 $('#MessageBox').modal('hide');
             }, 2000);
         } else if (typeof data.error !== "undefined") {

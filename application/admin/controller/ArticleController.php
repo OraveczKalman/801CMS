@@ -50,7 +50,11 @@ class ArticleController {
         $errors = $this->ValidateChapterFormFull();
         if (empty($errors)) {
             $articleModel = new ArticleModel($this->db, $this->dataArray);
-            $articleModel->insertArticle();
+            $articleResult = $articleModel->insertArticle();
+            $newDataArray = array(
+                "good"=>array("articleId"=>$articleResult["lastInsert"], "new"=>1, "MainHeaderId"=>$this->dataArray[0]["SuperiorId"])
+            );
+            print json_encode($newDataArray);
         } else {
             print $errors;
         }

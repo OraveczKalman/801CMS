@@ -208,6 +208,7 @@ class MenuController {
                 $retArray['good']['parentId'] = $menuDataArray['ParentId'];
                 $retArray['good']['parentNode'] = $menuDataArray['MainNode'];
                 $retArray['good']['role'] = $menuDataArray['Role'];
+                $retArray['good']['new'] = 1;
                 print json_encode($retArray);
             }     
         } else {
