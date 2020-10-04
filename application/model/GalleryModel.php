@@ -41,6 +41,7 @@ class GalleryModel {
                     </div>';
                     //$galleryPictures[$i]['kep_nev_big'] = UPLOADED_MEDIA_PATH . $galleryPictures[$i]['kep_nev_big'];
                     $galleryPictures[$i]['kep_nev'] = UPLOADED_MEDIA_PATH . $galleryPictures[$i]['kep_nev'];
+                    $galleryPictures[$i]['originalExtension'] = $galleryPictures[$i]['OriginalExtension'];
                     break;
                 case 2 :
                     $galleryPictures[$i]['buttons'] = '<div class="btn-group" role="group">
@@ -95,7 +96,7 @@ class GalleryModel {
             "tableName"=>"gallery_picture",
             "fields"=>"picture.PictureId, picture.Name AS kep_nev_big, 
                 picture.ThumbName AS kep_nev, 
-                picture.MediaType, 
+                picture.MediaType, picture.OriginalExtension,
                 gallery_picture.LangHeaderId, gallery_picture.Rank",
             "joins"=>array(
                 "INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId"
@@ -120,7 +121,7 @@ class GalleryModel {
         }
         $getGalleryObjectQuery = array(
             'fields'=>'picture.PictureId, picture.Name AS kep_nev_big,
-                picture.ThumbName AS kep_nev, picture.MediaType,
+                picture.ThumbName AS kep_nev, picture.MediaType, picture.OriginalExtension,
                 gallery_picture.LangHeaderId, gallery_picture.Rank',
             'tableName'=>'gallery_picture',
             'joins'=>array(
@@ -140,7 +141,7 @@ class GalleryModel {
         $getGalleryObjectDataArray = array(
             "fields"=>"picture.PictureId, picture.Name AS kep_nev_big, 
                 picture.ThumbName AS kep_nev, 
-                picture.MediaType, 
+                picture.MediaType, picture.OriginalExtension,
                 gallery_picture.LangHeaderId, gallery_picture.Rank", 
             "tableName"=>"gallery_picture", 
             "joins"=>array("INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId "),
@@ -179,6 +180,7 @@ class GalleryModel {
         $this->db->beginTran();
         $fullResult = true;
         foreach ($this->dataArray['images'] as $pictureData) {
+            var_dump($pictureData);
             switch ($this->dataArray['mediaType']) {
                 case 3 :
                     $pictureData['thumbFileName'] = 'videoholder.png';
@@ -195,6 +197,7 @@ class GalleryModel {
                 "fields"=>"Name = :fileName,
                     ThumbName = :thumbFileName,
                     MediaType = :mediaType,
+                    OriginalExtension = :originalExtension,
                     Created = NOW(),
                     CreatedBy = :userId,
                     Modified = NOW(),
@@ -204,6 +207,7 @@ class GalleryModel {
                     array("paramName"=>"fileName", "paramVal"=>$pictureData["fileName"], "paramType"=>PDO::PARAM_STR),
                     array("paramName"=>"thumbFileName", "paramVal"=>$pictureData["thumbFileName"], "paramType"=>PDO::PARAM_STR),
                     array("paramName"=>"mediaType", "paramVal"=>$this->dataArray["mediaType"], "paramType"=>PDO::PARAM_INT),
+                    array("paramName"=>"originalExtension", "paramVal"=>$pictureData["extension"], "paramType"=>PDO::PARAM_STR),
                     array("paramName"=>"userId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT)
                 )
             );

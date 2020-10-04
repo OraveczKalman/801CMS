@@ -20,7 +20,7 @@ class ArticleController {
             "MainHeaderId"=>$this->dataArray[0]["MainHeaderId"]
         );
         $this->docModel->setDataArray($documentPictureDataArray);
-        $this->mediaData = $this->docModel->getDocumentPicture();
+        $this->mediaData = $this->docModel->getDocumentPictureSite();
         $documentData = $this->getDocumentData();
         //var_dump($documentData);
         include_once(SITE_VIEW_PATH . 'ArticleView.php');
@@ -63,9 +63,21 @@ class ArticleController {
         foreach ($this->mediaData as $mediaData2) {
             switch ($mediaData2['MediaType']) {
                 case 1 :
-                    $textData = str_replace('#kep_bal_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="img-fluid rounded">', $textData);
-                    $textData = str_replace('#kep_jobb_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="img-fluid rounded">', $textData);
-                    $textData = str_replace('#kep_kozep_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . '" class="img-fluid rounded">', $textData);
+                    $iPod  = stripos($_SERVER['HTTP_USER_AGENT'],"iPod");
+                    $iPhone  = stripos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+                    $iPad = stripos($_SERVER['HTTP_USER_AGENT'],"iPad");
+                    $Android = stripos($_SERVER['HTTP_USER_AGENT'],"Android");
+                    $webOS = stripos($_SERVER['HTTP_USER_AGENT'],"webOS");
+
+                    if ($iPod || $iPhone || $iPad) {
+                        $ext = $mediaData2["OriginalExtension"];
+                    } else {
+                        $ext = "webp";
+                    }
+
+                    $textData = str_replace('#kep_bal_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . "." . $ext . '" class="img-fluid rounded">', $textData);
+                    $textData = str_replace('#kep_jobb_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . "." . $ext . '" class="img-fluid rounded">', $textData);
+                    $textData = str_replace('#kep_kozep_' . $mediaData2['PictureId'] . '#', '<img src="' . UPLOADED_MEDIA_PATH . $mediaData2['Name'] . "." . $ext . '" class="img-fluid rounded">', $textData);
                     break;
                 case 2 :
                     include_once(CORE_PATH . '/YoutubeClass.php');

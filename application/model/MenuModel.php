@@ -371,6 +371,19 @@ class MenuModel {
         return $updateLangHeaderResult;
     }
     
+    public function updateCounter($dataArray) {
+        $updateCounterQuery = array(
+            "tableName"=>"lang_header",
+            "fields"=>"Counter=Counter+1",
+            "where"=>"LangHeaderId=:LangHeaderId",
+            "parameters"=>array(
+                array("paramName"=>"LangHeaderId", "paramVal"=>$dataArray["LangHeaderId"], "paramType"=>PDO::PARAM_INT)
+            )
+        );
+        $updateCounterResult = $this->db->updateQueryBuilder($updateCounterQuery);
+        return $updateCounterResult;
+    }
+    
     public function deleteMenu() {
         $mainHeaderDataArray = array("Active"=>0,
             "MainHeaderId"=>$this->dataArray["MainHeaderId"]);

@@ -167,6 +167,13 @@ class GalleryController {
     private function GetInsertList() {
         $this->dataArray[0]["MainHeaderId"] = 0;
         $gallery = new GalleryModel($this->db, $this->dataArray);
+
+        $iPod  = stripos($_SERVER['HTTP_USER_AGENT'],"iPod");
+        $iPhone  = stripos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+        $iPad = stripos($_SERVER['HTTP_USER_AGENT'],"iPad");
+        $Android = stripos($_SERVER['HTTP_USER_AGENT'],"Android");
+        $webOS = stripos($_SERVER['HTTP_USER_AGENT'],"webOS");
+
         $galleryObjects = $gallery->getGalleryData();
         include_once(ADMIN_VIEW_PATH . 'ArticlePictureList.php');	
     }

@@ -3,14 +3,14 @@ $i = 0;
 foreach ($galleryObjects as $galleryPicture) {
 ?>
     <div class="card" style="width:18rem; margin-right: 1rem; margin-bottom: 1rem;" id="sort_<?php print $i; ?>">
-        <img class="card-img-top" src="<?php print PATH_LEVEL_UP2 . $galleryPicture['kep_nev']; ?>">
+        <img class="card-img-top" src="<?php print PATH_LEVEL_UP2 . $galleryPicture['kep_nev'] . ".webp"; ?>">
         <div class="card-body">
             <?php print $galleryPicture['kep_nev_big']; ?>
 <?php
             if ($galleryPicture['MediaType'] == 1) {
 ?>
             <div class="row">
-                <button type="button" class="btn btn-primary col-md-12 mb-sm-2" onclick="javascript: cropForm( { fileName:'<?php print $galleryPicture['kep_nev_big']; ?>', thumbFileName:'<?php print $galleryPicture['kep_nev']; ?>', reloadTag:'pic<?php print $i; ?>', picId:<?php print $galleryPicture['PictureId']; ?>, galleryId:<?php print $galleryPicture['LangHeaderId']; ?>, targW:<?php print $_SESSION['setupData']['galleryHeader']['width']; ?>, targH:<?php print $_SESSION['setupData']['galleryHeader']['height']; ?>, galleryReload:1, mode:0 });"><?php print $pictureListLabels->labels->imageData; ?></button>
+                <button type="button" class="btn btn-primary col-md-12 mb-sm-2" onclick="javascript: cropForm( { fileName:'<?php print $galleryPicture['kep_nev_big'] . "." . $galleryPicture['originalExtension']; ?>', thumbFileName:'<?php print $galleryPicture['kep_nev'] . "." . $galleryPicture['originalExtension']; ?>', reloadTag:'pic<?php print $i; ?>', picId:<?php print $galleryPicture['PictureId']; ?>, galleryId:<?php print $galleryPicture['LangHeaderId']; ?>, targW:<?php print $_SESSION['setupData']['galleryHeader']['width']; ?>, targH:<?php print $_SESSION['setupData']['galleryHeader']['height']; ?>, galleryReload:1, mode:0 });"><?php print $pictureListLabels->labels->imageData; ?></button>
             </div>
 <?php
             }

@@ -223,8 +223,10 @@
     <script type="text/javascript" src="<?php print ADMIN_JS_PATH; ?>jquery.Jcrop.min.js"></script>
     <script type="text/javascript" src="<?php print ADMIN_JS_PATH; ?>CoreScripts.js"></script>
 
-    <script type="text/javascript" src="//cdn.ckeditor.com/4.4.7/full/ckeditor.js"></script>
-    <script type="text/javascript" src="//cdn-source.ckeditor.com/4.4.7/standard/adapters/jquery.js"></script>
+    <!--<script type="text/javascript" src="//cdn.ckeditor.com/4.4.7/full/ckeditor.js"></script>
+    <script type="text/javascript" src="//cdn-source.ckeditor.com/4.4.7/standard/adapters/jquery.js"></script>-->
+    <!--<script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>-->
+    <script src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             //$.ajaxSetup({ cache: true });

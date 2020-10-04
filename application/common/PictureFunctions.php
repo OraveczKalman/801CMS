@@ -10,37 +10,39 @@ class ImageHandling {
 
     public function uploadGallery() {
         $i=0;
-        foreach ($this->pictureProperties['uploadedFiles'] as $uploadedFiles2) {
-            if (isset($this->pictureProperties['widthTarget']) && isset($this->pictureProperties['heightTarget'])) {
-                $uploadedFiles['successfulUpload'][$i]['thumbFileName'] = '';
-                list($width,$height) = getimagesize(UPLOADED_MEDIA_PATH . $uploadedFiles2['fileName']);
-                if (isset($this -> pictureProperties['thumbWidthTarget']) && isset($this -> pictureProperties['thumbHeightTarget'])) {
-                    $this->editImages($uploadedFiles2['fileName'],
-                        'thumb_' . $uploadedFiles2['fileName'],
-                        $uploadedFiles2['extension'],
-                        $this->pictureProperties['thumbWidthTarget'],
-                        $this->pictureProperties['thumbHeightTarget'],
-                        $width,
-                        $height);
-                        $this->pictureProperties['uploadedFiles'][$i]['thumbFileName'] = 'thumb_' . $uploadedFiles2['fileName'];
-                }
-                if ($this->pictureProperties['widthTarget'] > 0 && $this->pictureProperties['heightTarget'] > 0) {
-                    $this->editImages($uploadedFiles2['fileName'],
-                        $uploadedFiles2['fileName'],
-                        $uploadedFiles2['extension'],
-                        $this->pictureProperties['widthTarget'],
-                        $this->pictureProperties['heightTarget'],
-                        $width,
-                        $height);
-                }
+        for ($i=0; $i<=count($this->pictureProperties['uploadedFiles'])-1; $i++) {
+            //var_dump($uploadedFiles2);
+            $uploadedFiles['successfulUpload'][$i]['thumbFileName'] = '';
+            list($width,$height) = getimagesize(UPLOADED_MEDIA_PATH . $this->pictureProperties["uploadedFiles"][$i]['fileName'] . "." . $this->pictureProperties["uploadedFiles"][$i]["extension"]);
+            if ($this->pictureProperties['widthTarget'] == 0 && $this->pictureProperties['heightTarget'] == 0) {
+                $this->pictureProperties['widthTarget'] = $width;
+                $this->pictureProperties['heightTarget'] = $height;
             }
-            $i++;
+            if (isset($this -> pictureProperties['thumbWidthTarget']) && isset($this -> pictureProperties['thumbHeightTarget'])) {
+                $this->editImages($this->pictureProperties["uploadedFiles"][$i]['fileName'],
+                    'thumb_' . $this->pictureProperties["uploadedFiles"][$i]['fileName'],
+                    $this->pictureProperties["uploadedFiles"][$i]["mime"],
+                    $this->pictureProperties["uploadedFiles"][$i]['extension'],
+                    $this->pictureProperties['thumbWidthTarget'],
+                    $this->pictureProperties['thumbHeightTarget'],
+                    $width,
+                    $height,
+                    "thumb");
+                    $this->pictureProperties['uploadedFiles'][$i]['thumbFileName'] = 'thumb_' . $this->pictureProperties["uploadedFiles"][$i]['fileName'];
+            }
+            $this->editImages($this->pictureProperties["uploadedFiles"][$i]['fileName'],
+                $this->pictureProperties["uploadedFiles"][$i]['fileName'],
+                $this->pictureProperties["uploadedFiles"][$i]["mime"],
+                $this->pictureProperties["uploadedFiles"][$i]['extension'],
+                $this->pictureProperties['widthTarget'],
+                $this->pictureProperties['heightTarget']);
         }
 
         return $this->pictureProperties['uploadedFiles'];
     }
 
-    private function editImages($source_pic, $destination_pic, $ext, $width, $height, $t_width=null, $t_height=null) {
+    private function editImages($source_pic, $destination_pic, $mime, $ext, $width, $height, $t_width=null, $t_height=null, $mode=null) {
+        //var_dump($source_pic);
         if (is_null($t_height)) {
             $t_height = $height;
         }
@@ -49,23 +51,25 @@ class ImageHandling {
         }
         $meret_big = $this->ratio($t_width, $t_height, $width, $height);
         $tmp=imagecreatetruecolor($meret_big[0], $meret_big[1]);
-       
-        switch (strtolower($ext)) {
+        switch (strtolower($mime)) {
             case 'gif' :
                 $src = imagecreatefromgif(UPLOADED_MEDIA_PATH . $source_pic);
                 imagecopyresampled($tmp, $src, 0, 0, 0, 0, $meret_big[0], $meret_big[1], $width, $height);
-                imagegif($tmp, UPLOADED_MEDIA_PATH . $destination_pic);
+                imagewebp($tmp, UPLOADED_MEDIA_PATH . $destination_pic);
                 break;
-            case 'jpg' :
-            case 'jpeg' :
-                $src = imagecreatefromjpeg(UPLOADED_MEDIA_PATH . $source_pic);
+            case 'image/jpeg' :
+                //var_dump($destination_pic);
+                $src = imagecreatefromjpeg(UPLOADED_MEDIA_PATH . $source_pic . "." . $ext);
                 imagecopyresampled($tmp, $src, 0, 0, 0, 0, $meret_big[0], $meret_big[1], $width, $height);
-                imagejpeg($tmp, UPLOADED_MEDIA_PATH . $destination_pic, 100);
+                imagewebp($tmp, UPLOADED_MEDIA_PATH . $destination_pic . ".webp", 100);
+                if (!is_null($mode)) {
+                    imagejpeg($tmp, UPLOADED_MEDIA_PATH . $destination_pic . "." . $ext);
+                }
                 break;
             case 'png' :
                 $src = imagecreatefrompng(UPLOADED_MEDIA_PATH . $source_pic);
                 imagecopyresampled($tmp, $src, 0, 0, 0, 0, $meret_big[0], $meret_big[1], $width, $height);
-                imagepng($tmp, UPLOADED_MEDIA_PATH. $destination_pic, 0);
+                //imagewebp($tmp, UPLOADED_MEDIA_PATH. $destination_pic);
                 break;
         }
         
