@@ -89,7 +89,7 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();*/
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBm7bSh6sLMgQ9KGGHkkm5ZHKnYPq6WPks&callback=initMap&libraries=&v=weekly" defer></script>
+        <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBm7bSh6sLMgQ9KGGHkkm5ZHKnYPq6WPks&callback=initMap&libraries=&v=weekly" defer></script>
         <script>
             let map;
 
@@ -99,6 +99,6 @@
                 zoom: 8,
               });
             }
-        </script>
+        </script>-->
     </body>
 </html>

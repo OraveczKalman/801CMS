@@ -23,14 +23,18 @@
 <?php
 for ($i=0; $i<=count($widgetsArray)-1; $i++) {
 ?>
-    <div>
-        <input type="checkbox" <?php print $widgetsArray[$i]["checked"]; ?> value="<?php print $widgetsArray[$i]["widgetId"]; ?>" name="widget[]" id="widget<?php print $i; ?>"><?php print $widgetsArray[$i]['controllerName']; ?>
-        <select class="form-control" id="widgetPlace<?php print $i; ?>" name="widgetPlace[]">
-            <option value="">Válassz!</option>
+    <div class="row">
+        <div class="col-md-2">
+            <input type="checkbox" <?php print $widgetsArray[$i]["checked"]; ?> value="<?php print $widgetsArray[$i]["widgetId"]; ?>" name="widget[]" id="widget<?php print $i; ?>"><?php print $widgetsArray[$i]['controllerName']; ?>
+        </div>
+        <div class="col-md-3">
+            <select class="form-control" id="widgetPlace<?php print $i; ?>" name="widgetPlace[]">
+                <option value="">Válassz!</option>
 <?php
-            print $widgetsArray[$i]["widgetPlaceOptions"];
+                print $widgetPlacesString;
 ?>
-        </select>
+            </select>
+        </div>
     </div>
 <?php
 }
