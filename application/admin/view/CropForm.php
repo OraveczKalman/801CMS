@@ -17,10 +17,12 @@
     </div>
     <div class="modal-body">
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-sm-12">
                 <img class="img-fluid" src="<?php print PATH_LEVEL_UP2 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']; ?>" id="cropbox" alt="cropbox" />
             </div>
-            <div class="col-sm-4">
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
                 <div class="row">
                     File név: <?php print $this->dataArray[0]['fileName']; ?>
                 </div>

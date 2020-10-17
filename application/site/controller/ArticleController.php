@@ -38,6 +38,7 @@ class ArticleController {
         );
         $this->docModel->setDataArray($headerDataArray);
         $documentData['Header'] = $this->docModel->getDocumentArticles();
+        $documentData['Header'][0]["Text"] = str_replace("<p>", '<p class="lead">', $documentData["Header"][0]["Text"]);
         $bodyDataArray = array(
             "MainHeaderId"=>$this->dataArray[0]['MainHeaderId'],
             "Role"=>2
@@ -45,12 +46,9 @@ class ArticleController {
         $this->docModel->setDataArray($bodyDataArray);
         $documentData['Body'] = $this->docModel->getDocumentArticles();
         if (!empty($documentData)) {
-            if (!empty($documentData['Header'])) {
-                $documentData['Header'][0]['Szoveg'] = $this->mediaChanger($documentData['Header'][0]['Text']);
-                for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
-                    if (!empty($this -> mediaData)) {
-                        $documentData['Body'][$i]['Text'] = $this->mediaChanger($documentData['Body'][$i]['Text']);
-                    }
+            for ($i=0; $i<=count($documentData['Body'])-1; $i++) {
+                if (!empty($this -> mediaData)) {
+                    $documentData['Body'][$i]['Text'] = $this->mediaChanger($documentData['Body'][$i]['Text']);
                 }
             }
             return $documentData;

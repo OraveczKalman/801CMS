@@ -24,10 +24,11 @@ if ($iPod || $iPhone || $iPad) {
     $ext = "webp";
 }
 for ($i=0; $i<=count($galleryObjects)-1; $i++) {
+    //var_dump($galleryObjects[$i]);
 ?>
             <div class="col-md-6 col-lg-4 item">
                 <a class="thumbnail" data-fancybox="gallery" href="<?php print UPLOADED_MEDIA_PATH . $galleryObjects[$i]['kep_nev_big'] . "." . $ext; ?>">
-                    <img src="<?php print UPLOADED_MEDIA_PATH . $galleryObjects[$i]['kep_nev'] . "." . $ext; ?>" />
+                    <img src="<?php print UPLOADED_MEDIA_PATH . $galleryObjects[$i]['kep_nev'] . "." . $ext; ?>" alt="<?php print $galleryObjects[$i]['Text']; ?>" />
                 </a>
             </div>
 <?php

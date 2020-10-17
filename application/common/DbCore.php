@@ -50,6 +50,9 @@ class DbCore extends AncestorClass {
         if (isset($dataArray["order"])) {
             $dataArray['sql'] .= " ORDER BY " . $dataArray["order"];
         }
+       /* print "<pre>";
+        print $dataArray['sql'];
+        print "</pre>";*/
         $result = $this->parameterSelect($dataArray);
         return $result;
     }

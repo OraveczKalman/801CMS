@@ -122,11 +122,12 @@ class GalleryModel {
         $getGalleryObjectQuery = array(
             'fields'=>'picture.PictureId, picture.Name AS kep_nev_big,
                 picture.ThumbName AS kep_nev, picture.MediaType, picture.OriginalExtension,
-                gallery_picture.LangHeaderId, gallery_picture.Rank',
+                gallery_picture.LangHeaderId, gallery_picture.Rank, text.Text',
             'tableName'=>'gallery_picture',
             'joins'=>array(
                 'INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId',
-                'INNER JOIN lang_header ON lang_header.LangHeaderId = gallery_picture.LangHeaderId'
+                'INNER JOIN lang_header ON lang_header.LangHeaderId = gallery_picture.LangHeaderId',
+                "INNER JOIN text ON text.SuperiorId = picture.PictureId AND text.Type = 3"
             ),
             'where'=>$whereString,
             'order'=>' gallery_picture.Rank ASC',

@@ -23,6 +23,14 @@ class CropController {
     private function ImageCrop() {
         $size = getimagesize(PATH_LEVEL_UP1 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']);
         list($orig_width, $orig_height, $type, $attr) = getimagesize(PATH_LEVEL_UP1 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']);
+        $ratio = $this -> dataArray[0]['targW'] / $this->dataArray[0]['targH'];
+        if ($orig_width > $orig_height) {
+            $orig_width = ceil($orig_width-($orig_width*abs($ratio-$this->dataArray[0]['targW']/$this->dataArray[0]['targH'])));
+        } else {
+            $orig_height = ceil($orig_height-($orig_height*abs($ratio-$this->dataArray[0]['targW']/$this->dataArray[0]['targH'])));
+        }
+        $newwidth = $this->dataArray[0]['targW'];
+        $newheight = $this->dataArray[0]['targH'];
         $mime = image_type_to_mime_type($type);
 
         $img_name_array = explode('/', $this -> dataArray[0]['fileName']);
@@ -62,9 +70,13 @@ class CropController {
             case "image/pjpeg" :
             case "image/jpeg" :
                 $src = imagecreatefromjpeg(PATH_LEVEL_UP1 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']);
-                imagecopyresampled($tmp, $src, 0, 0, $this -> dataArray[0]['x'], $this -> dataArray[0]['y'], $this -> dataArray[0]['targW'], $this -> dataArray[0]['targH'], $this -> dataArray[0]['w'], $this -> dataArray[0]['h']);
-                imagejpeg($tmp, $filename . "." . $fileInfo['extension'], 80);
-                imagewebp($tmp, $filename . ".webp", 80);
+                //$tmp = imagecrop($src, array('x'=>$this->dataArray[0]['x'], 'y'=>$this->dataArray[0]['y'], 'width'=>$this->dataArray[0]['targW'], 'height'=>$this->dataArray[0]['targH']));
+                
+                imagecopyresampled($tmp, $src, 0, 0, $this -> dataArray[0]['x'], $this -> dataArray[0]['y'], $newwidth, $newheight, $this -> dataArray[0]['w'], $this -> dataArray[0]['h']);
+                
+                //$tmp2 = imagescale($tmp, $this->dataArray[0]['targW'], $this->dataArray[0]['targH'], IMG_BICUBIC_FIXED);
+                imagejpeg($tmp, $filename . "." . $fileInfo['extension'], 100);
+                imagewebp($tmp, $filename . ".webp", 100);
                 imagedestroy($tmp);
                 imagedestroy($src);
                 print $this->dataArray[0]['MainHeaderId'];
@@ -74,7 +86,7 @@ class CropController {
                 $src = imagecreatefromgif($this -> dataArray[0]['fileName']);
                 imagecopyresampled($tmp, $src, 0, 0, $this -> dataArray[0]['x'], $this -> dataArray[0]['y'], $this -> dataArray[0]['targW'], $this -> dataArray[0]['targH'], $this -> dataArray[0]['w'], $this -> dataArray[0]['h']);
                 imagegif($tmp, $filename);
-                imagewebp($tmp, $filename . ".webp", 80);
+                imagewebp($tmp, $filename . ".webp", 100);
                 imagedestroy($src);
                 imagedestroy($tmp);
                 print $this->dataArray[0]['MainHeaderId'];
@@ -83,8 +95,8 @@ class CropController {
                 $img_name_array = explode('/', $this -> dataArray[0]['fileName']);
                 $src = imagecreatefrompng($this -> dataArray[0]['fileName']);
                 imagecopyresampled($tmp, $src, 0, 0, $this -> dataArray[0]['x'], $this -> dataArray[0]['y'], $this -> dataArray[0]['targW'], $this -> dataArray[0]['targH'], $this -> dataArray[0]['w'], $this -> dataArray[0]['h']);
-                imagepng($tmp, $filename, 80);
-                imagewebp($tmp, $filename . ".webp", 80);
+                imagepng($tmp, $filename, 100);
+                imagewebp($tmp, $filename . ".webp", 100);
                 imagedestroy($src);
                 imagedestroy($tmp);
                 print $this->dataArray[0]['MainHeaderId'];
