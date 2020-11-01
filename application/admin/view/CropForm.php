@@ -24,19 +24,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="row">
-                    File név: <?php print $this->dataArray[0]['fileName']; ?>
-                </div>
-                <div class="row">
-                    File típusa: <?php print $origWidth . " x " . $origHeight . " pixel"; ?>
-                </div>
-                <div class="row">
                     <button type="submit" id="submit" name="submit" class="btn btn-primary col-md-12 mb-sm-2">Kép vágása</button>	    
-                </div>
-                <div class="row">
-                    <button type="button" id="deleteImage" name="deleteImage" class="btn btn-primary col-md-12 mb-sm-2" onclick="javascript: deletePicture(<?php print $this->dataArray[0]['picId']; ?>, <?php print $this->dataArray[0]['galleryId']; ?>);">Törlés</button>	    
-                </div>
-                <div class="row">
-                    <button type="button" id="coverImage" name="coverImage" class="btn btn-primary col-md-12 mb-sm-2" onclick="javascript: makeCimlap({ media:'<?php print $this->dataArray[0]['fileName']; ?>', mediaType:1, mediaId:<?php print $this->dataArray[0]['picId']; ?>, galleryId:<?php print $this->dataArray[0]['galleryId']; ?> });">Címlap</button>
                 </div>
             </div>
         </div>

@@ -112,7 +112,7 @@ class GalleryModel {
     }
     
     public function getGalleryObjectsSite() {
-        if (intval($this->dataArray['AdditionalField']) == 1) {
+        if (intval($this->dataArray['AdditionalField']) == 2) {
             $whereString = ' main_header.AdditionalField=:additionalField AND gallery_picture.Active = 1 ';
             $parameterArray = array("paramName"=>"additionalField", "paramVal"=>$this->dataArray['AdditionalField'], "paramType"=>1);
         } else {
@@ -127,7 +127,7 @@ class GalleryModel {
             'joins'=>array(
                 'INNER JOIN picture ON gallery_picture.PictureId = picture.PictureId',
                 'INNER JOIN lang_header ON lang_header.LangHeaderId = gallery_picture.LangHeaderId',
-                "INNER JOIN text ON text.SuperiorId = picture.PictureId AND text.Type = 3"
+                "LEFT JOIN text ON text.SuperiorId = picture.PictureId AND text.Type = 3"
             ),
             'where'=>$whereString,
             'order'=>' gallery_picture.Rank ASC',

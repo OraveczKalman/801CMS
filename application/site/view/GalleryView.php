@@ -18,12 +18,12 @@ $Android = stripos($_SERVER['HTTP_USER_AGENT'],"Android");
 $webOS   = stripos($_SERVER['HTTP_USER_AGENT'],"webOS");
 
 //do something with this information
-if ($iPod || $iPhone || $iPad) {
-    $ext = $galleryObjects[$i]["OriginalExtension"];
-} else {
-    $ext = "webp";
-}
 for ($i=0; $i<=count($galleryObjects)-1; $i++) {
+    if ($iPod || $iPhone || $iPad) {
+        $ext = $galleryObjects[$i]["OriginalExtension"];
+    } else {
+        $ext = "webp";
+    }    
     //var_dump($galleryObjects[$i]);
 ?>
             <div class="col-md-6 col-lg-4 item">

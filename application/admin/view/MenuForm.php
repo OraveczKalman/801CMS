@@ -47,6 +47,17 @@
         $('#Szerep').on('change', function() {
             var additionalHtml = '';
             switch (parseInt($('#Szerep option:selected').val(), 10)) {
+                case 1 :
+                    alert('xxx');
+                    additionalHtml += '<div class="form-group">';
+                    additionalHtml += '<label for="DefaultCoverImage" class="col-sm-2 control-label">Alap borítókép</label>';
+                    additionalHtml += '<div class="col-sm-10">';
+                    additionalHtml += '<input type="file" name="defaultCoverImage" id="defaultCoverImage">';
+                    additionalHtml += '</div>';
+                    additionalHtml += '</div>';
+                    $('#additionalWrapper').html(additionalHtml);
+                    $('#additionalWrapper').css('display', 'block');                    
+                    break;
                 case 4 :
                     additionalHtml += '<div class="form-group">';
                     additionalHtml += '<label for="GalleryType" class="col-sm-2 control-label"><?php print $menuJson->labels->gallerytype; ?></label>';
@@ -96,6 +107,9 @@
                     additionalHtml += '</div>';
                     $('#additionalWrapper').html(additionalHtml);
                     $('#additionalWrapper').css('display', 'block');
+                    break;
+                case 14 :
+                    $('#MainPage').attr("checked", true);
                     break;
                 default:
                     $('#additionalWrapper').html('');
@@ -304,6 +318,7 @@
                         <label for="Szerep" class="col-sm-2 control-label"><?php print $menuJson->labels->role; ?>:</label>
                         <div class="col-sm-10">
                             <select class="form-control" id="Szerep" name="Szerep">
+                                <option value="">Válasszon</option>
 <?php
                                 foreach ($menuRoles as $menuRoles2) {
 ?>

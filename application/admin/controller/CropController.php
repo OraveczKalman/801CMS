@@ -69,12 +69,10 @@ class CropController {
         switch ($mime) {
             case "image/pjpeg" :
             case "image/jpeg" :
-                $src = imagecreatefromjpeg(PATH_LEVEL_UP1 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']);
-                //$tmp = imagecrop($src, array('x'=>$this->dataArray[0]['x'], 'y'=>$this->dataArray[0]['y'], 'width'=>$this->dataArray[0]['targW'], 'height'=>$this->dataArray[0]['targH']));
-                
+                $src = imagecreatefromjpeg(PATH_LEVEL_UP1 . "resources/uploaded/media/" . $this->dataArray[0]['fileName']);            
                 imagecopyresampled($tmp, $src, 0, 0, $this -> dataArray[0]['x'], $this -> dataArray[0]['y'], $newwidth, $newheight, $this -> dataArray[0]['w'], $this -> dataArray[0]['h']);
-                
-                //$tmp2 = imagescale($tmp, $this->dataArray[0]['targW'], $this->dataArray[0]['targH'], IMG_BICUBIC_FIXED);
+                imageantialias($tmp, true);
+                imagescale($tmp, $newwidth, $newheight, IMG_NEAREST_NEIGHBOUR);              
                 imagejpeg($tmp, $filename . "." . $fileInfo['extension'], 100);
                 imagewebp($tmp, $filename . ".webp", 100);
                 imagedestroy($tmp);
@@ -85,6 +83,8 @@ class CropController {
                 $img_name_array = explode('/', $this -> dataArray[0]['fileName']);
                 $src = imagecreatefromgif($this -> dataArray[0]['fileName']);
                 imagecopyresampled($tmp, $src, 0, 0, $this -> dataArray[0]['x'], $this -> dataArray[0]['y'], $this -> dataArray[0]['targW'], $this -> dataArray[0]['targH'], $this -> dataArray[0]['w'], $this -> dataArray[0]['h']);
+                imageantialias($tmp, true);
+                imagescale($tmp, $newwidth, $newheight, IMG_NEAREST_NEIGHBOUR);
                 imagegif($tmp, $filename);
                 imagewebp($tmp, $filename . ".webp", 100);
                 imagedestroy($src);
@@ -95,6 +95,8 @@ class CropController {
                 $img_name_array = explode('/', $this -> dataArray[0]['fileName']);
                 $src = imagecreatefrompng($this -> dataArray[0]['fileName']);
                 imagecopyresampled($tmp, $src, 0, 0, $this -> dataArray[0]['x'], $this -> dataArray[0]['y'], $this -> dataArray[0]['targW'], $this -> dataArray[0]['targH'], $this -> dataArray[0]['w'], $this -> dataArray[0]['h']);
+                imageantialias($tmp, true);
+                imagescale($tmp, $newwidth, $newheight, IMG_NEAREST_NEIGHBOUR);
                 imagepng($tmp, $filename, 100);
                 imagewebp($tmp, $filename . ".webp", 100);
                 imagedestroy($src);

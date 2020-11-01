@@ -12,6 +12,12 @@ foreach ($galleryObjects as $galleryPicture) {
             <div class="row">
                 <button type="button" class="btn btn-primary col-md-12 mb-sm-2" onclick="javascript: cropForm( { fileName:'<?php print $galleryPicture['kep_nev_big'] . "." . $galleryPicture['originalExtension']; ?>', thumbFileName:'<?php print $galleryPicture['kep_nev'] . "." . $galleryPicture['originalExtension']; ?>', reloadTag:'pic<?php print $i; ?>', picId:<?php print $galleryPicture['PictureId']; ?>, galleryId:<?php print $galleryPicture['LangHeaderId']; ?>, targW:<?php print $_SESSION['setupData']['galleryHeader']['width']; ?>, targH:<?php print $_SESSION['setupData']['galleryHeader']['height']; ?>, galleryReload:1, mode:0 });"><?php print $pictureListLabels->labels->imageData; ?></button>
             </div>
+            <div class="row">
+                <button type="button" id="deleteImage" name="deleteImage" class="btn btn-primary col-md-12 mb-sm-2" onclick="javascript: deletePicture(<?php print $galleryPicture['PictureId']; ?>, <?php print $galleryPicture['LangHeaderId']; ?>);">Törlés</button>	    
+            </div>
+            <div class="row">
+                <button type="button" id="coverImage" name="coverImage" class="btn btn-primary col-md-12 mb-sm-2" onclick="javascript: makeCimlap({ media:'<?php print $galleryPicture['kep_nev_big']; ?>', mediaType:1, mediaId:<?php print $galleryPicture['PictureId']; ?>, galleryId:<?php print $galleryPicture['LangHeaderId']; ?> });">Címlap</button>
+            </div>
 <?php
             }
 ?>

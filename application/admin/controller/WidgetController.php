@@ -45,7 +45,6 @@ class WidgetController {
     }
     
     private function save() {
-        //var_dump($this->dataArray);
         $widgetModel = new WidgetModel($this->db, $this->dataArray[0]);
         $widgetModel->bindWidgetsToMenuPoint();
     }

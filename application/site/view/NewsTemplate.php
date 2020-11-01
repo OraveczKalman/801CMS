@@ -8,7 +8,18 @@
     <li class="breadcrumb-item active"><?php print $this->dataArray[0]["Caption"]; ?></li>
 </ol>
 <?php
+    $iPod    = stripos($_SERVER['HTTP_USER_AGENT'],"iPod");
+    $iPhone  = stripos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+    $iPad    = stripos($_SERVER['HTTP_USER_AGENT'],"iPad");
+    $Android = stripos($_SERVER['HTTP_USER_AGENT'],"Android");
+    $webOS   = stripos($_SERVER['HTTP_USER_AGENT'],"webOS");
+
     foreach ($newsData as $newsData2) {
+        if ($iPod || $iPhone || $iPad) {
+            $ext = $newsData2["OriginalExtension"];
+        } else {
+            $ext = "webp";
+        }
 ?>
     <div class="card mb-4">
         <div class="card-body">
@@ -18,7 +29,7 @@
 ?>
                 <div class="col-lg-6">
                     <a href="#">
-                        <img class="img-fluid rounded" src="<?php print UPLOADED_MEDIA_PATH . $newsData2["ProfilePicture"]; ?>" alt="">
+                        <img class="img-fluid rounded" src="<?php print UPLOADED_MEDIA_PATH . $newsData2["ProfilePicture"] . "." . $ext; ?>" alt="">
                     </a>
                 </div>
 <?php

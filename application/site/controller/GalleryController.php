@@ -18,14 +18,14 @@ class GalleryController {
         $gallery = new GalleryModel($this->db, $this->dataArray[0]);
         $galleryObjects = $gallery -> getGalleryObjectsSite();
         switch ($this->dataArray[0]['AdditionalField']) {
-            case 0 :
+            case 1 :
                 if (!empty($galleryObjects)) {
                     include_once(SITE_VIEW_PATH . 'GalleryView.php');
                 } else {
                     print '<p>Feltöltés alatt!</p>';
                 }
                 break;
-            case 1 :
+            case 2 :
                 for ($i=0; $i<=count($galleryObjects)-1; $i++) {
                     $galleryTextArray = array();
                     $galleryTextArray['galleryObjectId'] = $galleryObjects[$i]['PictureId'];
@@ -34,8 +34,7 @@ class GalleryController {
                 }
                 include_once(SITE_VIEW_PATH . 'SliderView.php');               
                 break;
-            case 3 :
-                //var_dump($galleryObjects);
+            default :
                 if (!empty($galleryObjects)) {
                     include_once(SITE_VIEW_PATH . 'GalleryWidgetView.php');
                 } else {

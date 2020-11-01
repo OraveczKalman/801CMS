@@ -81,7 +81,7 @@ class MenuModel {
                 "LEFT JOIN lang_header t2 on t2.MainHeaderId = t1.MainHeaderId"
             ),
             "where"=>"t2.ParentId=:parentId and t1.MainNode=:parentNode and t1.MainHeaderId NOT IN 
-                (SELECT MainHeaderId FROM main_header where Role = 4 AND AdditionalField = 1)",
+                (SELECT MainHeaderId FROM main_header WHERE (Role = 4 OR Role = 14))",
             "parameters"=>array(
                 array("paramName"=>"parentId", "paramVal"=>$dataArray["parentId"], "paramType"=>1),
                 array("paramName"=>"parentNode", "paramVal"=>$dataArray["parentNode"], "paramType"=>1)

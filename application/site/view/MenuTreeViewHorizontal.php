@@ -1,3 +1,6 @@
+<?php
+    //var_dump($menuItems);
+?>
 <ul class="nav navbar-nav ml-auto">
 <?php
     for ($i=0; $i<=count($menuItems)-1; $i++) {
