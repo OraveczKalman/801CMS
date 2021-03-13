@@ -13,13 +13,21 @@
 <form id="languageForm" role="form" method="post" action="LanguageForm">
     <div class="modal-body">
         <div id="MessageBody" style="display:none;"></div>
-        <div class="form-group">
-            <label><?php print $languageLabels->labels->language; ?>:</label>
-            <input class="form-control" name="Language" id="Language" type="text" value="">             
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <label><?php print $languageLabels->labels->language; ?>:</label>
+                    <input class="form-control" name="Language" id="Language" type="text" value="">             
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label><?php print $languageLabels->labels->languageSign; ?>:</label>
-            <input class="form-control" name="LanguageSign" id="LanguageSign" type="text" value="">
+        <div class="row">
+            <div class="col-lg-12">        
+                <div class="form-group">
+                    <label><?php print $languageLabels->labels->languageSign; ?>:</label>
+                    <input class="form-control" name="LanguageSign" id="LanguageSign" type="text" value="">
+                </div>
+            </div>
         </div>
     </div>
     <div class="modal-footer">

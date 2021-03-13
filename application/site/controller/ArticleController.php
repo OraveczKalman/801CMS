@@ -17,30 +17,29 @@ class ArticleController {
     public function renderDocument() {
         $this->articleLabels = json_decode(file_get_contents(SITE_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/ArticleViewLabels.json'));
         $documentPictureDataArray = array(
-            "MainHeaderId"=>$this->dataArray[0]["MainHeaderId"]
+            "MainHeaderId"=>$this->dataArray["MainHeaderId"]
         );
         $this->docModel->setDataArray($documentPictureDataArray);
         $this->mediaData = $this->docModel->getDocumentPictureSite();
         $documentData = $this->getDocumentData();
-        //var_dump($documentData);
         include_once(SITE_VIEW_PATH . 'ArticleView.php');
     }
     
     private function getDocumentData() {
         $coverPictureDataArray = array(
-            "MainHeaderId"=>$this->dataArray[0]['MainHeaderId']
+            "MainHeaderId"=>$this->dataArray['MainHeaderId']
         );
         $this->docModel->setDataArray($coverPictureDataArray);
         $documentData['CoverPicture'] = $this->docModel->getCoverPicture();
         $headerDataArray = array(
-            "MainHeaderId"=>$this->dataArray[0]['MainHeaderId'],
+            "MainHeaderId"=>$this->dataArray['MainHeaderId'],
             "Role"=>1
         );
         $this->docModel->setDataArray($headerDataArray);
         $documentData['Header'] = $this->docModel->getDocumentArticles();
         $documentData['Header'][0]["Text"] = str_replace("<p>", '<p class="lead">', $documentData["Header"][0]["Text"]);
         $bodyDataArray = array(
-            "MainHeaderId"=>$this->dataArray[0]['MainHeaderId'],
+            "MainHeaderId"=>$this->dataArray['MainHeaderId'],
             "Role"=>2
         );
         $this->docModel->setDataArray($bodyDataArray);

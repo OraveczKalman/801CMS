@@ -61,7 +61,7 @@ class SetupController {
             } else {
                 print json_encode($errorArray = array('error'=>$setupSuccess['error']));
             } 
-            unset($_SESSION['setupFlag']);
+            unset($_SESSION['setupData']);
         } else {
             print $errors;
         }

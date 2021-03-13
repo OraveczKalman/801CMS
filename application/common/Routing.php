@@ -58,18 +58,32 @@ class Router {
         if (!is_null($this->db)) {
             $menu = new LinkModel($this->db);
             if ($cmd == '') {
-                $menuPointDataArray = array();
-                $menuPointDataArray["mainPage"] = 1;
-                $menuPointDataArray["active"] = 1;
-                $menu->setDataArray($menuPointDataArray);
-                $menuPoint = $menu->getRoleMain();
-                //var_dump($menuPoint);
+                switch ($_SESSION["setupData"]["siteType"]) {
+                    case 1 :
+                        $menuPointDataArray = array();
+                        $menuPointDataArray["mainPage"] = 1;
+                        $menuPointDataArray["active"] = 1;
+                        $menu->setDataArray($menuPointDataArray);
+                        $menuPoint = $menu->getRoleMain();
+                        //var_dump($menuPoint);
+                        break;
+                    case 2 :
+                        $menuPoint = $menu->getParallaxItems();
+                        break;
+                }
             } else {
-                $menuPointDataArray = array();
-                $menuPointDataArray["cmd"] = $cmd;
-                $menuPointDataArray["active"] = 1;
-                $menu->setDataArray($menuPointDataArray);
-                $menuPoint = $menu->getRoleCommon();
+                switch ($_SESSION["setupData"]["siteType"]) {
+                    case 1 :
+                        $menuPointDataArray = array();
+                        $menuPointDataArray["cmd"] = $cmd;
+                        $menuPointDataArray["active"] = 1;
+                        $menu->setDataArray($menuPointDataArray);
+                        $menuPoint = $menu->getRoleCommon();
+                        break;
+                    case 2 :
+                        $menuPoint = $menu->getParallaxItems();
+                        break;
+                }
             }
             if (!empty($menuPoint)) {
                 $menuPoint[0] = array_merge($menuPoint[0], $_POST);
@@ -94,8 +108,15 @@ class Router {
                             "LangHeaderId"=>$menuPoint[0]["LangHeaderId"]
                         );
                         $menuModel = new MenuModel($this->db);
-                        $counterUpdateResult = $menuModel->updateCounter($updateCounterDataArray);
-                        include_once(SITE_VIEW_PATH . 'MainLayout.php');
+                        switch ($_SESSION['setupData']['siteType']) {
+                            case 1 :
+                                $counterUpdateResult = $menuModel->updateCounter($updateCounterDataArray);
+                                include_once(SITE_VIEW_PATH . 'MainLayout.php');
+                                break;
+                            case 2 :
+                                include_once(SITE_VIEW_PATH . 'MainLayoutParallax.php');
+                                break;
+                        }
                     } else if (intval($menuPoint[0]['Role']) == 7) {
                         include_once(SITE_CONTROLLER_PATH . $controllerName . '.php');
                         $controllerRout = new $controllerName($menuPoint, $this->db);
@@ -109,7 +130,6 @@ class Router {
     }
 
     private function adminRouter($commandArray) {
-        //var_dump($commandArray);
         include_once(MODEL_PATH . "UserModel.php");
         $userDataArray = array("where"=>" RightId = 1");
         $userModel = new UserModel($this->db, $userDataArray);
@@ -125,8 +145,12 @@ class Router {
             } else if (isset($_SESSION['admin']['userData'])) {
                 if (isset($commandArray[1]) && $commandArray[1] != '') {
                     $controllerName = ucfirst($commandArray[1]) . 'Controller';
+                } else {
+                    $controllerName = "MenuTreeController";
                 }
                 if (!isset($controllerName)) {
+                    //var_dump($menuPoint);
+                    //$menuPoint[1] = "MenuTree"; 
                     $adminMainMenu = json_decode(file_get_contents(ADMIN_RESOURCE_PATH . 'lang/'. $_SESSION['setupData']['languageSign'] . '/NewAdminMainMenu.json'));
                     $controllerName = "MenuTreeController";
                     $footerName = "MenuTreeFooter";

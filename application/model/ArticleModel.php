@@ -131,8 +131,7 @@ class ArticleModel {
             'fields'=>"SuperiorId=:superiorId, 
                 Type=:type, 
                 Title=:title, 
-                Text=:text, 
-                Language=:language,
+                Text=:text,
                 Created=NOW(), 
                 CreatedBy=:createdBy, 
                 Active=1",
@@ -141,7 +140,6 @@ class ArticleModel {
                 array("paramName"=>"type", "paramVal"=>$this->dataArray[0]["Type"], "paramType"=>PDO::PARAM_INT),
                 array("paramName"=>"title", "paramVal"=>$this->dataArray[0]["Title"], "paramType"=>PDO::PARAM_STR),
                 array("paramName"=>"text", "paramVal"=>$this->dataArray[0]["Text"], "paramType"=>PDO::PARAM_STR),
-                array("paramName"=>"language", "paramVal"=>$this->dataArray[0]["Language"], "paramType"=>PDO::PARAM_STR),
                 array("paramName"=>"createdBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT))
             );
         $result = $this->db->insertQueryBuilder($insertChapterQuery);

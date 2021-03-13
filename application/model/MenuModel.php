@@ -25,7 +25,7 @@ class MenuModel {
         $dataArray['languages'] = $languages;
         $menuItems = $this->getMenuItems($dataArray);
         for ($i=0; $i<=count($menuItems)-1; $i++) {
-            if ($menuItems[$i]['Role'] == 1) {
+            if ($menuItems[$i]['Role'] == 1 || $menuItems[$i]['Role'] == 2) {
                 $subDataArray = array();
                 $subDataArray['parentNode'] = $level;
                 $subDataArray['parentId'] =  $menuItems[$i]['MainHeaderId'];
@@ -42,31 +42,32 @@ class MenuModel {
         $dataArray['parentId'] = 0;
         $menuItems = $this->getMenuItemsSite($dataArray);
         for ($i=0; $i<=count($menuItems)-1; $i++) {
-            if ($menuItems[$i]['Role'] == 2) {
-                $subDataArray = array();
-                $subDataArray['parentNode'] = $this->dataArray['level'];
-                $subDataArray['parentId'] =  $menuItems[$i]['MainHeaderId'];
-                $menuItems[$i]['subItems'] = $this->getMenuItemsSite($subDataArray);
+            if ($_SESSION["setupData"]["siteType"] == 1) {
+                if ($menuItems[$i]['Role'] == 2) {
+                    $subDataArray = array();
+                    $subDataArray['parentNode'] = $this->dataArray[0]['level'];
+                    $subDataArray['parentId'] =  $menuItems[$i]['MainHeaderId'];
+                    $menuItems[$i]['subItems'] = $this->getMenuItemsSite($subDataArray);
+                }
             }
         }
         return $menuItems;
     }
     
     private function getMenuItems($dataArray) {
-        $dataArray['fields'] = '';
-        $dataArray['joins'] = array("LEFT JOIN lang_header t2 ON t2.MainHeaderId = t1.MainHeaderId");
-        for ($i=0; $i<=count($dataArray['languages'])-1; $i++) {
-            $dataArray['fields'] .= ', t' . $dataArray['languages'][$i]['LanguageSign'] . '.HeadersCount' . $dataArray['languages'][$i]['LanguageSign'];
-            array_push($dataArray['joins'], " LEFT JOIN (SELECT MainHeaderId, `Language`, COUNT(MainHeaderId) AS HeadersCount" . $dataArray['languages'][$i]['LanguageSign'] . " FROM lang_header) t" . $dataArray['languages'][$i]['LanguageSign'] . " ON t1.MainHeaderId = t" . $dataArray['languages'][$i]['LanguageSign'] . ".MainHeaderId AND t" . $dataArray['languages'][$i]['LanguageSign'] . ".`Language` = '" . $dataArray['languages'][$i]['LanguageSign'] . "'");
-        }
+        $dataArray['joins'] = array(
+            "LEFT JOIN lang_header t2 ON t2.MainHeaderId = t1.MainHeaderId ",
+            "LEFT JOIN (SELECT MainHeaderId, `Language`, COUNT(MainHeaderId) AS `HeadersCount" . $dataArray['languages'] . "` FROM lang_header) `t" . $dataArray['languages'] . "` ON t1.MainHeaderId = `t" . $dataArray['languages'] . "`.MainHeaderId AND `t" . $dataArray['languages'] . "`.`Language` = '" . $dataArray['languages'] . "'"
+        );
         $getMenuItems = array(
             "tableName"=>"main_header t1",
-            "fields"=>"t1.MainHeaderId, t2.Caption, t1.Role, t1.MainNode" . $dataArray["fields"],
-            "where"=>"t2.ParentId=:parentId AND t1.MainNode=:parentNode AND t1.Active = 1",
+            "fields"=>"t1.MainHeaderId, t2.Caption, t1.Role, t1.MainNode, t2.Language",
+            "where"=>"t2.ParentId=:parentId AND t1.MainNode=:parentNode AND t1.Active = 1 AND t2.Language=:language",
             "joins"=>$dataArray["joins"],
             "parameters"=>array(
                 array("paramName"=>"parentId", "paramVal"=>$dataArray['parentId'], "paramType"=>1),
-                array("paramName"=>"parentNode", "paramVal"=>$dataArray['parentNode'], "paramType"=>1)
+                array("paramName"=>"parentNode", "paramVal"=>$dataArray['parentNode'], "paramType"=>1),
+                array("paramName"=>"language", "paramVal"=>$dataArray["languages"], "paramType"=>2)
             )
         );
         $menuItems = $this->db->selectQueryBuilder($getMenuItems);
@@ -81,10 +82,11 @@ class MenuModel {
                 "LEFT JOIN lang_header t2 on t2.MainHeaderId = t1.MainHeaderId"
             ),
             "where"=>"t2.ParentId=:parentId and t1.MainNode=:parentNode and t1.MainHeaderId NOT IN 
-                (SELECT MainHeaderId FROM main_header WHERE (Role = 4 OR Role = 14))",
+                (SELECT MainHeaderId FROM main_header WHERE (Role = 14)) AND t2.Language=:language",
             "parameters"=>array(
                 array("paramName"=>"parentId", "paramVal"=>$dataArray["parentId"], "paramType"=>1),
-                array("paramName"=>"parentNode", "paramVal"=>$dataArray["parentNode"], "paramType"=>1)
+                array("paramName"=>"parentNode", "paramVal"=>$dataArray["parentNode"], "paramType"=>1),
+                array("paramName"=>"language", "paramVal"=>$_SESSION['setupData']['languageSign'], "paramType"=>2)
             )
         );
         $result = $this->db->selectQueryBuilder($getMenuItemsQuery);
@@ -155,10 +157,10 @@ class MenuModel {
     }
     
     public function insertMenu() {
+        var_dump($this->dataArray);
         $mainHeaderDataArray = array(
             "AdditionalField"=>$this->dataArray['AdditionalField'],
             "Role"=>$this->dataArray['Role'],
-            "MainPage"=>$this->dataArray['MainPage'],
             "MainNode"=>$this->dataArray['MainNode'],
             "MoreFlag"=>$this->dataArray['MoreFlag'],
             "Target"=>$this->dataArray['Target'],
@@ -172,21 +174,23 @@ class MenuModel {
             if (is_null($maxRank[0]['maxRank'])) {
                 $maxRank[0]['maxRank'] = 0;
             }
-            $rankArray = array(
-                "MainHeaderId"=>$mainHeaderData['lastInsert'],
-                "ParentId"=>$this->dataArray['ParentId'],
-                "Caption"=>$this->dataArray['Caption'],
-                "Title"=>$this->dataArray['Title'],
-                "Heading"=>$this->dataArray['Heading'],
-                "Keywords"=>$this->dataArray['Keywords'],
-                "Link"=>$this->dataArray['Link'],
-                "Language"=>$this->dataArray['Language'],
-                "Counter"=>$this->dataArray['Counter'],
-                "Rank"=>$maxRank[0]['maxRank']
-            );
-            $langHeaderData = $this->insertLangHeader($rankArray);
-            if (isset($langHeaderData['error'])) {
-                print $langHeaderData['error'];
+            for ($i=0; $i<=count($this->dataArray["Lang"])-1; $i++) {
+                $rankArray = array(
+                    "MainHeaderId"=>$mainHeaderData['lastInsert'],
+                    "ParentId"=>$this->dataArray['ParentId'],
+                    "Caption"=>$this->dataArray['Caption'],
+                    "Title"=>$this->dataArray['Title'],
+                    "Heading"=>$this->dataArray['Heading'],
+                    "Keywords"=>$this->dataArray['Keywords'],
+                    "Link"=>$this->dataArray['Link'],
+                    "Language"=>$this->dataArray['Lang'][$i],
+                    "Counter"=>null,
+                    "Rank"=>$maxRank[0]['maxRank']
+                );
+                $langHeaderData = $this->insertLangHeader($rankArray);
+                if (isset($langHeaderData['error'])) {
+                    print $langHeaderData['error'];
+                }
             }
             return $mainHeaderData;
         } else if (isset($mainHeaderData['error'])) {
@@ -195,45 +199,43 @@ class MenuModel {
     }
     
     private function insertMainHeader($dataArray) {
-        $insertMainHeaderQuery = array(
-        "tableName"=>"main_header",
-        "fields"=>"AdditionalField=:AdditionalField,
-            Target=:Target,
-            Role=:Role,
-            MainPage=:MainPage,
-            MainNode=:MainNode,
-            MoreFlag=:MoreFlag,          
-            UserIn=:UserIn,
-            Popup=:Popup,
-            Commentable=:Commentable,
-            Created=NOW(),
-            CreatedBy=:UserId,
-            Active = 1");
+        $query = array(
+            "tableName"=>"main_header",
+            "fields"=>"AdditionalField=:AdditionalField,
+                Target=:Target,
+                Role=:Role,
+                MainNode=:MainNode,
+                MoreFlag=:MoreFlag,          
+                UserIn=:UserIn,
+                Popup=:Popup,
+                Commentable=:Commentable,
+                Created=NOW(),
+                CreatedBy=:UserId,
+                Active = 1");
         if (!is_null($dataArray['AdditionalField'])) {
-            $insertMainHeaderQuery['parameters'][0] = array("paramName"=>"AdditionalField", "paramVal"=>$dataArray['AdditionalField'], "paramType"=>PDO::PARAM_STR);
+            $query['parameters'][0] = array("paramName"=>"AdditionalField", "paramVal"=>$dataArray['AdditionalField'], "paramType"=>PDO::PARAM_STR);
         } else {
-            $insertMainHeaderQuery['parameters'][0] = array("paramName"=>"AdditionalField", "paramVal"=>null, "paramType"=>PDO::PARAM_STR);
+            $query['parameters'][0] = array("paramName"=>"AdditionalField", "paramVal"=>null, "paramType"=>PDO::PARAM_STR);
         }
-        $insertMainHeaderQuery['parameters'][1] = array("paramName"=>"Role", "paramVal"=>$dataArray['Role'], "paramType"=>PDO::PARAM_INT);
-        $insertMainHeaderQuery['parameters'][2] = array("paramName"=>"MainPage", "paramVal"=>$dataArray['MainPage'], "paramType"=>PDO::PARAM_INT);
-        $insertMainHeaderQuery['parameters'][3] = array("paramName"=>"MainNode", "paramVal"=>$dataArray['MainNode'], "paramType"=>PDO::PARAM_INT);
-        $insertMainHeaderQuery['parameters'][4] = array("paramName"=>"MoreFlag", "paramVal"=>$dataArray['MoreFlag'], "paramType"=>PDO::PARAM_INT);
+        $query['parameters'][1] = array("paramName"=>"Role", "paramVal"=>$dataArray['Role'], "paramType"=>PDO::PARAM_INT);
+        $query['parameters'][2] = array("paramName"=>"MainNode", "paramVal"=>$dataArray['MainNode'], "paramType"=>PDO::PARAM_INT);
+        $query['parameters'][3] = array("paramName"=>"MoreFlag", "paramVal"=>$dataArray['MoreFlag'], "paramType"=>PDO::PARAM_INT);
         if (!is_null($dataArray['Target'])) {
-            $insertMainHeaderQuery['parameters'][5] = array("paramName"=>"Target", "paramVal"=>$dataArray['Target'], "paramType"=>PDO::PARAM_STR);
+            $query['parameters'][4] = array("paramName"=>"Target", "paramVal"=>$dataArray['Target'], "paramType"=>PDO::PARAM_STR);
         } else {
-            $insertMainHeaderQuery['parameters'][5] = array("paramName"=>"Target", "paramVal"=>null, "paramType"=>PDO::PARAM_STR);
+            $query['parameters'][4] = array("paramName"=>"Target", "paramVal"=>null, "paramType"=>PDO::PARAM_STR);
         }
-        $insertMainHeaderQuery['parameters'][6] = array("paramName"=>"UserIn", "paramVal"=>$dataArray['UserIn'], "paramType"=>PDO::PARAM_INT);
-        $insertMainHeaderQuery['parameters'][7] = array("paramName"=>"Popup", "paramVal"=>$dataArray['Popup'], "paramType"=>PDO::PARAM_INT);
-        $insertMainHeaderQuery['parameters'][8] = array("paramName"=>"Commentable", "paramVal"=>$dataArray['Commentable'], "paramType"=>PDO::PARAM_INT);
-        $insertMainHeaderQuery['parameters'][9] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
+        $query['parameters'][5] = array("paramName"=>"UserIn", "paramVal"=>$dataArray['UserIn'], "paramType"=>PDO::PARAM_INT);
+        $query['parameters'][6] = array("paramName"=>"Popup", "paramVal"=>$dataArray['Popup'], "paramType"=>PDO::PARAM_INT);
+        $query['parameters'][7] = array("paramName"=>"Commentable", "paramVal"=>$dataArray['Commentable'], "paramType"=>PDO::PARAM_INT);
+        $query['parameters'][8] = array("paramName"=>"UserId", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT);
 
-        $insertMainHeaderResult = $this->db->insertQueryBuilder($insertMainHeaderQuery);
-        return $insertMainHeaderResult;
+        $result = $this->db->insertQueryBuilder($query);
+        return $result;
     }
     
     private function insertLangHeader($dataArray) {
-        $insertLangHeaderQuery = array(
+        $query = array(
             "tableName"=>"lang_header",
             "fields"=>"MainHeaderId=:mainHeaderId,
                 ParentId=:parentId,
@@ -262,12 +264,12 @@ class MenuModel {
                 array("paramName"=>"createdBy", "paramVal"=>$_SESSION['admin']['userData']['UserId'], "paramType"=>PDO::PARAM_INT)
             )
         );
-        $result = $this->db->insertQueryBuilder($insertLangHeaderQuery);
+        $result = $this->db->insertQueryBuilder($query);
         return $result;
     }
 
     public function updateMenu() {
-        $mainHeaderDataArray = array(
+        $dataArray = array(
             "AdditionalField"=>$this->dataArray['AdditionalField'],
             "Role"=>$this->dataArray['Role'],
             "MainPage"=>$this->dataArray['MainPage'],
@@ -279,9 +281,9 @@ class MenuModel {
             "Commentable"=>$this->dataArray['Commentable'],
             "MainHeaderId"=>$this->dataArray['MainHeaderId']
         );
-        $mainHeaderData = $this->updateMainHeader($mainHeaderDataArray);
-        if (!isset($mainHeaderData['error'])) {
-            $rankArray = array(
+        $mainHeaderResult = $this->updateMainHeader($dataArray);
+        if (!isset($mainHeaderResult['error'])) {
+            $rankDataArray = array(
                 "LangHeaderId"=>$this->dataArray['LangHeaderId'],
                 "MainHeaderId"=>$this->dataArray['MainHeaderId'],
                 "ParentId"=>$this->dataArray['ParentId'],
@@ -293,18 +295,18 @@ class MenuModel {
                 "Language"=>$this->dataArray['Language'],
                 "Rank"=>$this->dataArray['Rank']
             );
-            $langHeaderData = $this->updateLangHeader($rankArray);
+            $langHeaderData = $this->updateLangHeader($rankDataArray);
             if (isset($langHeaderData['error'])) {
                 print $langHeaderData['error'];
             }
-            return $mainHeaderData;
-        } else if (isset($mainHeaderData['error'])) {
-            return $mainHeaderData;
+            return $mainHeaderResult;
+        } else if (isset($mainHeaderResult['error'])) {
+            return $mainHeaderResult;
         }
     }
     
     private function updateMainHeader($dataArray) {
-        $updateMainHeaderQuery = array(
+        $query = array(
             "tableName"=>"main_header",
             "fields"=>"AdditionalField=:AdditionalField,
                 Role=:Role,
@@ -333,12 +335,12 @@ class MenuModel {
                 array("paramName"=>"MainHeaderId", "paramVal"=>$dataArray['MainHeaderId'], "paramType"=>PDO::PARAM_INT)
             )
         );        
-        $updateMainHeaderResult = $this->db->updateQueryBuilder($updateMainHeaderQuery);
-        return $updateMainHeaderResult;       
+        $result = $this->db->updateQueryBuilder($query);
+        return $result;       
     }
     
     private function updateLangHeader($dataArray) {
-        $updateLangHeaderQuery = array(
+        $query = array(
             "tableName"=>"lang_header",
             "fields"=>"MainHeaderId=:MainHeaderId,
                 ParentId=:ParentId,
@@ -367,12 +369,12 @@ class MenuModel {
                 array("paramName"=>"LangHeaderId", "paramVal"=>$dataArray['LangHeaderId'], "paramType"=>PDO::PARAM_INT)
             )
         );
-        $updateLangHeaderResult = $this->db->updateQueryBuilder($updateLangHeaderQuery);
-        return $updateLangHeaderResult;
+        $result = $this->db->updateQueryBuilder($query);
+        return $result;
     }
     
     public function updateCounter($dataArray) {
-        $updateCounterQuery = array(
+        $query = array(
             "tableName"=>"lang_header",
             "fields"=>"Counter=Counter+1",
             "where"=>"LangHeaderId=:LangHeaderId",
@@ -380,8 +382,8 @@ class MenuModel {
                 array("paramName"=>"LangHeaderId", "paramVal"=>$dataArray["LangHeaderId"], "paramType"=>PDO::PARAM_INT)
             )
         );
-        $updateCounterResult = $this->db->updateQueryBuilder($updateCounterQuery);
-        return $updateCounterResult;
+        $result = $this->db->updateQueryBuilder($query);
+        return $result;
     }
     
     public function deleteMenu() {
@@ -394,7 +396,7 @@ class MenuModel {
     }
     
     public function deleteMainHeader($dataArray) {
-        $deleteMainHeaderQuery = array(
+        $query = array(
             "tableName"=>"main_header",
             "fields"=>"Active=:Active",
             "where"=>"MainHeaderId=:MainHeaderId",
@@ -403,12 +405,12 @@ class MenuModel {
                 array("paramName"=>"MainHeaderId", "paramVal"=>$dataArray["MainHeaderId"], "paramType"=>PDO::PARAM_INT)
             )
         );
-        $deleteMainHeaderResult = $this->db->updateQueryBuilder($deleteMainHeaderQuery);
-        return $deleteMainHeaderResult;
+        $result = $this->db->updateQueryBuilder($query);
+        return $result;
     }
 
     public function deleteLangHeader($dataArray) {
-        $deleteLangHeaderQuery = array(
+        $query = array(
             "tableName"=>"lang_header",
             "fields"=>"Active=:Active",
             "where"=>"MainHeaderId=:MainHeaderId",
@@ -417,7 +419,7 @@ class MenuModel {
                 array("paramName"=>"MainHeaderId", "paramVal"=>$dataArray["MainHeaderId"], "paramType"=>PDO::PARAM_INT)
             )
         );
-        $deleteLangHeaderResult = $this->db->parameterUpdate($deleteLangHeaderQuery);
-        return $deleteLangHeaderResult;
+        $result = $this->db->parameterUpdate($query);
+        return $result;
     }
 }

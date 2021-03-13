@@ -1,5 +1,5 @@
 <h1 class="mt-4 mb-3">
-    <small><?php print $this->articleLabels->labels->authorLabel; ?>: <a href="#"><?php print $this->dataArray[0]['Name']; ?></a></small>
+    <small><?php print $this->articleLabels->labels->authorLabel; ?>: <a href="#"><?php print $this->dataArray['Name']; ?></a></small>
 </h1>
 
 <ol class="breadcrumb">

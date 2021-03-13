@@ -62,5 +62,23 @@ class LinkModel {
         );
         $result = $this->db->selectQueryBuilder($this->getLinkDataArray);
         return $result;
-    }    
+    }
+
+    public function getParallaxItems() {
+        $dataArray = array(
+            "tableName"=>"main_header t1",
+            "fields"=>"t1.*, t2.*, t3.ControllerName",
+            "joins"=>array(
+                "LEFT JOIN lang_header t2 ON t1.MainHeaderId = t2.MainHeaderId",
+                "LEFT JOIN role t3 ON t1.Role = t3.RoleId"
+            ),
+            "where"=>"t2.Active = 1 AND t2.Language=:lang",
+            "order"=>"t2.Rank ASC",
+            "parameters"=>array(
+                array("paramName"=>"lang", "paramVal"=>$_SESSION["setupData"]["languageSign"], "paramType"=>PDO::PARAM_STR)
+            )
+        );
+        $result = $this->db->selectQueryBuilder($dataArray);
+        return $result;
+    }
 }

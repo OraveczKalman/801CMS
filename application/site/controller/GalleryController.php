@@ -5,17 +5,17 @@ class GalleryController {
     
     public function __construct($db, $dataArray=null) {
         $this -> dataArray = $dataArray;
-        if (!isset($this->dataArray[0]['event'])) {
-            $this->dataArray[0]['event'] = 'RenderGallery';
+        if (!isset($this->dataArray['event'])) {
+            $this->dataArray['event'] = 'RenderGallery';
         }
         $this -> db = $db;
-        call_user_func(array($this, $this->dataArray[0]['event']));
+        call_user_func(array($this, $this->dataArray['event']));
     }
     
     private function RenderGallery() {
         include_once(MODEL_PATH . 'GalleryModel.php');
         $this->articleLabels = json_decode(file_get_contents(SITE_RESOURCE_PATH . 'lang/' . $_SESSION['setupData']['languageSign'] . '/ArticleViewLabels.json'));
-        $gallery = new GalleryModel($this->db, $this->dataArray[0]);
+        $gallery = new GalleryModel($this->db, $this->dataArray);
         $galleryObjects = $gallery -> getGalleryObjectsSite();
         switch ($this->dataArray[0]['AdditionalField']) {
             case 1 :

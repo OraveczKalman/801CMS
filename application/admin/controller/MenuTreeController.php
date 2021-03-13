@@ -20,10 +20,15 @@ class MenuTreeController {
         $menuItems = array();
         $languageModel = new LanguageModel($this->db, array("where"=>" Active=1"));
         $languageList = $languageModel->getLanguage();
-        for ($i=0; $i<=$_SESSION['setupData']['mainMenus']-1; $i++) {
-            $this->dataArray[0]['level'] = $i;
-            $menu = new MenuModel($this->db, $menuDataArray);
-            $menuItems[$i] = $menu->GenerateMenuTree(0, $i, $languageList);
+        for ($i=0; $i<=count($languageList)-1; $i++) {
+            for ($j=0; $j<=$_SESSION['setupData']['mainMenus']-1; $j++) {
+                $menuItems[$languageList[$i]["LanguageSign"]][$j] = array();
+                $menuItems[$languageList[$i]["LanguageSign"]][$j]["Caption"] = "Főmenü" . $j;
+                $menuItems[$languageList[$i]["LanguageSign"]][$j]["MainNode"] = $j;
+                $this->dataArray[0]['level'] = $j;
+                $menu = new MenuModel($this->db, $menuDataArray);
+                $menuItems[$languageList[$i]["LanguageSign"]][$j]["items"] = $menu->GenerateMenuTree(0, $j, $languageList[$i]["LanguageSign"]);
+            }
         }
         include_once(ADMIN_VIEW_PATH . 'MenuTreeView.php');
     }

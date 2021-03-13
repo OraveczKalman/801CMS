@@ -112,12 +112,12 @@ class GalleryModel {
     }
     
     public function getGalleryObjectsSite() {
-        if (intval($this->dataArray['AdditionalField']) == 2) {
+        if (intval($this->dataArray[0]['AdditionalField']) == 2) {
             $whereString = ' main_header.AdditionalField=:additionalField AND gallery_picture.Active = 1 ';
-            $parameterArray = array("paramName"=>"additionalField", "paramVal"=>$this->dataArray['AdditionalField'], "paramType"=>1);
+            $parameterArray = array("paramName"=>"additionalField", "paramVal"=>$this->dataArray[0]['AdditionalField'], "paramType"=>1);
         } else {
             $whereString = ' gallery_picture.LangHeaderId=:mainHeaderId AND gallery_picture.Active = 1 ';
-            $parameterArray = array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray['MainHeaderId'], "paramType"=>1);
+            $parameterArray = array("paramName"=>"mainHeaderId", "paramVal"=>$this->dataArray[0]['MainHeaderId'], "paramType"=>1);
         }
         $getGalleryObjectQuery = array(
             'fields'=>'picture.PictureId, picture.Name AS kep_nev_big,

@@ -12,6 +12,6 @@ function processError(data) {
         $('#errorContainer').html('Rossz felhasználónév vagy jelszó!');
         $('#errorContainer').css('display', 'block');*/
     } else {
-        location.href = 'index.php?main=Dashboard&site=Dashboard&child=Dashboard';
+        location.href = '../admin/MenuTree';
     }
 }

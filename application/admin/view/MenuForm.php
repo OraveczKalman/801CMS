@@ -32,10 +32,6 @@
             sendOneField('validateInt', 'Menu', $('#MainPage').val(), 'MainPage');
         });
 
-        $("#Nyelv").on('blur', function() {
-            sendOneField('validateText', 'admin/Menu', $('#Nyelv').val(), 'Nyelv');
-        });
-
         $("#Kommentezheto").on('blur', function() {
             sendOneField('validateInt', 'Menu', $('#Kommentezheto').val(), 'Kommentezheto');
         });
@@ -48,20 +44,22 @@
             var additionalHtml = '';
             switch (parseInt($('#Szerep option:selected').val(), 10)) {
                 case 1 :
-                    alert('xxx');
+                    additionalHtml += '<div class="row">';
+                    additionalHtml += '<div class="col-lg-6">';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="DefaultCoverImage" class="col-sm-2 control-label">Alap borítókép</label>';
-                    additionalHtml += '<div class="col-sm-10">';
-                    additionalHtml += '<input type="file" name="defaultCoverImage" id="defaultCoverImage">';
+                    additionalHtml += '<label for="DefaultCoverImage" class="form-control-label">Alap borítókép</label>';
+                    additionalHtml += '<input type="file" name="defaultCoverImage" id="defaultCoverImage" class="form-control">';
+                    additionalHtml += '</div>';
                     additionalHtml += '</div>';
                     additionalHtml += '</div>';
                     $('#additionalWrapper').html(additionalHtml);
                     $('#additionalWrapper').css('display', 'block');                    
                     break;
                 case 4 :
+                    additionalHtml += '<div class="row">';
+                    additionalHtml += '<div class="col-lg-6">';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="GalleryType" class="col-sm-2 control-label"><?php print $menuJson->labels->gallerytype; ?></label>';
-                    additionalHtml += '<div class="col-sm-10">';
+                    additionalHtml += '<label for="GalleryType" class="form-control-label"><?php print $menuJson->labels->gallerytype; ?></label>';                   
                     additionalHtml += '<select id="GalleryType" class="form-control" name="GalleryType">';
                     additionalHtml += '<option value="0"><?php print $menuJson->gallerytypes->gallery->label; ?></option>';
                     additionalHtml += '<option value="1"><?php print $menuJson->gallerytypes->coverslider->label; ?></option>';
@@ -69,47 +67,59 @@
                     additionalHtml += '</select>';
                     additionalHtml += '</div>';
                     additionalHtml += '</div>';
+                    additionalHtml += '</div>';
                     $('#additionalWrapper').html(additionalHtml);
                     $('#additionalWrapper').css('display', 'block');
                     break;
-                case 6 :
+                case 5 :
+                    additionalHtml += '<div class="row">';
+                    additionalHtml += '<div class="col-lg-6">';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Tabellakod" class="col-sm-2 control-label"><?php print $menuJson->labels->tableCode; ?></label>';
-                    additionalHtml += '<div class="col-sm-10">';
-                    additionalHtml += '<input class="form-control" type="text" id="Tabellakod" name="Tabellakod">';
+                    additionalHtml += '<label for="TableCode" class="form-control-label"><?php print $menuJson->labels->tableCode; ?></label>';
+                    additionalHtml += '<input class="form-control" type="text" id="TableCode" name="TableCode">';
                     additionalHtml += '</div>';
                     additionalHtml += '</div>';
+                    additionalHtml += '<div class="col-lg-6">';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Csapatszam" class="col-sm-2 control-label"><?php print $menuJson->labels->teamCount; ?></label>';
-                    additionalHtml += '<div class="col-sm-10">';
-                    additionalHtml += '<input class="form-control" type="text" id="Csapatszam" name="Csapatszam">';
+                    additionalHtml += '<label for="TeamCount" class="form-control-label"><?php print $menuJson->labels->teamCount; ?></label>';
+                    additionalHtml += '<input class="form-control" type="text" id="TeamCount" name="TeamCount">';
                     additionalHtml += '</div>';
                     additionalHtml += '</div>';
+                    additionalHtml += '</div>';
+                    additionalHtml += '<div class="row">';
+                    additionalHtml += '<div class="col-lg-6">';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Fejszoveg" class="col-sm-2 control-label"><?php print $menuJson->labels->headText; ?></label>';
-                    additionalHtml += '<div class="col-sm-10">';
-                    additionalHtml += '<input class="form-control" type="text" id="Fejszoveg" name="Fejszoveg">';
+                    additionalHtml += '<label for="HeadText" class="form-control-label"><?php print $menuJson->labels->headText; ?></label>';
+                    additionalHtml += '<input class="form-control" type="text" id="HeadText" name="HeadText">';
                     additionalHtml += '</div>';
                     additionalHtml += '</div>';
+                    additionalHtml += '<div class="col-lg-6">';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Ideny" class="col-sm-2 control-label"><?php print $menuJson->labels->season; ?></label>';
-                    additionalHtml += '<div class="col-sm-10">';
-                    additionalHtml += '<input class="form-control" type="text" id="Ideny" name="Ideny">';
+                    additionalHtml += '<label for="Season" class="form-control-label"><?php print $menuJson->labels->season; ?></label>';
+                    additionalHtml += '<input class="form-control" type="text" id="Season" name="Season">';
+                    additionalHtml += '</div>';
                     additionalHtml += '</div>';
                     additionalHtml += '</div>';
                     $('#additionalWrapper').html(additionalHtml);
                     $('#additionalWrapper').css('display', 'block');                   
                     break;
-                case 7 :
+                case 6 :
+                case 13 :
+                    additionalHtml += '<div class="row">';
+                    additionalHtml += '<div class="col-lg-6">';
                     additionalHtml += '<div class="form-group">';
-                    additionalHtml += '<label for="Feltoltendo" class="col-sm-2 control-label"><?php print $menuJson->labels->fileLabel; ?></label>';
-                    additionalHtml += '<div class="col-sm-10"><input class="form-control" type="file" id="Feltoltendo" name="Feltoltendo[]"></div>';
+                    additionalHtml += '<label for="Feltoltendo" class="form-control-label"><?php print $menuJson->labels->fileLabel; ?></label>';
+                    additionalHtml += '<input class="form-control" type="file" id="Feltoltendo" name="Feltoltendo[]">';
+                    additionalHtml += '</div>';
+                    additionalHtml += '</div>';
                     additionalHtml += '</div>';
                     $('#additionalWrapper').html(additionalHtml);
                     $('#additionalWrapper').css('display', 'block');
                     break;
                 case 14 :
                     $('#MainPage').attr("checked", true);
+                    $('#additionalWrapper').html('');
+                    $('#additionalWrapper').css('display', 'none');                    
                     break;
                 default:
                     $('#additionalWrapper').html('');
@@ -182,36 +192,49 @@
         <div class="tab-content">
         <div id="menuContainer" role="tabpanel" class="tab-pane active">
             <form class="form-horizontal" enctype="multipart/form-data" role="form" id="MenuForm" method="post" action="Menu">
-
-                <div class="form-group">
-                    <label for="Felirat" class="col-sm-2 control-label"><?php print $menuJson->labels->caption; ?></label>
-                    <div class="col-sm-10"><input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Caption'] . '"'; }?> id="Felirat" name="Felirat"></div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="Caption" class="form-control-label"><?php print $menuJson->labels->caption; ?></label>
+                            <input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Caption'] . '"'; }?> id="Caption" name="Caption">
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="Cim" class="col-sm-2 control-label"><?php print $menuJson->labels->title; ?></label>
-                    <div class="col-sm-10"><input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Title'] . '"'; }?> id="Cim" name="Cim"></div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="Title" class="form-control-label"><?php print $menuJson->labels->title; ?></label>
+                            <input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Title'] . '"'; }?> id="Title" name="Title">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for=Heading" class="form-control-label"><?php print $menuJson->labels->heading; ?></label>
+                            <input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Heading'] . '"'; }?> id="Heading" name="Heading">
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for=Cimsor" class="col-sm-2 control-label"><?php print $menuJson->labels->heading; ?></label>
-                    <div class="col-sm-10"><input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Heading'] . '"'; }?> id="Cimsor" name="Cimsor"></div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="Keywords" class="form-control-label"><?php print $menuJson->labels->keywords; ?></label>
+                            <input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Keywords'] . '"'; }?> id="Keywords" name="Keywords">
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="Kulcsszavak" class="col-sm-2 control-label"><?php print $menuJson->labels->keywords; ?></label>
-                    <div class="col-sm-10"><input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Keywords'] . '"'; }?> id="Kulcsszavak" name="Kulcsszavak"></div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="Link" class="form-control-label"><?php print $menuJson->labels->link; ?></label>
+                            <input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Link'] . '"'; }?> id="Link" name="Link">
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="Link" class="col-sm-2 control-label"><?php print $menuJson->labels->link; ?></label>
-                    <div class="col-sm-10"><input class="form-control" type="text" <?php if (isset($menuPointData)) { print 'value="' . $menuPointData[0]['Link'] . '"'; }?> id="Link" name="Link"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="Target" class="col-sm-2 control-label"><?php print $menuJson->labels->target; ?></label>
-                    <div class="col-sm-10">
-                        <select id="Target" class="form-control" name="Target">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="Target" class="form-control-label"><?php print $menuJson->labels->target; ?></label>
+                            <select id="Target" class="form-control" name="Target">
 <?php
                             foreach ($menuJson->targets as $targets2) {
 ?>
@@ -219,94 +242,108 @@
 <?php
                             }
 ?>
-                        </select>
+                            </select>
+                        </div>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="MainPage" class="col-sm-2 control-label"><?php print $menuJson->labels->mainpage; ?></label>
-                    <div class="col-sm-10"><input type="checkbox" id="MainPage" name="MainPage" <?php if (isset($menuPointData) && $menuPointData[0]['MainPage'] == 1) { print "checked"; } ?> value="1"></div>
+                <div class="row">
+                    <div class="col-lg-12">Nyelvek</div>
                 </div>
-
-                <div class="form-group">
-                    <label for="Nyelv" class="col-sm-2 control-label"><?php print $menuJson->labels->language; ?></label>
-                    <div class="col-sm-10">
-                        <select class="form-control" id="Nyelv" name="Nyelv">
+                <div class="row">
 <?php
-                        foreach ($languages as $languages2) {
+    if (!isset($menuPointData)) {
+        for ($i=0; $i<=count($languages)-1; $i++) {
 ?>
-                            <option value="<?php print $languages2['LanguageSign']; ?>" <?php if (isset($menuPointData) && $menuPointData[0]['Language'] == $languages2['LanguageSign']) { print ' selected="selected"'; } ?>><?php print $languages2['Description']; ?></option>
-<?php
-                        }
-?>
-                        </select>
+                    <div class="col-lg-2">
+                        <label class="form-control-label"><?php print $languages[$i]["Description"]; ?></label>
+                        <input type="checkbox" id="Lang<?php print $i; ?>" name="Lang[]" value="<?php print $languages[$i]["LanguageSign"]; ?>" />
                     </div>
+<?php
+        }
+    }
+?>
                 </div>
-
-                <div class="form-group">
-                    <label for="Kommentezheto" class="col-sm-2 control-label"><?php print $menuJson->labels->commentable; ?></label>
-                    <div class="col-sm-10"><input type="checkbox" id="Kommentezheto" name="Kommentezheto" <?php if (isset($menuPointData) && $menuPointData[0]['Commentable'] == 1) { print "checked"; } ?> value="1" /></div>
+                <div class="row">
+                    <div class="col-lg-12">Állapotok</div>
                 </div>
-
-                <div class="form-group">
-                    <label for="User_In" class="col-sm-2 control-label"><?php print $menuJson->labels->loggedin; ?></label>
-                    <div class="col-sm-10"><input type="checkbox" id="User_In" name="User_In" <?php if (isset($menuPointData) && $menuPointData[0]['UserIn'] == 1) { print "checked"; } ?> value="1"></div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="Commentable" class="form-control-label"><?php print $menuJson->labels->commentable; ?></label>
+                            <input type="checkbox" id="Commentable" name="Commentable" <?php if (isset($menuPointData) && $menuPointData[0]['Commentable'] == 1) { print "checked"; } ?> value="1" />
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label for="UserIn" class="form-control-label"><?php print $menuJson->labels->loggedin; ?></label>
+                            <input type="checkbox" id="UserIn" name="UserIn" <?php if (isset($menuPointData) && $menuPointData[0]['UserIn'] == 1) { print "checked"; } ?> value="1">
+                        </div>
+                    </div>
                 </div>
 <?php
                 if (isset($menuPointData)) {
                     switch ($menuPointData[0]['Role']) {
                         case 4 :
 ?>
-                <div class="form-group">
-                    <label for="GalleryType" class="col-sm-2 control-label"><?php print $menuJson->labels->gallerytype; ?></label>
-                    <div class="col-sm-10">
-                        <select id="GalleryType" class="form-control" name="GalleryType">
-                            <option value=""><?php print $menuJson->targets->choose->label; ?></option>
-                            <option <?php if ($menuPointData[0]['AdditionalField'] == 0) { print 'selected'; } ?> value="0"><?php print $menuJson->gallerytypes->gallery->label; ?></option>
-                            <option <?php if ($menuPointData[0]['AdditionalField'] == 1) { print 'selected'; } ?> value="1"><?php print $menuJson->gallerytypes->coverslider->label; ?></option>
-                            <option <?php if ($menuPointData[0]['AdditionalField'] == 2) { print 'selected'; } ?> value="2"><?php print $menuJson->gallerytypes->slider->label; ?></option>
-                        </select>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="GalleryType" class="form-control-label"><?php print $menuJson->labels->gallerytype; ?></label>
+                            <select id="GalleryType" class="form-control" name="GalleryType">
+                                <option value=""><?php print $menuJson->targets->choose->label; ?></option>
+                                <option <?php if ($menuPointData[0]['AdditionalField'] == 0) { print 'selected'; } ?> value="0"><?php print $menuJson->gallerytypes->gallery->label; ?></option>
+                                <option <?php if ($menuPointData[0]['AdditionalField'] == 1) { print 'selected'; } ?> value="1"><?php print $menuJson->gallerytypes->coverslider->label; ?></option>
+                                <option <?php if ($menuPointData[0]['AdditionalField'] == 2) { print 'selected'; } ?> value="2"><?php print $menuJson->gallerytypes->slider->label; ?></option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 <?php
                             break;
                         
-                        case 6 :
+                        case 5 :
                             $tableData = json_decode($menuPointData[0]['AdditionalField']);
 ?>
-                <div class="form-group">
-                    <label for="Tabellakod" class="col-sm-2 control-label">Tabellakód</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" id="Tabellakod" name="Tabellakod" value="<?php if (isset($tableData->Tabellakod)) { print $tableData->Tabellakod; } ?>">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="TableCode" class="form-control-label">Tabellakód</label>
+                            <input class="form-control" type="text" id="TableCode" name="TableCode" value="<?php if (isset($tableData->Tabellakod)) { print $tableData->Tabellakod; } ?>">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="TeamCount" class="form-control-label">Csapatszám</label>
+                            <input class="form-control" type="text" id="TeamCount" name="TeamCount" value="<?php if (isset($tableData->Csapatszam)) { print $tableData->Csapatszam; } ?>">
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="Csapatszam" class="col-sm-2 control-label">Csapatszám</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" id="Csapatszam" name="Csapatszam" value="<?php if (isset($tableData->Csapatszam)) { print $tableData->Csapatszam; } ?>">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="HeadText" class="form-control-label">Fejszöveg</label>
+                            <input class="form-control" type="text" id="HeadText" name="HeadText" value="<?php if (isset($tableData->Fejszoveg)) { print $tableData->Fejszoveg; } ?>">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="Fejszoveg" class="col-sm-2 control-label">Fejszöveg</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" id="Fejszoveg" name="Fejszoveg" value="<?php if (isset($tableData->Fejszoveg)) { print $tableData->Fejszoveg; } ?>">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="Ideny" class="col-sm-2 control-label">Idény</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" id="Ideny" name="Ideny" value="<?php if (isset($tableData->Ideny)) { print $tableData->Ideny; } ?>">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="Season" class="form-control-label">Idény</label>
+                            <input class="form-control" type="text" id="Season" name="Season" value="<?php if (isset($tableData->Ideny)) { print $tableData->Ideny; } ?>">
+                        </div>
                     </div>
                 </div>
 <?php
                             break;
-                        case 7 :
+                        case 6 :
+                        case 13 :
 ?>
-                <div class="form-group">
-                    <label for="Feltoltendo" class="col-sm-2 control-label">File</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="file" id="Feltoltendo" name="Feltoltendo[]">
-                        <input type="hidden" name="oldFile" id="oldFile" value="<?php if (isset($menuPointData) && $menuPointData[0]['FileName'] != '') { print $menuPointData[0]['FileName']; } ?>">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="Uploads" class="col-sm-2 control-label">File</label>
+                            <input class="form-control" type="file" id="Feltoltendo" name="Uploads[]">
+                            <input type="hidden" name="oldFile" id="oldFile" value="<?php if (isset($menuPointData) && $menuPointData[0]['FileName'] != '') { print $menuPointData[0]['FileName']; } ?>">
+                        </div>
                     </div>
                 </div>
 <?php
@@ -314,19 +351,21 @@
                     }
                 } else if (!isset($menuPointData)) {
 ?>
-                    <div class="form-group">
-                        <label for="Szerep" class="col-sm-2 control-label"><?php print $menuJson->labels->role; ?>:</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" id="Szerep" name="Szerep">
-                                <option value="">Válasszon</option>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                            <label for="Role" class="form-control-label"><?php print $menuJson->labels->role; ?>:</label>
+                                <select class="form-control" id="Role" name="Role">
+                                    <option value="">Válasszon</option>
 <?php
                                 foreach ($menuRoles as $menuRoles2) {
 ?>
-                                <option <?php if (isset($menuPointData) && $menuRoles2['RoleId'] == $menuPointData[0]['Role']) { print 'selected="selected"'; } ?> value="<?php print $menuRoles2['RoleId']; ?>"><?php print $menuRoles2['RoleName']; ?></option>
+                                    <option <?php if (isset($menuPointData) && $menuRoles2['RoleId'] == $menuPointData[0]['Role']) { print 'selected="selected"'; } ?> value="<?php print $menuRoles2['RoleId']; ?>"><?php print $menuRoles2['RoleName']; ?></option>
 <?php
                                 }
 ?>
-                            </select>
+                                </select>
+                            </div>
                         </div>
                     </div>
 <?php
@@ -336,10 +375,10 @@
                 <div>
                     <button type="button" class="btn btn-primary" onclick="javascript: $('#MenuForm').submit();" name="feltoltes" id="feltoltes"><?php if (!isset($menuPointData)) { print $menuJson->labels->upload; } else if (isset($menuPointData)) { print $menuJson->labels->update; }?></button>
                     <input type="hidden" name="ParentId" id="ParentId" value="<?php if (isset($menuPointData)) { print $menuPointData[0]['ParentId']; } else if (!isset($menuPointData)) { print $_POST['menuObject']['parentId']; } ?>" />
-                    <input type="hidden" name="ParentNode" id="ParentNode" value="<?php if (isset($menuPointData)) { print $menuPointData[0]['MainNode']; } else if (!isset($menuPointData)) { print $_POST['menuObject']['parentNode']; } ?>" />
+                    <input type="hidden" name="MainNode" id="MainNode" value="<?php if (isset($menuPointData)) { print $menuPointData[0]['MainNode']; } else if (!isset($menuPointData)) { print $_POST['menuObject']['parentNode']; } ?>" />
                     <input type="hidden" name="MoreFlag" id="MoreFlag" value="0" />
                     <input type="hidden" name="event" id="event" value="<?php if (isset($menuPointData)) { print 'updateMenu'; } else if (!isset($menuPointData)) { print 'newMenu'; } ?>" />
-                    <input type="hidden" name="popupHidden" id="popupHidden" value="0" />
+                    <input type="hidden" name="Popup" id="Popup" value="0" />
 <?php
                     if (isset($menuPointData)) {
 ?>
@@ -347,7 +386,8 @@
                     <input type="hidden" name="MainHeaderId" id="MainHeaderId" value="<?php print $menuPointData[0]['MainHeaderId']; ?>" />
                     <input type="hidden" name="LangHeaderId" id="LangHeaderId" value="<?php print $menuPointData[0]['LangHeaderId']; ?>" />
                     <input type="hidden" name="RankHidden" id="RankHidden" value="<?php print $menuPointData[0]['Rank']; ?>" />  
-                    <input type="hidden" name="Szerep" id="Szerep" value="<?php print $menuPointData[0]['Role']; ?>" />
+                    <input type="hidden" name="Role" id="Role" value="<?php print $menuPointData[0]['Role']; ?>" />
+                    <input type="hidden" name="Lang" id="Lang" value="<?php print $menuPointData[0]['Language']; ?>" />
 <?php
                     }
 ?>

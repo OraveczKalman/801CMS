@@ -17,6 +17,13 @@ class MenuTreeController {
         $menuDataArray[0]['level'] = $this->dataArray[0]['mainPointId'];
         $menu = new MenuModel($this->db, $menuDataArray);
         $menuItems = $menu->GenerateMenuTreeSite();
-        include_once(SITE_VIEW_PATH . 'MenuTreeViewHorizontal.php');
+        switch ($_SESSION['setupData']['siteType']) {
+            case 1 :
+                include_once(SITE_VIEW_PATH . 'MenuTreeViewHorizontal.php');
+                break;
+            case 2 :
+                include_once(SITE_VIEW_PATH . 'MenuTreeViewHorizontalParallax.php');
+                break;
+        }
     }
 }

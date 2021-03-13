@@ -34,7 +34,7 @@ class LoginController {
             } else {
                 $_SESSION['admin']['userData'] = $enteredUserData[0];
                 $_SESSION['admin']['userData']['lang'] = 'Hu';
-                header("Location: ../admin/MenuTree");
+                //header("Location: ../admin/MenuTree");
             }
         } else if (!empty($errorArray)) {
             print json_encode($errorArray);
