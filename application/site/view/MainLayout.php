@@ -107,16 +107,6 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();*/
         </script>
-        <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBm7bSh6sLMgQ9KGGHkkm5ZHKnYPq6WPks&callback=initMap&libraries=&v=weekly" defer></script>
-        <script>
-            let map;
-
-            function initMap() {
-              map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 8,
-              });
-            }
-        </script>-->
+        <!--Google maps helye-->
     </body>
 </html>
